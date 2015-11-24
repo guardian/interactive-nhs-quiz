@@ -1,0 +1,132 @@
+.row {
+	width:8;
+	min-height:250px;
+	margin-bottom:30px;
+
+	.q-title {
+		p {
+			font-weight: bold;
+			font-size:15px;
+		}
+	}
+
+	svg {
+		width:800px;
+		height:200px;
+		
+		.voronoi {
+			visibility: hidden;
+		}
+		.voronoi path {
+		  fill: none;
+		  pointer-events: all;
+		  stroke: #000;
+		  stroke-opacity: .15;
+		}
+		.voronoi circle {
+		  fill: red;
+		  display: none;
+		}
+		.voronoi :hover circle {
+		  display: inline;
+		}
+		.voronoi :hover path {
+		  stroke: red;
+		  stroke-opacity: 1;
+		}
+
+		g.line {
+			line.bg {
+				stroke:#ddd;
+				stroke-width:1;
+				shape-rendering: crispEdges;
+				fill:none;
+			}
+			text.zero,
+			text.hundred {
+				@include fs-textSans(1);
+				text-anchor:end;
+				fill:#aaa;
+			}
+			text.hundred {
+				text-anchor:start;	
+			}
+			text.title {
+				@include fs-header(1);
+				font-size:15px;
+				font-weight: 300;
+				text-anchor:end;
+			}
+		}
+		
+		
+		.countries {
+			.country {
+				circle {
+					stroke:none;
+					stroke-width:2;
+					fill:#005689;
+				}
+				line {
+					stroke:#ddd;
+					stroke-opacity:0.1;
+					stroke-width:1;
+					fill:none;
+				}
+				text {
+					@include fs-header(1);
+					font-size:13px;
+					font-weight: 300;
+					text-anchor:middle;
+					visibility: hidden;
+				}
+
+				&.highlight {
+					circle {
+						stroke:#005689;
+						fill:#fff;
+					}
+					text {
+						visibility: visible;
+						font-weight: bold;
+					}
+					line {
+						stroke-opacity:1;
+						stroke-width:2;
+					}
+				}
+
+				&.selected {
+					circle {
+						stroke:#000;
+						stroke-width:3;
+						fill:#fff;
+					}
+					text {
+						visibility: visible;
+					}
+					line {
+						stroke-opacity:1;
+						stroke-width:3;
+					}
+				}
+
+				&.you {
+					circle {
+						stroke:#000;
+						stroke-width:0;
+						fill:#dc2a7d;
+					}
+					text {
+						visibility: visible;
+					}
+					line {
+						stroke-opacity:1;
+						stroke-width:3;
+					}
+				}
+			}	
+		}
+		
+	}
+}

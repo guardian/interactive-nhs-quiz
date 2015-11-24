@@ -1,0 +1,46 @@
+[
+	{
+		"question":"Out of every 100 people in [Country], about how many do you think have access to the internet at home either through a computer or mobile device?",
+		"id":1
+	},
+	{
+		"question":"Out of every 100 people in [Country], about how many do you think do not affiliate themselves with any religion – that is, atheists, agnostics and those who say they do not identify with any religion?",
+		"id":2
+	},
+	{
+		"question":"How old do you think the average person in [country] is?",
+		"id":3
+	},
+	{
+		"question":"Out of every 100 people in [Country], about how many do you think are aged 14 or younger?",
+		"id":4
+	},
+	{
+		"question":"What proportion of [country’s] total household wealth do you think the wealthiest 1% own?",
+		"id":7
+	},
+	{
+		"question":"Out of every 100 people aged 20 years or over in [Country], how many do you think are either overweight or obese?",
+		"id":8
+	},
+	{
+		"question":"What percentage of [politicians in lower or single house – eg in Britain would be Members of Parliament (MPs)] in [Country] are women?",
+		"id":9
+	},
+	{
+		"question":"What percentage of people in your country live in a rural area, that is, outside of a big town or city?",
+		"id":10
+	},
+	{
+		"question":"What percentage of the [Country] population do you think are immigrants to this country (i.e. not born in [Country])?",
+		"id":11
+	},
+	{
+		"question":"Out of every 100 working-age women in [Country], about how many do you think are in employment?",
+		"id":12
+	},
+	{
+		"question":"Out of every 100 young adults aged 25-34  in [Country], about how many do you think live with their parents?",
+		"id":13
+	},
+]
