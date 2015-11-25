@@ -28,7 +28,7 @@ export default class Column {
 	}
 	_setExents() {
 		this.extents={
-			values:[0,100],
+			values:this.options.question.range || [0,100],
 			mean:d3.extent(this.data,function(d){
 				return d.question.mean
 			}),

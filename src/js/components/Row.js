@@ -90,20 +90,21 @@ export default class Row extends Column {
 				.attr("class","bg")
 				.attr("x1",this.padding.left)
 				.attr("y1",0)
-				.attr("x2",this.xscale(100)+this.padding.left)
+				.attr("x2",this.xscale.range()[1]+this.padding.left)
 				.attr("y2",0)
 		line
 			.append("text")
 				.attr("class","zero")
 				.attr("x",this.padding.left-3)
 				.attr("y",4)
-				.text("0%")
+				.text((this.options.question.range?this.options.question.range[0]:"0")+(this.options.question.units||""))
 		line
 			.append("text")
 				.attr("class","hundred")
-				.attr("x",this.xscale(100)+this.padding.left+3)
+				.attr("x",this.xscale.range()[1]+this.padding.left+3)
 				.attr("y",4)
-				.text("100%")
+				.text((this.options.question.range?this.options.question.range[1]:"100")+(this.options.question.units||""))
+				//.text("100%")
 
 		line
 			.append("text")
@@ -205,8 +206,8 @@ export default class Row extends Column {
 						return -10;
 						return (d.country===this.options.country || d.country==="YOU")?-26:-10
 					})
-					.text(function(d){
-						return d.question.mean+"%";
+					.text((d)=>{
+						return d.question.mean+(this.options.question.units||"");
 					})
 
 		this.mean.append("text")
@@ -244,6 +245,12 @@ export default class Row extends Column {
 				.attr("x2",0)
 				.attr("y1",-6)
 				.attr("y2",-22)*/
+		this.mean
+			.append("line")
+				.attr("class","c")
+				.attr("x1",0)
+				.attr("x2",0)
+				.attr("y1",-6)
 
 		this.actual=this.country.append("g")
 								.attr("class","value")
@@ -283,8 +290,8 @@ export default class Row extends Column {
 						return 18;
 						return (d.country===this.options.country || d.country==="YOU")?-26:-10
 					})
-					.text(function(d){
-						return d.question.actual+"%";
+					.text((d)=>{
+						return d.question.actual+(this.options.question.units||"");
 					})
 					
 
@@ -323,6 +330,12 @@ export default class Row extends Column {
 				.attr("x2",0)
 				.attr("y1",6)
 				.attr("y2",24)*/
+		this.actual
+			.append("line")
+				.attr("class","c")
+				.attr("x1",0)
+				.attr("x2",0)
+				.attr("y1",6)
 
 		this.cell = this.svg.append("g")
 					    .attr("class", "voronoi")
@@ -358,6 +371,10 @@ export default class Row extends Column {
 		})
 		this.mean
 				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
+				.classed("hidden-value",(d,i)=>{
+					return i>0 && __countries[i-1].x_mean===d.x_mean;
+					return i>0 && __countries.map((d)=>(d.country)).indexOf(d.country)>0 && __countries[i].x_mean===d.x_mean
+				})
 				.selectAll("text")
 					.attr("dy",function(d,i){
 						let dy=-18,
@@ -373,40 +390,55 @@ export default class Row extends Column {
 							}
 						})
 
-						console.log(d.country,"prev is",prev,__countries[prev])
+						//console.log(d.country,"prev is",prev,__countries[prev])
 
 						if(prev>-1) {
 							prev=__countries[prev];
 							if(prev.x_mean+prev.width>d.x_mean) {
 								prev_mean.y++;
-								//console.log("inc",prev_mean.y)
 							} else {
 								prev_mean.y--;
-								//console.log("dec",prev_mean.y)
 							}
 						} else {
-							console.log("first",0)
 							prev_mean.y=0;
 						}
 
 						prev_mean.y=prev_mean.y<0?0:prev_mean.y;
 
+						d.dy_mean=dy*prev_mean.y;
+
 						return dy*prev_mean.y;
 					})
+
+		this.mean
+				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
+				.select("line.c")
+					.attr("y2",(d)=>(d.dy_mean-16))
+
 		__countries=__countries.sort((a,b)=>{
 			return a.x_actual - b.x_actual;
 		});
 		this.actual
 				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
-				/*.sort((a,b)=>{
-					return a.x_actual-b.x_actual;
-				})*/
+				.classed("hidden-value",function(d,i){
+					if(i>0) {
+						console.log(d.country,"--",__countries[i-1].country,__countries[i-1].x_actual,"===",d.x_actual)
+					}
+					return i>0 && __countries[i-1].country!== d.country && __countries[i-1].x_actual===d.x_actual;
+					if(__countries.length>1 && i>0 && __countries.map((d)=>(d.country)).indexOf(d.country)>0 && __countries[i-1].x_actual===d.x_actual) {
+						console.log("HIDDEN VALUE",d.country,__countries[i-1].x_actual,"===",d.x_actual)
+						console.log(this)
+					} else {
+						console.log(d.country,"NOT HIDDEN");
+					}
+					
+					return i>0 && __countries.length>1 && __countries.map((d)=>(d.country)).indexOf(d.country)>0 && __countries[i-1].x_actual===d.x_actual
+				})
 				.selectAll("text")
 					.attr("dy",function(d,i){
 						let dy=18,
 							y=0;
 
-						
 						if(i>0) {
 							return dy*prev_actual.y;
 						}
@@ -418,26 +450,29 @@ export default class Row extends Column {
 							}
 						})
 
-						console.log(d.country,"prev is",prev,__countries[prev])
+						//console.log(d.country,"prev is",prev,__countries[prev])
 
 						if(prev>-1) {
 							prev=__countries[prev];
 							if(prev.x_actual+prev.width>d.x_actual) {
 								prev_actual.y++;
-								//console.log("inc",prev_actual.y)
 							} else {
 								prev_actual.y--;
-								//console.log("dec",prev_actual.y)
 							}
 						} else {
-							console.log("first",0)
 							prev_actual.y=0;
 						}
 
 						prev_actual.y=prev_actual.y<0?0:prev_actual.y;
 
+						d.dy_actual=dy*prev_actual.y;
+
 						return dy*prev_actual.y;
 					})
+		this.actual
+				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
+				.select("line.c")
+					.attr("y2",(d)=>(d.dy_actual+16))
 
 
 		this.country

@@ -74,6 +74,21 @@
 					}
 				}
 
+				g.value {
+					&.hidden-value {
+						text.country-value {
+							visibility: hidden;
+						}
+					}
+					line.c {
+						stroke:#333;
+						stroke-opacity:0;
+						stroke-width:1;
+						stroke-dasharray:1,1;
+						shape-rendering: crispEdges;
+					}
+				}
+
 				&.highlight {
 					circle {
 						stroke:#005689;
@@ -88,6 +103,12 @@
 						stroke-opacity:1;
 						stroke-width:2;
 					}
+					g.value {
+						line.c {
+							stroke-opacity:1;
+						}
+					}
+					
 				}
 
 				&.selected {

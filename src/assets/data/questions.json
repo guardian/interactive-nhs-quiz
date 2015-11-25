@@ -9,7 +9,8 @@
 	},
 	{
 		"question":"How old do you think the average person in [country] is?",
-		"id":"3"
+		"id":"3",
+		"range":[16,90]
 	},
 	{
 		"question":"Out of every 100 people in [Country], about how many do you think are aged 14 or younger?",
@@ -17,11 +18,13 @@
 	},
 	{
 		"question":"What proportion of [country’s] total household wealth do you think the wealthiest 1% own?",
-		"id":"7"
+		"id":"7",
+		"units":"%"
 	},
 	{
 		"question":"What proportion of [country’s] total household wealth do you think the wealthiest 1% SHOULD own?",
-		"id":"7b"
+		"id":"7b",
+		"units":"%"
 	},
 	{
 		"question":"Out of every 100 people aged 20 years or over in [Country], how many do you think are either overweight or obese?",
@@ -29,15 +32,18 @@
 	},
 	{
 		"question":"What percentage of [politicians in lower or single house – eg in Britain would be Members of Parliament (MPs)] in [Country] are women?",
-		"id":"9"
+		"id":"9",
+		"units":"%"
 	},
 	{
 		"question":"What percentage of people in your country live in a rural area, that is, outside of a big town or city?",
-		"id":"10"
+		"id":"10",
+		"units":"%"
 	},
 	{
 		"question":"What percentage of the [Country] population do you think are immigrants to this country (i.e. not born in [Country])?",
-		"id":"11"
+		"id":"11",
+		"units":"%"
 	},
 	{
 		"question":"Out of every 100 working-age women in [Country], about how many do you think are in employment?",
