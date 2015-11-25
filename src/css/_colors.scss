@@ -1,0 +1,18 @@
+$africa:#7d7569;
+$europe:#507892;
+$oceania:#72af7e;
+$namerica:#a60947;
+$samerica:#ff5b3a;
+$americas:#ff5b3a;
+$asia:#ffce4b;
+
+$countries-list: africa, europe, oceania, namerica, samerica, americas, asia;
+$colors-list: $africa, $europe, $oceania, $namerica, $samerica, $americas, $asia;
+
+@each $current-color in $colors-list {
+    $i: index($colors-list, $current-color);
+    
+    circle.#{nth($countries-list, $i)} {
+        fill: $current-color;
+    }
+}

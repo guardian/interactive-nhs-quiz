@@ -1,4 +1,29 @@
 .parallel-coordinates {
 	position:relative;
 	width:100%;
+
+	.row,.column {
+		svg {
+			.voronoi {
+				visibility: hidden;
+			}
+			.voronoi path {
+			  fill: none;
+			  pointer-events: all;
+			  stroke: #000;
+			  stroke-opacity: .15;
+			}
+			.voronoi circle {
+			  fill: red;
+			  display: none;
+			}
+			.voronoi :hover circle {
+			  display: inline;
+			}
+			.voronoi :hover path {
+			  stroke: red;
+			  stroke-opacity: 1;
+			}
+		}
+	}
 }

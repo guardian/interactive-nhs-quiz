@@ -1,3 +1,5 @@
+//import Tooltip from './Tooltip';
+
 export default class Column {
 
 	constructor(data,options) {
@@ -49,11 +51,11 @@ export default class Column {
 	}
 	_filterData(data) {
 		return data.map((d)=>{
-
+			//console.log(this.question)
 			return {
 				country:d.country,
 				question:d.questions.find((q)=>{
-					return +q.question === +this.question.id
+					return q.question === this.question.id
 				})
 			}
 
@@ -61,5 +63,30 @@ export default class Column {
 			//console.log("------>",d)
 			return !isNaN(d.question.mean) && !isNaN(d.question.actual)
 		})
+	}
+	_getCountryArea(country) {
+
+		
+
+		let region_codes={
+			"002":"africa",
+			"019":"americas",
+			"142":"asia",
+			"150":"europe",
+			"009":"oceania"
+		}
+		let sub_region_codes={
+			"021":"namerica",
+			"005":"samerica",
+			"013":"samerica"
+		}
+
+		//console.log(country,region_codes[this.options.country_info[country]["region-code"]])
+
+		if(sub_region_codes[this.options.country_info[country]["sub-region-code"]]) {
+			return sub_region_codes[this.options.country_info[country]["sub-region-code"]]
+		}
+		
+		return region_codes[this.options.country_info[country]["region-code"]]
 	}
 }

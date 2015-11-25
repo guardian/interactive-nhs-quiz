@@ -1,7 +1,11 @@
 .row {
-	width:8;
-	min-height:250px;
+	width:100%;
 	margin-bottom:30px;
+	position:relative;
+
+	.chart-container {
+		position: relative;
+	}
 
 	.q-title {
 		p {
@@ -12,28 +16,9 @@
 
 	svg {
 		width:800px;
-		height:200px;
+		height:300px;
 		
-		.voronoi {
-			visibility: hidden;
-		}
-		.voronoi path {
-		  fill: none;
-		  pointer-events: all;
-		  stroke: #000;
-		  stroke-opacity: .15;
-		}
-		.voronoi circle {
-		  fill: red;
-		  display: none;
-		}
-		.voronoi :hover circle {
-		  display: inline;
-		}
-		.voronoi :hover path {
-		  stroke: red;
-		  stroke-opacity: 1;
-		}
+		
 
 		g.line {
 			line.bg {
@@ -65,11 +50,13 @@
 				circle {
 					stroke:none;
 					stroke-width:2;
-					fill:#005689;
+					fill-opacity:0.8;
+					//fill:#005689;
 				}
+
 				line {
 					stroke:#ddd;
-					stroke-opacity:0.1;
+					stroke-opacity:1;
 					stroke-width:1;
 					fill:none;
 				}
@@ -77,20 +64,27 @@
 					@include fs-header(1);
 					font-size:13px;
 					font-weight: 300;
-					text-anchor:middle;
+					text-anchor:start;
 					visibility: hidden;
+
+					&.country-value {
+						@include fs-textSans(1);
+						font-weight: normal;
+						text-anchor:end;
+					}
 				}
 
 				&.highlight {
 					circle {
 						stroke:#005689;
-						fill:#fff;
+						fill-opacity:1;
 					}
 					text {
 						visibility: visible;
-						font-weight: bold;
+						//font-weight: bold;
 					}
 					line {
+						stroke:#333;
 						stroke-opacity:1;
 						stroke-width:2;
 					}
@@ -99,13 +93,14 @@
 				&.selected {
 					circle {
 						stroke:#000;
-						stroke-width:3;
-						fill:#fff;
+						stroke-width:2;
+						fill-opacity:1;
 					}
-					text {
+					/*text {
 						visibility: visible;
-					}
+					}*/
 					line {
+						stroke:#000;
 						stroke-opacity:1;
 						stroke-width:3;
 					}
@@ -121,6 +116,7 @@
 						visibility: visible;
 					}
 					line {
+						stroke:#000;
 						stroke-opacity:1;
 						stroke-width:3;
 					}

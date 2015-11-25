@@ -6,9 +6,9 @@ export default class Row extends Column {
 		let self=this;
 
 		this.margins={
-			top:10,
+			top:40,
 			left:30,
-			bottom:10,
+			bottom:40,
 			right:30
 		}
 		this.padding={
@@ -17,6 +17,8 @@ export default class Row extends Column {
 			bottom:40,
 			right:30
 		}
+
+		
 
 		let row=this.container;
 
@@ -28,7 +30,10 @@ export default class Row extends Column {
 						return this.options.question.id+" "+this.options.question.question
 					})
 
-		this.svg = row
+		let chart_container=row.append("div")
+									.attr("class","chart-container")
+
+		this.svg = chart_container
 					.append("svg")
 					/*.on("mousemove",function(){
 						let coords=d3.mouse(this),
@@ -36,8 +41,19 @@ export default class Row extends Column {
 
 						console.log(x,self.xscale.invert(x))
 					})*/
-
-
+		/*
+		this.topTooltip=new Tooltip({
+					    	container:chart_container.node(),
+					    	margins:{
+					    		top:0,
+					    		left:this.margins.left,
+					    		right:0,
+					    		bottom:0
+					    	},
+					    	padding:"10px 2px",
+					    	width:150,
+					    	html:"<ul></ul><h4></h4>"
+					    });*/
 
 		let bbox=this.svg.node().getBoundingClientRect(),
 			WIDTH=bbox.width,
@@ -141,42 +157,84 @@ export default class Row extends Column {
 							return this.yscale("mean")+this.padding.top
 						})
 						.attr("x2",(d)=>{
-							console.log(d)
 							return this.xscale(d.question.actual)
 						})
 						.attr("y2",(d)=>{
 							return this.yscale("actual")+this.padding.top
 						})
-						.style("stroke",(d)=>{
+						/*.style("stroke",(d)=>{
 							return this.colorscale(d.question["difference (mean-actual)"]);
-						})
+						})*/
 		this.samples=[];
 
-		let mean=this.country.append("g")
+		this.mean=this.country.append("g")
 								.attr("class","value")
 								.attr("transform",(d)=>{
 									let x=this.xscale(d.question.mean),
 										y=this.yscale("mean")+this.padding.top;
 
+									d.x_mean=x;
+
 									this.samples.push([x,y])
 
 									return `translate(${x},${y})`;
 								});
-		mean.append("circle")
+		this.mean.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
-					.attr("r",3)
+					.attr("r",4)
+					.attr("class",(d)=>{
+						return this._getCountryArea(d.country)
+					})
+		
+		this.mean
+			/*.filter((d)=>{
+				
+				let same=this.data.filter((c)=>{
+					return d.question.mean===c.question.mean;
+				}).sort((a,b)=>{
+					return b.question.actual - a.question.actual;
+				}).map(c => c.country);
 
-		mean.append("text")
-					.attr("x",0)
+				return same.indexOf(d.country)===0;
+			})*/
+			.append("text")
+					.attr("class","country-value")
+					.attr("x",-2)
 					.attr("y",(d)=>{
+						return -10;
 						return (d.country===this.options.country || d.country==="YOU")?-26:-10
 					})
 					.text(function(d){
-						return d.country+" "+d.question.mean+"%";
+						return d.question.mean+"%";
 					})
 
-		mean
+		this.mean.append("text")
+					.attr("class","country-name")
+					.attr("x",2)
+					.attr("y",(d)=>{
+						/*
+						let same=this.data.filter((c)=>{
+							return d.question.mean===c.question.mean;
+						}).sort((a,b)=>{
+							return b.question.actual - a.question.actual;
+						}).map(c => c.country);
+
+						//console.log("MEAN!!!",same)
+	
+						return -25 - 15 * same.indexOf(d.country)
+						*/
+						return -10;
+						return (d.country===this.options.country || d.country==="YOU")?-26:-25
+					})
+					.text(function(d){
+						return d.country;
+					})
+					.each(function(d){
+						d.width=this.getBBox().width+45+3*2
+					})
+
+		/*this.mean
 			.filter((d)=>{
 				return d.country===this.options.country || d.country==="YOU"
 			})
@@ -185,9 +243,9 @@ export default class Row extends Column {
 				.attr("x1",0)
 				.attr("x2",0)
 				.attr("y1",-6)
-				.attr("y2",-22)
+				.attr("y2",-22)*/
 
-		let actual=this.country.append("g")
+		this.actual=this.country.append("g")
 								.attr("class","value")
 								.attr("transform",(d)=>{
 									let x=this.xscale(d.question.actual),
@@ -195,23 +253,67 @@ export default class Row extends Column {
 
 									this.samples.push([x,y])
 
+									d.x_actual=x;
+
 									return `translate(${x},${y})`;
 								});
-		actual.append("circle")
+		this.actual.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
-					.attr("r",3)
+					.attr("r",4)
+					.attr("class",(d)=>{
+						return this._getCountryArea(d.country)
+					})
 
-		actual.append("text")
-					.attr("x",0)
+		this.actual
+			/*.filter((d)=>{
+				
+				let same=this.data.filter((c)=>{
+					return d.question.actual===c.question.actual;
+				}).sort((a,b)=>{
+					return b.question.mean - a.question.mean;
+				}).map(c => c.country);
+				
+				return same.indexOf(d.country)===0;
+			})*/
+			.append("text")
+					.attr("class","country-value")
+					.attr("x",-2)
 					.attr("y",(d)=>{
-						return (d.country===this.options.country || d.country==="YOU")?36:16
+						return 18;
+						return (d.country===this.options.country || d.country==="YOU")?-26:-10
 					})
-					//.attr("y",16)
 					.text(function(d){
-						return d.country+" "+d.question.actual+"%";
+						return d.question.actual+"%";
 					})
-		actual
+					
+
+		this.actual.append("text")
+					.attr("class","country-name")
+					.attr("x",2)
+					.attr("y",(d)=>{
+						/*
+						let same=this.data.filter((c)=>{
+							return d.question.actual===c.question.actual;
+						}).sort((a,b)=>{
+							return b.question.mean - a.question.mean;
+						}).map(c => c.country);
+
+						console.log(d.question.actual,same)
+
+						return 16 + 15 + 15 * same.indexOf(d.country)
+						*/
+						return 18;
+						return (d.country===this.options.country || d.country==="YOU")?32:32
+					})
+					.text(function(d){
+						return d.country;
+					})
+					.each(function(d){
+						d.width=this.getBBox().width+45+3*2
+						//d.width=d3.max([this.getBBox().width+5,d.width])
+					})
+		/*this.actual
 			.filter((d)=>{
 				return d.country===this.options.country || d.country==="YOU"
 			})
@@ -220,7 +322,7 @@ export default class Row extends Column {
 				.attr("x1",0)
 				.attr("x2",0)
 				.attr("y1",6)
-				.attr("y2",24)
+				.attr("y2",24)*/
 
 		this.cell = this.svg.append("g")
 					    .attr("class", "voronoi")
@@ -234,14 +336,120 @@ export default class Row extends Column {
 
 	}
 	highlightCountry(countries) {
+
+		let __countries=this.data.filter((c)=>{
+							return countries.indexOf(c.country)>-1
+						})
+						//.map((c)=>c.country)
+
+		console.log(countries,__countries)		
+
+		let prev_mean={
+				x:0,
+				y:0
+			},
+			prev_actual={
+				x:[],
+				y:0
+			}
+
+		__countries.sort((a,b)=>{
+			return a.x_mean - b.x_mean;
+		})
+		this.mean
+				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
+				.selectAll("text")
+					.attr("dy",function(d,i){
+						let dy=-18,
+							y=0;
+						if(i>0) {
+							return dy*prev_mean.y;
+						}
+						
+						let prev;
+						__countries.forEach((c,i)=>{
+							if(c.country===d.country) {
+								prev=i-1;
+							}
+						})
+
+						console.log(d.country,"prev is",prev,__countries[prev])
+
+						if(prev>-1) {
+							prev=__countries[prev];
+							if(prev.x_mean+prev.width>d.x_mean) {
+								prev_mean.y++;
+								//console.log("inc",prev_mean.y)
+							} else {
+								prev_mean.y--;
+								//console.log("dec",prev_mean.y)
+							}
+						} else {
+							console.log("first",0)
+							prev_mean.y=0;
+						}
+
+						prev_mean.y=prev_mean.y<0?0:prev_mean.y;
+
+						return dy*prev_mean.y;
+					})
+		__countries=__countries.sort((a,b)=>{
+			return a.x_actual - b.x_actual;
+		});
+		this.actual
+				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
+				/*.sort((a,b)=>{
+					return a.x_actual-b.x_actual;
+				})*/
+				.selectAll("text")
+					.attr("dy",function(d,i){
+						let dy=18,
+							y=0;
+
+						
+						if(i>0) {
+							return dy*prev_actual.y;
+						}
+						
+						let prev;
+						__countries.forEach((c,i)=>{
+							if(c.country===d.country) {
+								prev=i-1;
+							}
+						})
+
+						console.log(d.country,"prev is",prev,__countries[prev])
+
+						if(prev>-1) {
+							prev=__countries[prev];
+							if(prev.x_actual+prev.width>d.x_actual) {
+								prev_actual.y++;
+								//console.log("inc",prev_actual.y)
+							} else {
+								prev_actual.y--;
+								//console.log("dec",prev_actual.y)
+							}
+						} else {
+							console.log("first",0)
+							prev_actual.y=0;
+						}
+
+						prev_actual.y=prev_actual.y<0?0:prev_actual.y;
+
+						return dy*prev_actual.y;
+					})
+
+
 		this.country
 			.classed("highlight",(c)=>{
+				//console.log(c.country,countries.indexOf(c.country)>-1,countries)
 				return countries.indexOf(c.country)>-1;
 			})
 			.filter((c)=>{
 				return (countries.indexOf(c.country)>-1) || (c.country === this.options.country)
 			})
 			.moveToFront()
+
 	}
 	_findCountry(value,type,y) {
 		
@@ -283,6 +491,7 @@ export default class Row extends Column {
 		
 		var cellEnter = this.cell.enter().append("g").on("mouseenter",(d)=>{
 			let countries=this._findCountry(this.xscale.invert(d.point[0]),(d.point[1]>this.padding.top)?"actual":"mean",d.point[1]);
+			
 			this.highlightCountry(countries)
 		})
 		

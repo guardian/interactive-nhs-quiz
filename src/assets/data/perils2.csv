@@ -1,0 +1,50 @@
+type,question,Argentina,Australia,Belgium,Brazil,Canada,Chile,China,Colombia,France,UK,Germany,Hungary,India,Ireland,Israel,Italy,Japan,Mexico,Montenegro,Netherlands,New Zealand,Norway,Peru,Poland,Russia,Saudi Arabia,Serbia,South Africa,South Korea,Spain,Sweden,Turkey,United States
+Mean ,1,73,82,78,72,81,77,72,70,80,81,84,70,60,77,60,75,74,64,73.58,86.28,80,90.16,69,76,73,60,72.07,55,83,76,85,68,76
+Actual,1,59.74,89.62,84.72,53.37,92.89,65.76,46,52.44,85.75,89.9,87,74.38,19.2,81.6,75.8,59.92,86.03,44,64,96.08,91.5,96.15,40.9,67.15,70,59.2,56,34,92,74.38,89.1,46.62,86.75
+Difference (Mean-Actual),1,13.26,-7.62,-6.72,18.63,-11.89,11,26,18,-5.75,-8.90000000000001,-3,-4.38,40.8,-5,-15.8,15.08,-12.03,20,9.58,-9.8,-11.5,-5.99000000000001,28,8.84999999999999,3,0.799999999999997,16.07,21,-9,1.62,-4.09999999999999,21.38,-10.75
+Source,1,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,ILS,http://www.ipsos.co.za/SitePages/63%20percent%20of%20South%20Africans%20are%20not%20online.aspx,ILS,ILS,ILS,ILS,ILS
+Mean ,2,35,45,37,35,41,35,57,28,46,45,38,39,33,34.21,16,35,53,35,24.82,49.91,49,38.33,28,26,45,12,31.37,36,42,44,44,15,40
+Actual,2,12.2,24.2,29,7.9,23.7,16,52.2,6.6,28,25,24.7,18.6,0,6.2,3.1,12.4,57,4.7,3.2,42.1,36.6,10.1,3,5.6,16.2,0,3.3,14.9,46.4,19,27,1.2,16.4
+Difference (Mean-Actual),2,22.8,20.8,8,27.1,17.3,19,4.8,21.4,18,20,4,20.4,33,28.01,12.9,22.6,-4,30.3,21.62,7.81,12.4,28.23,25,20.4,28.8,12,28.07,21.1,-4.4,25,17,13.8,23.6
+Source,2,Pew,Pew,Pew,Pew,Pew,http://www.pewforum.org/2014/11/13/religion-in-latin-america/,Pew,Pew,Pew,Census data,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew,Pew
+Country comment,2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Mean ,3,44,48,55,56,50,45,56,41,47,51,51,63,49,49.52,41,59,65,44,56.04,52.91,45,55.95,41,55,48,36,55.63,43,53,51,57,54,47
+Actual,3,31.4,38.4,41.4,31.1,41.8,33.7,36.7,29.3,41.1,40.4,46.5,41.4,27,36.1,29.9,44.8,46.5,27.6,39.7,42.3,37.7,39.1,27.3,39.9,39.1,26.8,42.1,26.5,40.8,42,41.2,30.1,37.8
+Difference (Mean-Actual),3,12.6,9.6,13.6,24.9,8.2,13,19.3,12,5.9,10.6,4.5,21.6,22,13.42,11.1,14.2,18.5,16.4,16.34,10.61,7,16.85,13.7,15.1,8.9,9.2,13.53,16.5,12.2,9,16,23.9,9.2
+Source,3,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA
+Mean ,4,38,27,37,39,26,32,23,38,27,27,24,28,39,32.69,23,26,17,43,24.66,22.14,33,21.96,41,26,29,30,23.78,42,18,23,21,31,29
+Actual,4,24.9,18,17,23.8,15.5,20.7,17.1,25.3,18.7,17.4,13,14.8,28.1,21.5,28,13.8,13.2,27.9,19.2,16.7,19.9,18.2,27.3,14.7,16.4,27.1,14.8,28.3,14.1,15.4,16.9,25.5,19.4
+Difference (Mean-Actual),4,13.1,9,20,15.2,10.5,11,5.9,12.7,8.3,9.6,11,13.2,10.9,11.19,-5,12.2,3.8,15.1,5.46,5.44,13.1,3.76,14,11.3,12.6,2.9,8.98,13.7,3.9,7.6,4,5.5,9.6
+Source,4,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,MONSTAT,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA,CIA
+Mean ,7,46,54,50,40,55,54,56,43,56,59,59,,40,39.87,32,46,41,36,,39.67,50,45.32,32,38,53,,,49,49,56,46,53,57
+Actual,7,44,21,18,48,25,43,39,34,23,23,30,,53,27,39,23,19,36,,24,18,25,47,34,70,,,43,34,27,32,54,37
+Difference (Mean-Actual),7,-2,-33,-32,8,-30,-11,-17,-9,-33,-36,-29,,13,-12.87,7,-23,-22,0,,-15.67,-32,-20.32,15,-4,17,,,-6,-15,-29,-14,1,-20
+Source,7,Credit Suisse (2014),Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse (2014),Credit Suisse,Credit Suisse,,,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse (2014),Credit Suisse
+Mean ,7b,25,24,16,33,26,22,32,27,27,20,18,,30,23.17,14,26,25,30,,16.45,27,15.31,29,17,23,,,30,18,17,19,21,27
+Actual,7b,44,21,18,48,25,43,39,34,23,23,30,,53,27,39,23,19,36,,24,18,25,47,34,70,,,43,34,27,32,54,37
+Difference (should-Actual),7b,-19,3,-2,-15,1,-21,-7,-7,4,-3,-12,0,-23,-3.83,-25,3,6,-6,0,-7.55,9,-9.69,-18,-17,-47,0,0,-13,-16,-10,-13,-33,-10
+Source,7b,Credit Suisse (2014),Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse (2014),Credit Suisse,Credit Suisse,,,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse,Credit Suisse (2014),Credit Suisse
+Mean ,8,40,51,36,47,43,53,34,35,32,44,40,49,41,43.74,24,36,32,53,35.47,40.39,47,32.91,41,40,31,28,42.09,47,32,38,33,32,50
+Actual,8,52,62,53,56,56,66,28,55,49,62,57,60,20,58,57,50,23,69,59,49,66,53,56,57,57,71,53,55,32,58,52,65,66
+Difference (Mean-Actual),8,-12,-11,-17,-9,-13,-13,6,-20,-17,-18,-17,-11,21,-14.26,-33,-14,9,-16,-23.53,-8.61,-21,-20.09,-15,-17,-26,-43,-10.91,-8,0,-20,-19,-33,-16
+Source,8,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME,IHME
+Mean ,9,26,17,27,18,22,22,21,37,28,23,27,12,23,17.3,19,26,12,26,14,27.58,24,37.85,24,22,31,,20.13,34,14,29,38,15,21
+Actual,9,36.2,26.7,39.3,9.9,25.3,15.8,23.6,19.9,26.2,29.4,36.1,9.5,12,16,25,31,9.5,42.4,17.3,37.3,38,39.6,22.3,24.1,13.6,,34,41.9,16.3,41.4,43.6,17.8,19.4
+Difference (Mean-Actual),9,-10.2,-9.7,-12.3,8.1,-3.3,6,-2.6,17.1,1.8,-6.4,-9.1,2.5,11,1.3,-6,-5,2.5,-16.4,-3.3,-9.72,-14,-1.75,2,-2.1,17.4,,-13.87,-7.9,-2.3,-12.4,-6,-2.8,1.6
+Source,9,IPU,IPU,IPU,IPU,IPU,IPU,IPU,IPU,IPU,IPU,IPU,http://www.parlament.hu/aktiv-kepviseloi-nevsor,IPU,IPU,IPU,http://www.camera.it/leg17/313 ,IPU,IPU,IPU,IPU,IPU,IPU,IPU,IPU,IPU,,IPU,IPU,IPU,IPU,IPU,IPU,IPU
+Mean ,10,32,26,38,34,34,34,52,39,43,30,38,44,55,42,23,44,56,49,30.1,32.11,35,35.61,47,37,30,26,34.57,53,30,32,33,37,35
+Actual,10,8.4,10.7,2.182,14.567,18.35,10.644,45.6,23.839,20.711,17.655,24.906,29.229,67.6,37,8.7,31.179,6.979,21.029,36.2,10.09,14,19.792,21.715,39.432,26.076,17.1,44.545,35.7,17.6,20.6,14.3,8.2,19.3
+Difference (Mean-Actual),10,23.6,15.3,35.818,19.433,15.65,23.356,6.4,15,22.289,12.345,13.094,14.771,-12.6,5,14.3,12.821,49.021,27.971,-6.09999999999999,22.02,23,15.818,25,-2.432,3.924,8.9,-9.975,17.3,12.4,11.4,18.7,28.8,15.7
+Source,10,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,http://www.cbs.gov.il/reader/shnaton/templ_shnaton.html?num_tab=st02_18x&CYear=2015,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,TURSSTAT,World Bank
+Mean ,11,30,38,24,25,39,19,11,17,26,25,26,15,21,23,24,26,10,22,15.9,25.18,37,16.2,21,9,27,24,22.16,29,11,22,25,,33
+Actual,11,4.5,27.7,10.4,0.3,20.7,2.3,0.1,0.3,11.6,13,11.9,4.7,0.4,15.9,26.5,9.4,1.9,0.9,8.2,11.7,25.1,13.8,0.3,1.7,7.7,31.4,5.6,4.5,2.5,13.8,15.9,,14.3
+Difference (Mean-Actual),11,25.5,10.3,13.6,24.7,18.3,17,10.9,17,14.4,12,14.1,10.3,20.6,7,-2.5,16.6,8.1,21.1,7.7,13.48,11.9,2.4,21,7.3,19.3,-7.4,16.56,24.5,8.5,8.2,9,,18.7
+Source,11,UN,UN,UN,UN,UN,UN,UN,UN,UN,Census data,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,UN,,UN
+Mean ,12,53,55,58,52,64,55,63,53,66,60,57,59,41,50,39,44,56,56,41.41,58.56,57,72.72,54,52,67,28,37.45,49,42,43,69,34,63
+Actual,12,50.2,66.1,57.9,55.5,69.4,45.1,61.7,55.2,60.9,67.8,69.5,55.9,25,56.4,68.4,47.5,63.6,44.5,47.95,68.1,69.1,73.4,60,55.2,64.8,20,39.38,36.9,54.9,52,73.2,29.5,63
+Difference (Mean-Actual),12,2.8,-11.1,0.100000000000001,-3.5,-5.40000000000001,9.9,1.3,-2,5.1,-7.8,-12.5,3.1,16,-5.78,-29.4,-3.5,-7.6,11.5,-6.54000000000001,-9.53999999999999,-12.1,-0.680000000000007,-6,-3.2,2.2,8,-1.93,12.1,-12.9,-9,-6,4.5,0
+Source,12,OECD,OECD,OECD,OECD,OECD,http://www.ine.cl/canales/chile_estadistico/mercado_del_trabajo/nene/series_trimestrales_2011.php,OECD,OECD,OECD,OECD,OECD,OECD,Census of India Statistics 2011,OECD,OECD,OECD,OECD,OECD,MONSTAT pg. 3,OECD,OECD,OECD,http://iinei.inei.gob.pe/microdatos/,OECD,OECD,World Bank,Census data - Statistical Office of the Republic of Serbia (RZS pg. 1; ),Khayabus 2015,OECD,OECD,OECD,OECD,OECD
+Mean ,13,,,34,,,,,,36,43,27,49,,39.33,,61,,,,18.3,,18.63,,46,,,68.02,,,65,24,,34
+Actual,13,,,17.2,,,,,,11.3,14,16.8,47.5,,19.4,,49,,,,10.5,,4.1,,44.1,,,54,,,40,4.3,,12
+Difference (Mean-Actual),13,,,16.8,,,,,,24.7,29,10.2,1.5,,19.93,,12,,,,7.8,,14.53,,1.9,,,14.02,,,25,19.7,,22
+Source,13,,,Eurostat,,,,,,Eurostat,Eurostat,Eurostat,Eurostat,,Eurostat,,Eurostat,,,,Eurostat,,Eurostat,,Eurostat,,,Eurostat,,,Eurostat,Eurostat,,Eurostat
