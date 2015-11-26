@@ -21,6 +21,9 @@
 		
 
 		g.line {
+			&.hidden {
+				display:none;
+			}
 			line.bg {
 				stroke:#ddd;
 				stroke-width:1;
@@ -66,6 +69,8 @@
 					font-weight: 300;
 					text-anchor:start;
 					visibility: hidden;
+					
+					
 
 					&.country-value {
 						@include fs-textSans(1);
@@ -80,18 +85,15 @@
 							visibility: hidden;
 						}
 					}
-					line.c {
-						stroke:#333;
-						stroke-opacity:0;
-						stroke-width:1;
-						stroke-dasharray:1,1;
-						shape-rendering: crispEdges;
+					circle.c {
+						stroke:none;
+						fill-opacity:0;
 					}
 				}
 
 				&.highlight {
 					circle {
-						stroke:#005689;
+						stroke:#333;
 						fill-opacity:1;
 					}
 					text {
@@ -104,8 +106,8 @@
 						stroke-width:2;
 					}
 					g.value {
-						line.c {
-							stroke-opacity:1;
+						circle.c {
+							fill-opacity:1;
 						}
 					}
 					
@@ -128,6 +130,7 @@
 				}
 
 				&.you {
+					cursor: ew-resize;
 					circle {
 						stroke:#000;
 						stroke-width:0;
@@ -135,6 +138,13 @@
 					}
 					text {
 						visibility: visible;
+						text-anchor:middle;
+						&.country-value {
+							font-size:25px;
+						}
+						&.hidden {
+							visibility: hidden;
+						}
 					}
 					line {
 						stroke:#000;

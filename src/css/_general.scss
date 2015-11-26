@@ -60,3 +60,27 @@ a {
 .fonts__text-egyptian { @include fs-bodyCopy(2); }
 .fonts__sans { @include f-headlineSans; }
 .fonts__text-sans { @include fs-textSans(4); }
+
+.confirm-btn {
+    @include fs-textSans(2);
+    cursor: pointer;
+    font-weight: 500;
+    outline: 0;
+    border: 0;
+    padding: 0 10px;
+    margin: 0 0 0 3px;
+    line-height: 30px;
+    
+    border-radius: 100px;
+
+    transition: background-color 0.1s ease-out;
+    transition: color 0.1s ease-out;
+
+    color: white;
+    background: #005689;
+
+    &:hover {
+        background: #00456e;
+    }
+
+}

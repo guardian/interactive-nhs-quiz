@@ -57,7 +57,7 @@ export default class ParallelCoordinates {
 		let column=pc.selectAll("div."+(rows?"row":"column"))
 				.data(this.options.questions_data.filter((d,i)=>{
 					return 1;
-					return d==="1";//1;//i<1;
+					return d==="7b";//1;//i<1;
 				}))
 				.enter()
 				.append("div")
