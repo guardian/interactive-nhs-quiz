@@ -5,7 +5,7 @@
 	.row,.column {
 		svg {
 			.voronoi {
-				visibility: hidden;
+				visibility: block;
 			}
 			.voronoi path {
 			  fill: none;

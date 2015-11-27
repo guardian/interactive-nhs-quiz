@@ -82,5 +82,8 @@ a {
     &:hover {
         background: #00456e;
     }
-
+    
+    &.hidden {
+        visibility: hidden;
+    }
 }

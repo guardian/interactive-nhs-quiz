@@ -1,0 +1,16 @@
+#ranking {
+	ol {
+		
+		margin:0;
+		padding: 0;
+		li {
+			margin:0 0 10px;
+			&.selected {
+				font-weight: bold;
+			}
+			&.you {
+				font-weight: bold;
+			}
+		}
+	}
+}

@@ -8,14 +8,14 @@ export default class ParallelCoordinates {
 		this.options=options;
 		this.data=data;
 
-		console.log(this.data[0])
-
+		console.log("ParallelCoordinates",this.options,this.data)
+		/*
 		this.you={
 			country:"YOU",
-			questions:(["1","2","3","4","7","8","9","10","11","12","13"]).map((d)=>{
-				let c=this.data.find((c)=>{return c.country=="Italy"}),
-					a=d3.round(Math.random()*100),//c.questions.find((q)=>{return c.question===d}).actual,
-					m=d3.round(Math.random()*100),
+			questions:(["1","2","3","4","7","7b","8","9","10","11","12","13"]).map((d)=>{
+				let c=this.data.find((c)=>{return c.country==this.options.country}),
+					a=c.questions.find((q)=>{return c.question===d}).actual,
+					m=this.options.you,
 					diff=m-a;
 				return {
 					actual:a,
@@ -26,7 +26,10 @@ export default class ParallelCoordinates {
 				
 			})
 		}
+		*/
 		//console.log("YOU",this.you)
+
+		this.rows={};
 
 		this.container=d3.select(options.container)
 		this._setExtents();
@@ -48,6 +51,7 @@ export default class ParallelCoordinates {
 		}
 
 	}
+
 	_buildChart(rows) {
 		let self=this;
 
@@ -57,7 +61,7 @@ export default class ParallelCoordinates {
 		let column=pc.selectAll("div."+(rows?"row":"column"))
 				.data(this.options.questions_data.filter((d,i)=>{
 					return 1;
-					return d==="7b";//1;//i<1;
+					return d==="1";//1;//i<1;
 				}))
 				.enter()
 				.append("div")
@@ -67,18 +71,33 @@ export default class ParallelCoordinates {
 					})
 					.each(function(d){
 						if(rows) {
-							new Row(self.data,{ //.concat([self.you])
-								container:this,
-								question:self.options.questions.find((q)=>{
-									return q.id==d;
-								}),
-								extents:self.extents,
-								country:self.options.country,
-								country_info:self.options.country_info
-							})	
+							let q=self.options.questions.find((q)=>{
+											return q.id==d;
+										});
+							//console.log("Q!!!!",q,d)
+							self.rows[q.id]=new Row(self.data,
+									{
+										container:this,
+										index:(d3.values(self.rows).length),
+										question:q,
+										visible:q.id===self.options.question,
+										extents:self.extents,
+										country:self.options.country,
+										country_info:self.options.country_info,
+										nextCallback:function(index,info){
+											//console.log("INFO INFO INFO",info)
+											self.options.nextCallback(index,info)
+										}//self.options.nextCallback
+									}
+								)	
 						}
 						
 					})
+	}
+
+	nextQuestion(qid) {
+		this.options.question=qid;
+		this.rows[qid].show();
 	}
 
 }

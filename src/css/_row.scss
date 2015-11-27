@@ -2,6 +2,11 @@
 	width:100%;
 	margin-bottom:30px;
 	position:relative;
+	
+	&.hidden {
+		height: 0;
+		overflow: hidden;
+	}
 
 	.chart-container {
 		position: relative;
@@ -49,6 +54,32 @@
 		
 		
 		.countries {
+			&.my {
+				.country.you {
+					cursor: ew-resize;
+					circle {
+						stroke:#000;
+						stroke-width:0;
+						//fill:$you;
+					}
+
+					text {
+						visibility: visible;
+						text-anchor:middle;
+						&.country-value {
+							font-size:25px;
+						}
+						&.hidden {
+							visibility: hidden;
+						}
+					}
+					line {
+						stroke:#000;
+						stroke-opacity:1;
+						stroke-width:3;
+					}
+				}
+			}
 			.country {
 				circle {
 					stroke:none;
@@ -119,37 +150,39 @@
 						stroke-width:2;
 						fill-opacity:1;
 					}
-					/*text {
+					text {
 						visibility: visible;
-					}*/
+					}
 					line {
 						stroke:#000;
 						stroke-opacity:1;
 						stroke-width:3;
+					}
+					g.value {
+						circle.c {
+							fill-opacity:1;
+						}
 					}
 				}
 
 				&.you {
-					cursor: ew-resize;
 					circle {
 						stroke:#000;
-						stroke-width:0;
-						fill:#dc2a7d;
+						stroke-width:2;
+						fill-opacity:1;
 					}
 					text {
 						visibility: visible;
-						text-anchor:middle;
-						&.country-value {
-							font-size:25px;
-						}
-						&.hidden {
-							visibility: hidden;
-						}
 					}
 					line {
 						stroke:#000;
 						stroke-opacity:1;
 						stroke-width:3;
+					}
+					g.value {
+						circle.c {
+							fill-opacity:1;
+						}
 					}
 				}
 			}	

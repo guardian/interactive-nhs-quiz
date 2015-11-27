@@ -3,7 +3,7 @@ import mainHTML from './text/main.html!text'
 import questions from '../assets/data/questions.json!json';
 import iso from '../assets/data/iso.json!json';
 import d3 from 'd3'
-import ParallelCoordinates from './components/ParallelCoordinates';
+import Flow from './components/Flow';
 
 import { requestAnimationFrame, cancelAnimationFrame } from './lib/request-animation-frame-shim';
 
@@ -97,14 +97,23 @@ export function init(el, context, config, mediator) {
             let questions_data=data[0].questions.map((d)=>{
                 return d.question;
             })
-            let COUNTRY="Italy2";
 
-            new ParallelCoordinates(data,{
+            let ranking=data.map((d)=>{
+                return {
+                    country:d.country,
+                    avg:d3.mean(d.questions,(d)=>Math.abs(d["difference (mean-actual)"]))
+                }
+            })
+            //console.log(ranking)
+
+           // return;
+
+            new Flow(data,{
                 container:"#perils",
                 questions_data:questions_data,
                 questions:questions,
-                country:COUNTRY,
-                country_info:country_info
+                country_info:country_info,
+                ranking:ranking
             })
         })
     }

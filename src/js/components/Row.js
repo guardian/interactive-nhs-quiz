@@ -4,7 +4,7 @@ export default class Row extends Column {
 	constructor(data,options) {
 		super(data,options)
 
-
+		console.log("ROW",options)
 		
 		this._addYourSlider();
 		//this._addCountries();
@@ -31,12 +31,14 @@ export default class Row extends Column {
 		
 
 
-		this.container.append("div")
+		this.container
+				.classed("hidden",!this.options.visible)
+				.append("div")
 				.attr("class","q-title")
 				.append("p")
-					.text((d,i)=>{
+					.html((d,i)=>{
 						//return this.options.question.id+" "+this.options.question.question
-						return this.options.question.id+" "+this.options.question.question
+						return this.options.question.id+" "+this.options.question.question.replace(/\[Country\]/gi,"<i>"+this.options.country+"</i>")
 					})
 
 		let chart_container=this.container.append("div")
@@ -53,10 +55,7 @@ export default class Row extends Column {
 
 		let defs=this.svg.append("defs");
 
-		defs.append("filter")
-				.attr("id","dropshadow")
-					.html('<feGaussianBlur in="SourceAlpha" stdDeviation="3"/><feOffset dx="0" dy="0" result="offsetblur"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>')
-
+		
 		let bbox=this.svg.node().getBoundingClientRect(),
 			WIDTH=bbox.width,
 			HEIGHT=bbox.height;
@@ -128,6 +127,9 @@ export default class Row extends Column {
 	_addYourSlider() {
 		let self=this;
 
+		let my_country=this.options.country?this.data.find((c)=>(c.country===this.options.country)):null;
+		console.log("MY COUNTRY",my_country,this.options.country,this.data)
+
 		this.myLine=this.svg
 						.append("g")
 							.attr("class","my countries")
@@ -137,8 +139,9 @@ export default class Row extends Column {
 							.selectAll("g.country")
 								.data([{
 									country:"YOU",
+									selected_country:this.options.country,
 									question:{
-										actual: 50,
+										actual: my_country?my_country.question.actual:0,
 										"difference (mean-actual)": 0,
 										mean: 50,
 										question: this.options.question
@@ -172,9 +175,10 @@ export default class Row extends Column {
 		  			x=x>self.xscale.range()[1]?self.xscale.range()[1]:x;
 		  			
 		  			d.question.mean=Math.round(self.xscale.invert(x));
+		  			d.question["difference (mean-actual)"]=d.question.mean-d.question.actual;
 		  			d.x_mean=self.xscale(d.question.mean);
 
-		  			return `translate(${d.x_mean},${y})`;
+		  			return `translate(${x},${y})`;
 		  		})
 		  		.select("text.country-value")
 		  			.text((d)=>{
@@ -200,6 +204,9 @@ export default class Row extends Column {
 					.attr("cx",0)
 					.attr("cy",0)
 					.attr("r",8)
+					.attr("class",(d)=>{
+						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+					})
 					
 		
 		this.my
@@ -229,14 +236,40 @@ export default class Row extends Column {
 						d.width=this.getBBox().width+45+3*2
 					})
 
+		this.confirmButton=this.container.append("button")
+								.attr("class","confirm-btn")
+								.text("This is my best guess")
+								.on("click",()=>{
+									
+
+									this.my.remove();
+
+									this.data.push(this.my.datum())
+									//console.log(this.my.datum())
+									
+									this._addCountries();
+									d3.select(this).remove();
+
+									this._addNextButton();
+								})
+	}
+	_addNextButton() {
+		let self=this;
+		this.confirmButton.remove();
 		this.container.append("button")
 				.attr("class","confirm-btn")
-				.text("Click to compare")
-				.on("click",()=>{
-					this._addCountries();
+				.text("Next question")
+				.on("click",function(){
+
+					if(typeof self.options.nextCallback !== 'undefined') {
+						self.options.nextCallback(self.options.index,self.my_country.datum().question)	
+					}
+
+					d3.select(this).remove();
+
 				})
 	}
-
+	
 	_addCountries() {
 		this.line.classed("hidden",false)
 		this.country=this.countries
@@ -303,9 +336,9 @@ export default class Row extends Column {
 		this.mean.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
-					.attr("r",4)
+					.attr("r",(d)=>(d.country==="YOU"?6:4))
 					.attr("class",(d)=>{
-						return this._getCountryArea(d.country)
+						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 		
 		this.mean
@@ -332,7 +365,7 @@ export default class Row extends Column {
 						return d.country;
 					})
 					.each(function(d){
-						d.width=this.getBBox().width+45+3*2
+						d.width_mean=this.getBBox().width+45+3*2
 					})
 
 		/*this.mean
@@ -348,13 +381,15 @@ export default class Row extends Column {
 		this.mean
 			.append("circle")
 				.attr("class",(d)=>{
-					return "c "+this._getCountryArea(d.country)
+					return "c "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 				})
 				.attr("cx",0)
-				.attr("cy",-3)
+				.attr("cy",-14)
 				.attr("r",3)
 
-		this.actual=this.country.append("g")
+		this.actual=this.country
+							.filter((d)=>d.country!==this.options.country)
+							.append("g")
 								.attr("class","value")
 								.attr("transform",(d)=>{
 									let x=this.xscale(d.question.actual),
@@ -371,7 +406,7 @@ export default class Row extends Column {
 					.attr("cy",0)
 					.attr("r",4)
 					.attr("class",(d)=>{
-						return this._getCountryArea(d.country)
+						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 
 		this.actual
@@ -399,10 +434,10 @@ export default class Row extends Column {
 						return (d.country===this.options.country || d.country==="YOU")?32:32
 					})
 					.text(function(d){
-						return d.country;
+						return d.selected_country  || d.country;
 					})
 					.each(function(d){
-						d.width=this.getBBox().width+45+3*2
+						d.width_actual=this.getBBox().width+45+3*2
 						//d.width=d3.max([this.getBBox().width+5,d.width])
 					})
 		/*this.actual
@@ -418,10 +453,10 @@ export default class Row extends Column {
 		this.actual
 			.append("circle")
 				.attr("class",(d)=>{
-					return "c "+this._getCountryArea(d.country)
+					return "c "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 				})
 				.attr("cx",0)
-				.attr("cy",3)
+				.attr("cy",14)
 				.attr("r",3)
 
 		this.cell = this.svg.append("g")
@@ -432,15 +467,20 @@ export default class Row extends Column {
 		this._resample(80);
 
 		
-		
+		this.highlightCountry([])
 
 	}
 	highlightCountry(countries) {
+		
+		let __you=this.data.find((d)=>d.country==="YOU");
+
+		countries=countries.concat(["YOU",this.options.country]);//,__you.selected_country])
 
 		let __countries=this.data.filter((c)=>{
-							return countries.indexOf(c.country)>-1
-						})
-						//.map((c)=>c.country)
+				return countries.indexOf(c.country)>-1
+			});
+			
+						
 
 		console.log(countries,__countries)		
 
@@ -454,6 +494,12 @@ export default class Row extends Column {
 			}
 
 		__countries.sort((a,b)=>{
+			if(a.country==="YOU") {
+				return -1;
+			}
+			if(b.country==="YOU") {
+				return 1;
+			}
 			return a.x_mean - b.x_mean;
 		})
 		__countries.forEach((d,i)=>{
@@ -461,13 +507,36 @@ export default class Row extends Column {
 				d.y_mean_pos=0;
 			} else {
 				let prev=__countries[i-1];
-				if(prev.x_mean+prev.width>d.x_mean) {
-					d.y_mean_pos=prev.y_mean_pos+1;	
+				//console.log("prev is ",prev.country)
+
+				if(
+					(d.x_mean-(prev.x_mean+prev.width_mean)>0)
+					||
+					(prev.x_mean-(d.x_mean+d.width_mean)>0)
+				) {
+					//console.log("don't overlap")
+					if(
+						(d.x_mean-(__you.x_mean+__you.width_mean)>0)
+						||
+						(__you.x_mean-(d.x_mean+d.width_mean)>0)
+					) {
+						d.y_mean_pos=0;
+					} else {
+						//console.log("but overlaps with YOU");
+						d.y_mean_pos=1;	
+					}
 				} else {
-					d.y_mean_pos=0;
+					//console.log("they overlap")
+					
+					d.y_mean_pos=prev.y_mean_pos+1;	
+					//if(prev.country===__you.selected_country) {
+					//	d.y_mean_pos--;
+					//}
 				}
 			}
 		})
+
+
 
 		this.mean
 				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
@@ -475,32 +544,66 @@ export default class Row extends Column {
 					.attr("cy",(d)=>(d.y_mean_pos* -16)-14)
 
 		this.mean
+				.classed("hidden-value",true)
 				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
 				.classed("hidden-value",(d,i)=>{
+					return false;
 					//return i>0 && __countries[i-1].x_mean===d.x_mean;
 					return i>0 && __countries.map((d)=>(d.country)).indexOf(d.country)>0 && __countries[i].x_mean===d.x_mean
 				})
 				.selectAll("text")
 					.attr("dy",(d)=>d.y_mean_pos* -16)
 
-		
+
 
 		__countries=__countries.sort((a,b)=>{
+			if(a.country==="YOU") {
+				return -1;
+			}
+			if(b.country==="YOU") {
+				return 1;
+			}
 			return a.x_actual - b.x_actual;
 		})
+
 		__countries.forEach((d,i)=>{
+			console.log(d.country)
 			if(!i) {
 				d.y_actual_pos=0;
 			} else {
+
 				let prev=__countries[i-1];
-				if(prev.x_actual+prev.width>d.x_actual) {
-					d.y_actual_pos=prev.y_actual_pos+1;	
+				console.log("prev is ",prev.country)
+
+				if(
+					(d.x_actual-(prev.x_actual+prev.width_actual)>0)
+					||
+					(prev.x_actual-(d.x_actual+d.width_actual)>0)
+				) {
+					console.log("don't overlap")
+					if(
+						(d.x_actual-(__you.x_actual+__you.width_actual)>0)
+						||
+						(__you.x_actual-(d.x_actual+d.width_actual)>0)
+					) {
+						d.y_actual_pos=0;
+					} else {
+						console.log("but overlaps with YOU");
+						d.y_actual_pos=1;	
+					}
 				} else {
-					d.y_actual_pos=0;
+					console.log("they overlap")
+					d.y_actual_pos=prev.y_actual_pos+1;
+					console.log(prev.country,"===",__you.selected_country)
+					if(prev.country===__you.selected_country) {
+						d.y_actual_pos--;
+					}
+					//d.y_actual_pos=prev.y_actual_pos+1;	
 				}
+				
 			}
 		})
-		console.clear()
+		//console.clear()
 
 		this.actual
 				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
@@ -525,7 +628,7 @@ export default class Row extends Column {
 				return countries.indexOf(c.country)>-1;
 			})
 			.filter((c)=>{
-				return (countries.indexOf(c.country)>-1) || (c.country === this.options.country)
+				return (countries.indexOf(c.country)>-1) || (c.country === this.options.country) || c.country==="YOU"
 			})
 			.moveToFront()
 
@@ -580,5 +683,8 @@ export default class Row extends Column {
 		this.cell.select("circle").attr("transform", function(d) { return "translate(" + d.point + ")"; });
 		this.cell.select("path").attr("d", function(d) { return "M" + d.join("L") + "Z"; });
 	}
-
+	show() {
+		this.container
+				.classed("hidden",false)
+	}
 }

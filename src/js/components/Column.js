@@ -66,7 +66,9 @@ export default class Column {
 	}
 	_getCountryArea(country) {
 
-		
+		if(country==="YOU") {
+			return "you";
+		}
 
 		let region_codes={
 			"002":"africa",
@@ -80,8 +82,8 @@ export default class Column {
 			"005":"samerica",
 			"013":"samerica"
 		}
-
-		//console.log(country,region_codes[this.options.country_info[country]["region-code"]])
+		console.log(country)
+		console.log(region_codes[this.options.country_info[country]["region-code"]])
 
 		if(sub_region_codes[this.options.country_info[country]["sub-region-code"]]) {
 			return sub_region_codes[this.options.country_info[country]["sub-region-code"]]
