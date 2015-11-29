@@ -784,6 +784,20 @@ export default class Row extends Column {
 				.classed("hidden",false)
 	}
 	_update() {
+
+		this.myLine.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
+
+		this.my.attr("transform",(d)=>{
+			let x=this.xscale(d.question.mean),
+				y=this.yscale("mean")+this.padding.top;
+
+			d.x_mean=x;
+
+			//this.samples.push([x,y])
+
+			return `translate(${x},${y})`;
+		})
+
 		this.line.attr("transform",(d)=>{
 						let x=this.margins.left,
 							y=this.yscale(d)+this.margins.top+this.padding.top;
