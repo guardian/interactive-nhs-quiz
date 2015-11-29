@@ -20,9 +20,17 @@ export default class Column {
 
 		this.container=d3.select(options.container)
 
+		
+
+        window.addEventListener("optimizedResize", () => {
+            this._resize();
+        });
+
 		this._buildVisual();
 	}
-
+	_resize() {
+		
+	}
 	_buildVisual() {
 
 	}

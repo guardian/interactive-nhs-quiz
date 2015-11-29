@@ -1,5 +1,6 @@
 import Column from './Column'
 import { hasTouchScreen } from '../lib/detect'
+import { getViewport } from '../lib/detect'
 
 export default class Row extends Column {
 
@@ -41,7 +42,7 @@ export default class Row extends Column {
 				.attr("class","q-title")
 				.append("p")
 					.html((d,i)=>{
-						return this.options.question.id+" "+this.options.question.question.replace(/\[Country\]/gi,"<i>"+this.options.country+"</i>")
+						return this.options.question.question.replace(/\[Country\]/gi,"<i>"+this.options.country+"</i>")
 					})
 
 		let chart_container=this.container.append("div")
@@ -77,7 +78,7 @@ export default class Row extends Column {
 						}
 					})
 
-		let defs=this.svg.append("defs");
+		//let defs=this.svg.append("defs");
 
 		
 		let bbox=this.svg.node().getBoundingClientRect(),
@@ -353,7 +354,7 @@ export default class Row extends Column {
 			.moveToFront()
 
 		
-		let slope=this.country.append("line")
+		this.slope=this.country.append("line")
 						.attr("class","slope")
 						.attr("x1",(d)=>{
 							return this.xscale(d.question.mean)
@@ -367,9 +368,7 @@ export default class Row extends Column {
 						.attr("y2",(d)=>{
 							return this.yscale("actual")+this.padding.top
 						})
-						/*.style("stroke",(d)=>{
-							return this.colorscale(d.question["difference (mean-actual)"]);
-						})*/
+						
 		this.samples=[];
 
 		this.mean=this.country.append("g")
@@ -518,7 +517,7 @@ export default class Row extends Column {
 					    .attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`)
 					  	.selectAll("g");
 
-		this._resample(80);
+		this._resample(10);
 
 		
 		this.highlightCountry([])
@@ -761,16 +760,16 @@ export default class Row extends Column {
 		
 		var cellEnter = this.cell.enter().append("g");
 
-		if(!hasTouchScreen()) {
-			cellEnter
-				.on("mouseenter",(d)=>{
-					if(!this.touch) {
-						let countries=this._findCountry(this.xscale.invert(d.point[0]),(d.point[1]>this.padding.top)?"actual":"mean",d.point[1]);
-						//console.log(countries)
-						this.highlightCountry(countries)	
-					}
-				})
-		}
+		//if(!hasTouchScreen()) {
+		cellEnter
+			.on("mouseenter",(d)=>{
+				if(!this.touch) {
+					let countries=this._findCountry(this.xscale.invert(d.point[0]),(d.point[1]>this.padding.top)?"actual":"mean",d.point[1]);
+					//console.log(countries)
+					this.highlightCountry(countries)	
+				}
+			})
+		//}
 			
 		
 		cellEnter.append("circle").attr("r", 3.5);
@@ -779,8 +778,115 @@ export default class Row extends Column {
 		this.cell.select("circle").attr("transform", function(d) { return "translate(" + d.point + ")"; });
 		this.cell.select("path").attr("d", function(d) { return "M" + d.join("L") + "Z"; });
 	}
+	
 	show() {
 		this.container
 				.classed("hidden",false)
+	}
+	_update() {
+		this.line.attr("transform",(d)=>{
+						let x=this.margins.left,
+							y=this.yscale(d)+this.margins.top+this.padding.top;
+						return `translate(${x},${y})`;
+					})
+
+		this.line
+			.select("line.bg")
+				.attr("x1",this.padding.left)
+				.attr("x2",this.xscale.range()[1]+this.padding.left)
+
+		this.line
+			.select("text.zero")
+				.attr("x",this.padding.left-3)
+				.attr("y",(d)=>{
+					if(this.options.isSmallScreen) {
+						return d==="mean"?-10:20;
+					}
+					return 4;
+				});
+		this.line
+			.select("text.hundred")
+				.attr("x",this.xscale.range()[1]+this.padding.left+3)
+				.attr("y",(d)=>{
+					if(this.options.isSmallScreen) {
+						return d==="mean"?-10:20;
+					}
+					return 4;
+				})
+
+		this.line
+			.select("text.title")
+				.attr("x",this.padding.left-3-25)
+
+		this.countries.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
+
+		if(!this.voronoi_centers) {
+			return;
+		}
+
+		this.slope.attr("x1",(d)=>{
+					return this.xscale(d.question.mean)
+				})
+				.attr("x2",(d)=>{
+					return this.xscale(d.question.actual)
+				});
+		this.samples=[];
+		this.mean.attr("transform",(d)=>{
+						let x=this.xscale(d.question.mean),
+							y=this.yscale("mean")+this.padding.top;
+
+						d.x_mean=x;
+
+						this.samples.push([x,y])
+
+						return `translate(${x},${y})`;
+					});
+		this.actual.attr("transform",(d)=>{
+									let x=this.xscale(d.question.actual),
+										y=this.yscale("actual")+this.padding.top;
+
+									this.samples.push([x,y])
+
+									d.x_actual=x;
+
+									return `translate(${x},${y})`;
+								})
+
+		if(this.voronoi_centers) {
+			//console.log(this.samples)
+			let w=this.WIDTH-(this.margins.left+this.padding.left+this.margins.right+this.padding.right);
+			this.voronoi.clipExtent([[-2, -2], [w + 2, this.HEIGHT + 2]]);
+			//this.cell.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`)
+			this._resample(10);
+		}
+	}
+	_resize() {
+		//console.log("RESIZEEEEEE",this.options.index)
+
+		let bbox=this.svg.node().getBoundingClientRect(),
+			WIDTH=bbox.width,
+			HEIGHT=bbox.height;
+
+		this.WIDTH=WIDTH;
+		this.HEIGHT=HEIGHT;
+
+		let viewport=getViewport();
+		this.options.isSmallScreen=viewport.width<740;
+
+		this.margins.left=this.options.isSmallScreen?5:30;
+		this.margins.right=this.options.isSmallScreen?5:30;
+		
+		this.padding.left=this.options.isSmallScreen?0:50;
+		this.padding.right=this.options.isSmallScreen?0:30;
+		
+
+		let w=WIDTH-(this.margins.left+this.padding.left+this.margins.right+this.padding.right),
+			h=HEIGHT-(this.margins.top+this.padding.top+this.margins.bottom+this.padding.bottom);
+
+		this.xscale.range([0,w])
+		
+		
+		this._update()
+
 	}
 }

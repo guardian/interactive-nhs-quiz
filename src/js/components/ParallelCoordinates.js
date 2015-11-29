@@ -34,8 +34,6 @@ export default class ParallelCoordinates {
 
 		this.container=d3.select(options.container)
 
-		
-
 		this._setExtents();
 		this._buildChart(true);
 	}
@@ -60,7 +58,7 @@ export default class ParallelCoordinates {
 		let self=this;
 
 		let viewport=getViewport(),
-			isSmallScreen=viewport.width<400;
+			isSmallScreen=viewport.width<740;
 
 		let pc=this.container.append("div")
 					.attr("class","parallel-coordinates");

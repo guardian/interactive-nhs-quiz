@@ -103,6 +103,25 @@ export function init(el, context, config, mediator) {
 
            // return;
 
+           ;(function() {
+                var throttle = function(type, name, obj) {
+                    var obj = obj || window;
+                    var running = false;
+                    var func = function() {
+                        if (running) { return; }
+                        running = true;
+                        requestAnimationFrame(() => {
+                            obj.dispatchEvent(new CustomEvent(name));
+                            running = false;
+                        });
+                    };
+                    obj.addEventListener(type, func);
+                };
+
+                /* init - you can init any event */
+                throttle ("resize", "optimizedResize");
+            })();
+
             new Flow(data,{
                 container:"#perils",
                 //questions_data:questions_data,
