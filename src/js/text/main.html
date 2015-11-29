@@ -1,13 +1,14 @@
 <div class="interactive-container">
 	<div id="country">
 		<h4>Which country do you think you know better?</h4>
-		<select id="countrySelector">
-			<option>Select a country</option>
+		<select id="countrySelector" autofocus="true" required="true">
+			<option>Select a country &xvee;</option>
 		</select>
-		<button id="confirmCountry" class="confirm-btn hidden">Move on with the questions</button>
+		<button id="confirmCountry" class="confirm-btn hidden">Start the quiz &rsaquo;</button>
 	</div>
     <div id="perils"></div>
-    <div id="ranking">
+    <div id="ranking" class="hidden">
+    	<p>Overall, people in South Korea, Ireland and Poland are the best informed among the countries where all the survey's questions were asked. Respondents in Brazil, India and Mexico occupy the bottom three places of the rankings with the biggest gap between the perception of issues and the actual numbers.</p>
     	<h4>Where do you sit in the ranking?</h4>
     	<ol></ol>
     </div>

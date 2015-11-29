@@ -1,4 +1,6 @@
 import Column from './Column'
+import { hasTouchScreen } from '../lib/detect'
+
 export default class Row extends Column {
 
 	constructor(data,options) {
@@ -7,6 +9,8 @@ export default class Row extends Column {
 		console.log("ROW",options)
 		
 		this._addYourSlider();
+
+		this.touch=false;
 		//this._addCountries();
 	}
 
@@ -15,15 +19,15 @@ export default class Row extends Column {
 
 		this.margins={
 			top:40,
-			left:30,
+			left:this.options.isSmallScreen?5:30,
 			bottom:40,
-			right:30
+			right:this.options.isSmallScreen?5:30
 		}
 		this.padding={
 			top:40,
-			left:50,
+			left:this.options.isSmallScreen?0:50,
 			bottom:40,
-			right:30
+			right:this.options.isSmallScreen?0:30
 		}
 
 		
@@ -37,21 +41,41 @@ export default class Row extends Column {
 				.attr("class","q-title")
 				.append("p")
 					.html((d,i)=>{
-						//return this.options.question.id+" "+this.options.question.question
 						return this.options.question.id+" "+this.options.question.question.replace(/\[Country\]/gi,"<i>"+this.options.country+"</i>")
 					})
 
 		let chart_container=this.container.append("div")
-									.attr("class","chart-container")
+									.attr("class","chart-container init")
 
 		this.svg = chart_container
 					.append("svg")
-					/*.on("mousemove",function(){
-						let coords=d3.mouse(this),
-							x=coords[0]-(self.margins.left+self.padding.left)
+					.on("touchstart",()=>{
+						this.touch=true;
+					})
+					.on("touchend",()=>{
+						this.touch=false;
+					})
+					.on("touchmove",()=>{
+							if(this.voronoi_centers) {
+								d3.event.preventDefault();
+						    	let touch=d3.event.targetTouches[0];
 
-						console.log(x,self.xscale.invert(x))
-					})*/
+						    	var e = touch.target;
+							    var dim = this.svg.node().getBoundingClientRect();
+							    var x = touch.clientX - dim.left;
+							    var y = touch.clientY - dim.top;
+
+						    	let countries=this._findVoronoi(x,y)
+						    	this.highlightCountry(countries)
+
+							}
+					    	
+					})
+					.on("mouseout",()=>{
+						if(this.voronoi_centers) {
+							this.highlightCountry()
+						}
+					})
 
 		let defs=this.svg.append("defs");
 
@@ -60,9 +84,9 @@ export default class Row extends Column {
 			WIDTH=bbox.width,
 			HEIGHT=bbox.height;
 
-		
+		this.WIDTH=WIDTH;
 
-		console.log(bbox)
+		//console.log(bbox)
 
 		let w=WIDTH-(this.margins.left+this.padding.left+this.margins.right+this.padding.right),
 			h=HEIGHT-(this.margins.top+this.padding.top+this.margins.bottom+this.padding.bottom);
@@ -98,13 +122,23 @@ export default class Row extends Column {
 			.append("text")
 				.attr("class","zero")
 				.attr("x",this.padding.left-3)
-				.attr("y",4)
+				.attr("y",(d)=>{
+					if(this.options.isSmallScreen) {
+						return d==="mean"?-10:20;
+					}
+					return 4;
+				})
 				.text((this.options.question.range?this.options.question.range[0]:"0")+(this.options.question.units||""))
 		this.line
 			.append("text")
 				.attr("class","hundred")
 				.attr("x",this.xscale.range()[1]+this.padding.left+3)
-				.attr("y",4)
+				.attr("y",(d)=>{
+					if(this.options.isSmallScreen) {
+						return d==="mean"?-10:20;
+					}
+					return 4;
+				})
 				.text((this.options.question.range?this.options.question.range[1]:"100")+(this.options.question.units||""))
 				//.text("100%")
 
@@ -237,7 +271,7 @@ export default class Row extends Column {
 					})
 
 		this.confirmButton=this.container.append("button")
-								.attr("class","confirm-btn")
+								.attr("class","confirm-btn confirm")
 								.text("This is my best guess")
 								.on("click",()=>{
 									
@@ -250,15 +284,20 @@ export default class Row extends Column {
 									this._addCountries();
 									d3.select(this).remove();
 
-									this._addNextButton();
+									this.container
+										.select(".chart-container.init")
+										.classed("init",false)
+										
+									this._addAnalysis();
+									this._addNextButton(this.options.last);
 								})
 	}
-	_addNextButton() {
+	_addNextButton(last) {
 		let self=this;
 		this.confirmButton.remove();
 		this.container.append("button")
-				.attr("class","confirm-btn")
-				.text("Next question")
+				.attr("class","confirm-btn next")
+				.html(last?"Check your result &rsaquo;":"Next question &rsaquo;")
 				.on("click",function(){
 
 					if(typeof self.options.nextCallback !== 'undefined') {
@@ -267,6 +306,18 @@ export default class Row extends Column {
 
 					d3.select(this).remove();
 
+				})
+	}
+
+	_addAnalysis() {
+		let self=this;
+		this.container.append("div")
+				.attr("class","analysis")
+				.text(()=>{
+
+					console.log(this.options)
+
+					return this.options.question.text
 				})
 	}
 	
@@ -388,7 +439,7 @@ export default class Row extends Column {
 				.attr("r",3)
 
 		this.actual=this.country
-							.filter((d)=>d.country!==this.options.country)
+							//.filter((d)=>d.country!==this.options.country)
 							.append("g")
 								.attr("class","value")
 								.attr("transform",(d)=>{
@@ -400,7 +451,10 @@ export default class Row extends Column {
 									d.x_actual=x;
 
 									return `translate(${x},${y})`;
-								});
+								})
+								.filter((d)=>d.country!==this.options.country)
+
+
 		this.actual.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
@@ -472,6 +526,12 @@ export default class Row extends Column {
 	}
 	highlightCountry(countries) {
 		
+
+
+		if(!countries) {
+			countries=[];
+		}
+
 		let __you=this.data.find((d)=>d.country==="YOU");
 
 		countries=countries.concat(["YOU",this.options.country]);//,__you.selected_country])
@@ -482,7 +542,7 @@ export default class Row extends Column {
 			
 						
 
-		console.log(countries,__countries)		
+		//console.log(countries,__countries)		
 
 		let prev_mean={
 				x:0,
@@ -500,8 +560,17 @@ export default class Row extends Column {
 			if(b.country==="YOU") {
 				return 1;
 			}
+			if(a.country===this.options.country) {
+				return -1;
+			}
+			if(b.country===this.options.country) {
+				return 1;
+			}
 			return a.x_mean - b.x_mean;
 		})
+		//console.log("sorted",__countries.map(d=>d.country).join("-"))
+		//console.log("sorted",__countries.map(d=>d.x_actual).join("-"))
+
 		__countries.forEach((d,i)=>{
 			if(!i) {
 				d.y_mean_pos=0;
@@ -547,9 +616,8 @@ export default class Row extends Column {
 				.classed("hidden-value",true)
 				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
 				.classed("hidden-value",(d,i)=>{
-					return false;
-					//return i>0 && __countries[i-1].x_mean===d.x_mean;
-					return i>0 && __countries.map((d)=>(d.country)).indexOf(d.country)>0 && __countries[i].x_mean===d.x_mean
+					let index=__countries.map((c)=>(c.country)).indexOf(d.country);
+					return index>0 && __countries[index-1].x_mean===d.x_mean
 				})
 				.selectAll("text")
 					.attr("dy",(d)=>d.y_mean_pos* -16)
@@ -565,22 +633,23 @@ export default class Row extends Column {
 			}
 			return a.x_actual - b.x_actual;
 		})
-
+		//console.log("sorted",__countries.map(d=>d.country).join("-"))
+		//console.log("sorted",__countries.map(d=>d.x_actual).join("-"))
 		__countries.forEach((d,i)=>{
-			console.log(d.country)
+			//console.log(d.country)
 			if(!i) {
 				d.y_actual_pos=0;
 			} else {
 
 				let prev=__countries[i-1];
-				console.log("prev is ",prev.country)
+				//console.log("prev is ",prev.country)
 
 				if(
 					(d.x_actual-(prev.x_actual+prev.width_actual)>0)
 					||
 					(prev.x_actual-(d.x_actual+d.width_actual)>0)
 				) {
-					console.log("don't overlap")
+					//console.log("don't overlap")
 					if(
 						(d.x_actual-(__you.x_actual+__you.width_actual)>0)
 						||
@@ -588,13 +657,13 @@ export default class Row extends Column {
 					) {
 						d.y_actual_pos=0;
 					} else {
-						console.log("but overlaps with YOU");
+						//console.log("but overlaps with YOU");
 						d.y_actual_pos=1;	
 					}
 				} else {
-					console.log("they overlap")
+					//console.log("they overlap")
 					d.y_actual_pos=prev.y_actual_pos+1;
-					console.log(prev.country,"===",__you.selected_country)
+					//console.log(prev.country,"===",__you.selected_country)
 					if(prev.country===__you.selected_country) {
 						d.y_actual_pos--;
 					}
@@ -664,18 +733,45 @@ export default class Row extends Column {
 		return found.map((d)=>{return d.country});
 
 	}
+	_findVoronoi(x,y) {
+
+		//console.log(x,y,this.voronoi_centers)
+		let delta=1000,
+			found;
+		this.voronoi_centers.find((d)=>{
+			let dist=Math.sqrt(((x-d[0])*(x-d[0]))+((y-d[1])*(y-d[1])));
+			
+			if(dist<delta) {
+				//console.log(dist,"<",delta,x,y,d)
+				found=d;
+				delta=dist;
+			}
+		})
+		let countries=this._findCountry(this.xscale.invert(found[0]),(found[1]>this.padding.top)?"actual":"mean",found[1]);
+		//console.log(countries)
+		return countries;
+	}
 	_resample(samplesPerSegment) {
 			
 		//console.log(samples,voronoi(samples))
-
-		this.cell = this.cell.data(this.voronoi(this.samples).filter((d)=>{return typeof d !== 'undefined'}));
+		this.voronoi_data=this.voronoi(this.samples).filter((d)=>{return typeof d !== 'undefined'});
+		this.voronoi_centers=this.voronoi_data.map((d)=>d.point);
+		this.cell = this.cell.data(this.voronoi_data);
 		this.cell.exit().remove();
 		
-		var cellEnter = this.cell.enter().append("g").on("mouseenter",(d)=>{
-			let countries=this._findCountry(this.xscale.invert(d.point[0]),(d.point[1]>this.padding.top)?"actual":"mean",d.point[1]);
+		var cellEnter = this.cell.enter().append("g");
+
+		if(!hasTouchScreen()) {
+			cellEnter
+				.on("mouseenter",(d)=>{
+					if(!this.touch) {
+						let countries=this._findCountry(this.xscale.invert(d.point[0]),(d.point[1]>this.padding.top)?"actual":"mean",d.point[1]);
+						//console.log(countries)
+						this.highlightCountry(countries)	
+					}
+				})
+		}
 			
-			this.highlightCountry(countries)
-		})
 		
 		cellEnter.append("circle").attr("r", 3.5);
 		cellEnter.append("path");

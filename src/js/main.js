@@ -93,11 +93,6 @@ export function init(el, context, config, mediator) {
             
             //console.log(country_info)
 
-            
-            let questions_data=data[0].questions.map((d)=>{
-                return d.question;
-            })
-
             let ranking=data.map((d)=>{
                 return {
                     country:d.country,
@@ -110,8 +105,8 @@ export function init(el, context, config, mediator) {
 
             new Flow(data,{
                 container:"#perils",
-                questions_data:questions_data,
-                questions:questions,
+                //questions_data:questions_data,
+                questions:questions.sort((a,b)=>(a.index-b.index)),
                 country_info:country_info,
                 ranking:ranking
             })

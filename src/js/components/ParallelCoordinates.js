@@ -1,5 +1,6 @@
 import Column from './Column';
 import Row from './Row';
+import { getViewport } from '../lib/detect'
 
 export default class ParallelCoordinates {
 
@@ -32,6 +33,9 @@ export default class ParallelCoordinates {
 		this.rows={};
 
 		this.container=d3.select(options.container)
+
+		
+
 		this._setExtents();
 		this._buildChart(true);
 	}
@@ -55,13 +59,19 @@ export default class ParallelCoordinates {
 	_buildChart(rows) {
 		let self=this;
 
+		let viewport=getViewport(),
+			isSmallScreen=viewport.width<400;
+
 		let pc=this.container.append("div")
 					.attr("class","parallel-coordinates");
 
 		let column=pc.selectAll("div."+(rows?"row":"column"))
-				.data(this.options.questions_data.filter((d,i)=>{
+				.data(this.options.questions.filter((d,i)=>{
 					return 1;
 					return d==="1";//1;//i<1;
+				}).sort((a,b)=>{
+					//console.log(":::::::",a,b)
+					return a.index-b.index
 				}))
 				.enter()
 				.append("div")
@@ -71,19 +81,23 @@ export default class ParallelCoordinates {
 					})
 					.each(function(d){
 						if(rows) {
-							let q=self.options.questions.find((q)=>{
+							/*let q=self.options.questions.find((q)=>{
 											return q.id==d;
-										});
+										});*/
 							//console.log("Q!!!!",q,d)
-							self.rows[q.id]=new Row(self.data,
+							self.rows[d.id]=new Row(self.data,
 									{
 										container:this,
-										index:(d3.values(self.rows).length),
-										question:q,
-										visible:q.id===self.options.question,
+										index:d.index,//(d3.values(self.rows).length),
+										last:d.index===self.options.questions.length-1,
+										//qs:self.options.questions,
+										//l:self.options.questions.length,
+										question:d,
+										visible:d.id===self.options.question,
 										extents:self.extents,
 										country:self.options.country,
 										country_info:self.options.country_info,
+										isSmallScreen:isSmallScreen,
 										nextCallback:function(index,info){
 											//console.log("INFO INFO INFO",info)
 											self.options.nextCallback(index,info)

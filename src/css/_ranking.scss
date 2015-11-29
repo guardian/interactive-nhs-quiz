@@ -1,4 +1,9 @@
 #ranking {
+	
+	&.hidden {
+		display:none;
+	}
+
 	ol {
 		
 		margin:0;

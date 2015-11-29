@@ -2,7 +2,19 @@
 	width:100%;
 	margin-bottom:30px;
 	position:relative;
+	overflow: hidden;
+
+	.confirm-btn.confirm {
+		display: block;
+		margin:0 auto;
+	}
+	.confirm-btn.next {
+		display: block;
+		float: right;
+	}
 	
+	
+
 	&.hidden {
 		height: 0;
 		overflow: hidden;
@@ -10,6 +22,11 @@
 
 	.chart-container {
 		position: relative;
+		overflow: hidden;
+
+		&.init {
+			height: 160px;
+		}
 	}
 
 	.q-title {
@@ -20,7 +37,7 @@
 	}
 
 	svg {
-		width:800px;
+		width:100%;
 		height:300px;
 		
 		
@@ -38,11 +55,17 @@
 			text.zero,
 			text.hundred {
 				@include fs-textSans(1);
-				text-anchor:end;
+				text-anchor:start;
+				@include mq(tablet) {
+					text-anchor:end;
+				}
 				fill:#aaa;
 			}
 			text.hundred {
-				text-anchor:start;	
+				text-anchor:end;
+				@include mq(tablet) {
+					text-anchor:start;
+				}
 			}
 			text.title {
 				@include fs-header(1);

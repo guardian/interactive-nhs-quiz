@@ -44,7 +44,7 @@ export default class Flow {
 			this.user.questions.push(info);
 			console.log("USER USER USER",this.user)
 			//console.log("2 currentQuestion",this.options)
-			if(index<this.options.questions.length && index<3){
+			if(index<this.options.questions.length){
 
 				this.options.question=this.options.questions[index].id;
 				console.log(this.options)
@@ -62,12 +62,14 @@ export default class Flow {
 	_buildCountrySelector() {
 		let self=this;
 		let confirm_button=d3.select("button#confirmCountry")
-										.on("click",()=>{
+										.on("click",function(){
 											d3.event.preventDefault();
 											console.log(self.COUNTRY)
 
 											self.user.country=self.COUNTRY;
 
+											d3.select("#countrySelector").attr("disabled",true);
+											d3.select(this).attr("disabled",true);
 											self._buildCharts(-1);
 											
 										})
@@ -102,6 +104,7 @@ export default class Flow {
 			},
 			ranking=this.options.ranking.concat([avg])
 		d3.select("#ranking")
+			.classed("hidden",false)
 			.select("ol")
 			.selectAll("li")
 				.data(ranking.sort((a,b)=>(a.avg-b.avg)))
