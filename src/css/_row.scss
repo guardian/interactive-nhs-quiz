@@ -71,7 +71,11 @@
 				@include fs-header(1);
 				font-size:15px;
 				font-weight: 300;
-				text-anchor:end;
+				text-anchor:start;
+				@include mq(tablet) {
+					
+					text-anchor:end;
+				}
 			}
 		}
 		

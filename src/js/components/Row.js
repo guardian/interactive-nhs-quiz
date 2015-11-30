@@ -146,8 +146,13 @@ export default class Row extends Column {
 		this.line
 			.append("text")
 				.attr("class","title")
-				.attr("x",this.padding.left-3-25)
-				.attr("y",4)
+				.attr("x",this.padding.left-3-this.options.isSmallScreen?-3:25)
+				.attr("y",(d)=>{
+					if(this.options.isSmallScreen) {
+						return d==="mean"?-24:34;
+					}
+					return 4;
+				})
 				.text((d)=>{
 					return (d==="mean"?"Answer":"Actual");
 				})
@@ -830,7 +835,13 @@ export default class Row extends Column {
 
 		this.line
 			.select("text.title")
-				.attr("x",this.padding.left-3-25)
+				.attr("x",this.padding.left-3-this.options.isSmallScreen?-3:25)
+				.attr("y",(d)=>{
+					if(this.options.isSmallScreen) {
+						return d==="mean"?-24:34;
+					}
+					return 4;
+				})
 
 		this.countries.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
 
