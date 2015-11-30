@@ -96,10 +96,30 @@ export function init(el, context, config, mediator) {
             let ranking=data.map((d)=>{
                 return {
                     country:d.country,
-                    avg:d3.mean(d.questions,(d)=>Math.abs(d["difference (mean-actual)"]))
+                    avg:d3.mean(d.questions,(d)=>Math.abs(d["difference (mean-actual)"])),
+                    normalized_avg:d3.mean(d.questions,(q)=>{
+                        let question=questions.find((qq)=>{
+                            return (qq.id===q.question);
+                        });
+                        if(question) {
+                            let normalized_values={
+                                mean:q.mean/100,
+                                actual:q.actual/100
+                            };
+                            if(question.range) {
+                                normalized_values.mean=(q.mean-question.range[0])/(question.range[1]-question.range[0]);
+                                normalized_values.actual=(q.actual-question.range[0])/(question.range[1]-question.range[0])
+                            }
+                            let delta=Math.abs(normalized_values.mean-normalized_values.actual);
+                            console.log(d.country,question.id,question.range,q.mean,normalized_values,delta)    
+                            return delta;
+                        }
+                        return "---";
+                    })
                 }
             })
-            //console.log(ranking)
+            console.log(ranking.sort((a,b)=>(a.normalized_avg-b.normalized_avg)))
+            
 
            // return;
 

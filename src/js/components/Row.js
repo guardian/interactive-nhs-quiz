@@ -19,16 +19,16 @@ export default class Row extends Column {
 		let self=this;
 
 		this.margins={
-			top:40,
-			left:this.options.isSmallScreen?5:30,
-			bottom:40,
-			right:this.options.isSmallScreen?5:30
+			top:50,
+			left:15,//this.options.isSmallScreen?5:30,
+			bottom:36,
+			right:15//this.options.isSmallScreen?5:30
 		}
 		this.padding={
 			top:40,
-			left:this.options.isSmallScreen?0:50,
+			left:20,//this.options.isSmallScreen?0:50,
 			bottom:40,
-			right:this.options.isSmallScreen?0:30
+			right:20//this.options.isSmallScreen?0:30
 		}
 
 		
@@ -37,12 +37,12 @@ export default class Row extends Column {
 
 
 		this.container
-				.classed("hidden",!this.options.visible)
+				.classed("inactive",!this.options.visible)
 				.append("div")
 				.attr("class","q-title")
 				.append("p")
 					.html((d,i)=>{
-						return this.options.question.question.replace(/\[Country\]/gi,"<i>"+this.options.country+"</i>")
+						return "<span>"+(this.options.index+1)+".</span> "+this.options.question.question.replace(/\[Country\]/gi,"<i>"+this.options.country+"</i>")
 					})
 
 		let chart_container=this.container.append("div")
@@ -50,6 +50,7 @@ export default class Row extends Column {
 
 		this.svg = chart_container
 					.append("svg")
+					.attr("class","chart")
 					.on("touchstart",()=>{
 						this.touch=true;
 					})
@@ -77,7 +78,7 @@ export default class Row extends Column {
 							this.highlightCountry()
 						}
 					})
-
+		this._addLegend();
 		//let defs=this.svg.append("defs");
 
 		
@@ -92,7 +93,10 @@ export default class Row extends Column {
 		let w=WIDTH-(this.margins.left+this.padding.left+this.margins.right+this.padding.right),
 			h=HEIGHT-(this.margins.top+this.padding.top+this.margins.bottom+this.padding.bottom);
 
-		this.xscale=d3.scale.linear().domain(this.extents.values).range([0,w])
+		this.xscale=d3.scale.linear().domain(this.extents.values).range([0,w]).nice()
+
+		
+
 		this.yscale=d3.scale.ordinal().domain(["mean","actual"]).rangePoints([0,h])
 		this.colorscale=d3.scale.linear().domain(this.extents.difference).range(["#b82266","#298422","#b82266"])
 		
@@ -113,12 +117,14 @@ export default class Row extends Column {
 					})
 
 		this.line
-			.append("line")
+			.append("rect")
 				.attr("class","bg")
-				.attr("x1",this.padding.left)
-				.attr("y1",0)
-				.attr("x2",this.xscale.range()[1]+this.padding.left)
-				.attr("y2",0)
+				.attr("x",this.padding.left)
+				.attr("y",-4)
+				.attr("width",this.xscale.range()[1])
+				.attr("height",8)
+				.attr("rx",4)
+				.attr("ry",4)
 		this.line
 			.append("text")
 				.attr("class","zero")
@@ -129,7 +135,8 @@ export default class Row extends Column {
 					}
 					return 4;
 				})
-				.text((this.options.question.range?this.options.question.range[0]:"0")+(this.options.question.units||""))
+				//.text((this.options.question.range?this.options.question.range[0]:"0")+(this.options.question.units||""))
+				.text(this.xscale.domain()[0]+(this.options.question.units||""))
 		this.line
 			.append("text")
 				.attr("class","hundred")
@@ -140,21 +147,23 @@ export default class Row extends Column {
 					}
 					return 4;
 				})
-				.text((this.options.question.range?this.options.question.range[1]:"100")+(this.options.question.units||""))
+				//.text((this.options.question.range?this.options.question.range[1]:"100")+(this.options.question.units||""))
+				.text(this.xscale.domain()[1]+(this.options.question.units||""))
 				//.text("100%")
 
 		this.line
 			.append("text")
 				.attr("class","title")
-				.attr("x",this.padding.left-3-(this.options.isSmallScreen?0:25))
+				.attr("x",0)//this.padding.left-3-(this.options.isSmallScreen?0:25))
 				.attr("y",(d)=>{
+					return -60;
 					if(this.options.isSmallScreen) {
 						return d==="mean"?-24:34;
 					}
 					return 4;
 				})
 				.text((d)=>{
-					return (d==="mean"?"Answer":"Actual");
+					return (d==="mean"?"SURVEY ANSWERS":"ACTUAL NUMBERS");
 				})
 
 		this.countries=this.svg
@@ -198,8 +207,10 @@ export default class Row extends Column {
 						.origin(function(d) { return d; })
     					.on("drag", dragmove);
 		drag
-			.on("dragstart", function() {
+			.on("dragstart", () => {
 				d3.event.sourceEvent.stopPropagation(); // silence other listeners
+				this.my.select("text.inactive").classed("inactive",false)
+					
 			})
 			.on("dragend",function(){
 
@@ -215,7 +226,7 @@ export default class Row extends Column {
 		  			x=x>self.xscale.range()[1]?self.xscale.range()[1]:x;
 		  			
 		  			d.question.mean=Math.round(self.xscale.invert(x));
-		  			d.question["difference (mean-actual)"]=d.question.mean-d.question.actual;
+		  			//d.question["difference (mean-actual)"]=d.question.mean-d.question.actual;
 		  			d.x_mean=self.xscale(d.question.mean);
 
 		  			return `translate(${x},${y})`;
@@ -243,7 +254,7 @@ export default class Row extends Column {
 		this.my.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
-					.attr("r",8)
+					.attr("r",18)
 					.attr("class",(d)=>{
 						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
@@ -251,15 +262,16 @@ export default class Row extends Column {
 		
 		this.my
 			.append("text")
-					.attr("class","country-value")
+					.attr("class","country-value inactive")
 					.attr("x",0)
 					.attr("y",(d)=>{
-						return 30;
+						return -30;
 						return (d.country===this.options.country || d.country==="YOU")?-26:-10
 					})
 					//.attr("filter","url(#dropshadow)")
 					.text((d)=>{
-						return d.question.mean+(this.options.question.units||"");
+						return "?"
+						//return d.question.mean+(this.options.question.units||"");
 					})
 
 		this.my.append("text")
@@ -278,7 +290,7 @@ export default class Row extends Column {
 
 		this.confirmButton=this.container.append("button")
 								.attr("class","confirm-btn confirm")
-								.text("This is my best guess")
+								.text("See your results")
 								.on("click",()=>{
 									
 
@@ -287,6 +299,8 @@ export default class Row extends Column {
 									this.data.push(this.my.datum())
 									//console.log(this.my.datum())
 									
+									this._updateScale()
+
 									this._addCountries();
 									d3.select(this).remove();
 
@@ -295,38 +309,134 @@ export default class Row extends Column {
 										.classed("init",false)
 										
 									this._addAnalysis();
-									this._addNextButton(this.options.last);
+									if(typeof self.options.nextCallback !== 'undefined') {
+										self.options.nextCallback(self.options.index,self.my_country.datum().question);
+									}
+									//this._addNextButton(this.options.last);
+									this._addNextCallToAction(this.options.last);
 								})
+	}
+	_updateScale() {
+
+		this._setExents();
+
+		this.xscale.domain([
+			Math.min(this.extents.mean[0],this.extents.actual[0]),
+			Math.max(this.extents.mean[1],this.extents.actual[1])
+		]).nice()
+
+		this.line
+			.select("text.zero")
+				.text(this.xscale.domain()[0]+(this.options.question.units||""))
+		this.line
+			.select("text.hundred")
+				.text(this.xscale.domain()[1]+(this.options.question.units||""))
 	}
 	_addNextButton(last) {
 		let self=this;
 		this.confirmButton.remove();
 		this.container.append("button")
 				.attr("class","confirm-btn next")
-				.html(last?"Check your result &rsaquo;":"Next question &rsaquo;")
+				.html(last?"Check your result &rsaquo;":"Next question <svg width=\"24\" height=\"18\" viewBox=\"-0.525 -4 24 18\" overflow=\"visible\" enable-background=\"new -0.525 -4 24 18\"><path d=\"M23.2.7L12.7 9.1l-1.1.9-1.1-.898L0 .7.5 0l11.1 6.3L22.7 0l.5.7z\"/></svg>")
 				.on("click",function(){
 
 					if(typeof self.options.nextCallback !== 'undefined') {
-						self.options.nextCallback(self.options.index,self.my_country.datum().question)	
+						self.options.nextCallback(self.options.index,self.my_country.datum().question);
 					}
 
 					d3.select(this).remove();
 
 				})
 	}
+	_addNextCallToAction(last) {
+		let self=this;
+		this.confirmButton.remove();
+		this.container.append("div")
+				.attr("class","call2action next")
+				.html(last?"Check your result &rsaquo;":"Jump to next question <svg width=\"12\" height=\"9\" viewBox=\"-0.525 -4 24 18\" overflow=\"visible\" enable-background=\"new -0.525 -4 24 18\"><path d=\"M23.2.7L12.7 9.1l-1.1.9-1.1-.898L0 .7.5 0l11.1 6.3L22.7 0l.5.7z\"/></svg>")
+	}
 
 	_addAnalysis() {
 		let self=this;
-		this.container.append("div")
-				.attr("class","analysis")
-				.text(()=>{
-
+		let analysis=this.container.append("div")
+				.attr("class","analysis hidden")
+				.html(()=>{
 					console.log(this.options)
-
 					return this.options.question.text
 				})
+		setTimeout(()=>{
+			analysis.classed("hidden",false)	
+		},500)
+		
 	}
-	
+	_addLegend() {
+		
+		let regions=[
+			{
+				name:"Africa",
+				c:"africa"
+			},
+			{
+				name:"Asia",
+				c:"asia"
+			},
+			{
+				name:"Oceania",
+				c:"oceania"
+			},
+			{
+				name:"US & Canada",
+				c:"namerica"
+			},
+			{
+				name:"Latin America",
+				c:"samerica"
+			},
+			{
+				name:"Europe",
+				c:"europe"
+			}
+		];
+		this.legend = this.container.select(".chart-container").append("div")
+						.attr("class","legend");
+		this.legend.append("ul")
+				.selectAll("li")
+					.data(regions)
+					.enter()
+					.append("li")
+						.attr("class",(d)=>(d.c))
+						.html((d)=>{
+							return "<span class=\"key "+d.c+"\"></span> "+d.name;
+						})
+		this.legend.append("button")
+				.attr("class","confirm-btn confirm")
+				.text("Compare all countries")
+				.on("click",()=>{
+					
+					/*
+					this.my.remove();
+
+					this.data.push(this.my.datum())
+					//console.log(this.my.datum())
+					
+					this._updateScale()
+
+					this._addCountries();
+					d3.select(this).remove();
+
+					this.container
+						.select(".chart-container.init")
+						.classed("init",false)
+						
+					this._addAnalysis();
+					if(typeof self.options.nextCallback !== 'undefined') {
+						self.options.nextCallback(self.options.index,self.my_country.datum().question);
+					}
+					//this._addNextButton(this.options.last);
+					this._addNextCallToAction(this.options.last);
+					*/
+				})
+	}
 	_addCountries() {
 		this.line.classed("hidden",false)
 		this.country=this.countries
@@ -360,7 +470,9 @@ export default class Row extends Column {
 
 		
 		this.slope=this.country.append("line")
-						.attr("class","slope")
+						.attr("class",(d)=>{
+							return "slope "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+						})
 						.attr("x1",(d)=>{
 							return this.xscale(d.question.mean)
 						})
@@ -373,6 +485,7 @@ export default class Row extends Column {
 						.attr("y2",(d)=>{
 							return this.yscale("actual")+this.padding.top
 						})
+
 						
 		this.samples=[];
 
@@ -391,7 +504,7 @@ export default class Row extends Column {
 		this.mean.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
-					.attr("r",(d)=>(d.country==="YOU"?6:4))
+					.attr("r",(d)=>(d.country==="YOU"?6:5))
 					.attr("class",(d)=>{
 						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
@@ -462,7 +575,7 @@ export default class Row extends Column {
 		this.actual.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
-					.attr("r",4)
+					.attr("r",5)
 					.attr("class",(d)=>{
 						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
@@ -787,6 +900,7 @@ export default class Row extends Column {
 	show() {
 		this.container
 				.classed("hidden",false)
+				.classed("inactive",false)
 	}
 	_update() {
 
@@ -898,12 +1012,13 @@ export default class Row extends Column {
 		let viewport=getViewport();
 		this.options.isSmallScreen=viewport.width<740;
 
+		/*
 		this.margins.left=this.options.isSmallScreen?5:30;
 		this.margins.right=this.options.isSmallScreen?5:30;
 		
 		this.padding.left=this.options.isSmallScreen?0:50;
 		this.padding.right=this.options.isSmallScreen?0:30;
-		
+		*/
 
 		let w=WIDTH-(this.margins.left+this.padding.left+this.margins.right+this.padding.right),
 			h=HEIGHT-(this.margins.top+this.padding.top+this.margins.bottom+this.padding.bottom);

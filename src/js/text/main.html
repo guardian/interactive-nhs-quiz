@@ -1,15 +1,29 @@
 <div class="interactive-container">
 	<div id="country">
-		<h4>Which country do you think you know better?</h4>
-		<select id="countrySelector" required="true">
-			<option>Select a country &xvee;</option>
-		</select>
-		<button id="confirmCountry" class="confirm-btn hidden">Start the quiz &rsaquo;</button>
+		<h2>To begin, which country do you think you know the best?</h2>
+		<form id="selectYourCountry">
+			<select id="countrySelector" required="true" tabindex="1">
+				<option>Select a country</option>
+			</select>
+			<button id="confirmCountry" class="confirm-btn disabled" >Start the quiz &rsaquo;</button>
+		</form>
 	</div>
     <div id="perils"></div>
-    <div id="ranking" class="hidden">
-    	<p>Overall, people in South Korea, Ireland and Poland are the best informed among the countries where all the survey's questions were asked. Respondents in Brazil, India and Mexico occupy the bottom three places of the rankings with the biggest gap between the perception of issues and the actual numbers.</p>
-    	<h4>Where do you sit in the ranking?</h4>
-    	<ol></ol>
+    <div id="ranking" class="hidden2">
+    	<div class="subsection">
+    		<h3>The breakdown</h3>
+    		<p>Overall, people in <b>South Korea</b>, <b>Ireland</b> and <b>Poland</b> are the best informed among the countries where all the survey's questions were asked. Respondents in <b>Brazil</b>, <b>India</b> and <b>Mexico</b> occupy the bottom three places of the rankings with the biggest gap between the perception of issues and the actual numbers.</p>	
+    	</div>
+    	<div class="subsection">
+    		<h3>The rankings</h3>
+    		<ul></ul>
+    	</div>
+    	<div class="subsection share">
+    		<h3>Share</h3>
+    		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+    	</div>
+    	<div class="subsection">
+    		<h3>Or, try again as a different country</h3>
+    	</div>
     </div>
 </div>

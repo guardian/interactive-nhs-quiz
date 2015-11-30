@@ -7,13 +7,30 @@ $americas:#ff5b3a;
 $asia:#ffce4b;
 $you:#dc2a7d;
 
-$countries-list: africa, europe, oceania, namerica, samerica, americas, asia, you;
-$colors-list: $africa, $europe, $oceania, $namerica, $samerica, $americas, $asia, $you;
+$africa_stroke:#4f4a42;
+$europe_stroke:#324b5b;
+$oceania_stroke:#44774e;
+$namerica_stroke:#66062b;
+$samerica_stroke:#c22100;
+$americas_stroke:#c22100;
+$asia_stroke:#e4a600;
+
+$countries-list: africa, europe, oceania, namerica, samerica, americas, asia;
+$colors-list: $africa, $europe, $oceania, $namerica, $samerica, $americas, $asia;
+$colors-stroke-list: $africa_stroke, $europe_stroke, $oceania_stroke, $namerica_stroke, $samerica_stroke, $americas_stroke, $asia_stroke;
 
 @each $current-color in $colors-list {
     $i: index($colors-list, $current-color);
     
     circle.#{nth($countries-list, $i)} {
         fill: $current-color;
+        stroke: nth($colors-stroke-list, $i);
+    }
+	.country.highlight line.slope.#{nth($countries-list, $i)} {
+        stroke: $current-color !important;
+    }
+
+    .legend li span.key.#{nth($countries-list, $i)} {
+        background-color: $current-color;
     }
 }

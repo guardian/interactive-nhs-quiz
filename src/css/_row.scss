@@ -3,10 +3,13 @@
 	margin-bottom:30px;
 	position:relative;
 	overflow: hidden;
+	border-top:1px solid #dfdfdf;
+	padding-top:20px;
+	margin-bottom:100px;
 
 	.confirm-btn.confirm {
 		display: block;
-		margin:0 auto;
+		float:right;
 	}
 	.confirm-btn.next {
 		display: block;
@@ -18,6 +21,10 @@
 	&.hidden {
 		height: 0;
 		overflow: hidden;
+	}
+	&.inactive {
+		opacity: 0.2;
+		pointer-events: none;
 	}
 
 	.chart-container {
@@ -31,12 +38,19 @@
 
 	.q-title {
 		p {
-			font-weight: bold;
-			font-size:15px;
+			@include fs-headline(4);
+			i {
+				font-style: normal;
+				font-weight: bold;
+			}
+			span {
+				color:#bdbdbd;
+				font-size:0.8em;
+			}
 		}
 	}
 
-	svg {
+	svg.chart {
 		width:100%;
 		height:300px;
 		
@@ -51,6 +65,9 @@
 				stroke-width:1;
 				shape-rendering: crispEdges;
 				fill:none;
+			}
+			rect.bg {
+				fill:#eaeaea;
 			}
 			text.zero,
 			text.hundred {
@@ -68,13 +85,14 @@
 				}
 			}
 			text.title {
-				@include fs-header(1);
+				@include fs-textSans(1);
+				fill:#bdbdbd;
 				font-size:15px;
 				font-weight: 300;
 				text-anchor:start;
 				@include mq(tablet) {
 					
-					text-anchor:end;
+					//text-anchor:end;
 				}
 			}
 		}
@@ -85,16 +103,24 @@
 				.country.you {
 					cursor: ew-resize;
 					circle {
-						stroke:#000;
-						stroke-width:0;
+						//stroke:#000;
+						stroke-width:1;
 						//fill:$you;
 					}
 
 					text {
+						
+						@include fs-textSans(4);
 						visibility: visible;
 						text-anchor:middle;
+						
+
 						&.country-value {
 							font-size:25px;
+							font-weight: 800;
+						}
+						&.inactive {
+							fill:#bdbdbd;
 						}
 						&.hidden {
 							visibility: hidden;
@@ -109,14 +135,14 @@
 			}
 			.country {
 				circle {
-					stroke:none;
+					//stroke:none;
 					stroke-width:2;
 					fill-opacity:0.8;
 					//fill:#005689;
 				}
 
-				line {
-					stroke:#ddd;
+				line.slope {
+					stroke:#eaeaea;
 					stroke-opacity:1;
 					stroke-width:1;
 					fill:none;
@@ -151,15 +177,14 @@
 
 				&.highlight {
 					circle {
-						stroke:#333;
+						//stroke:#333;
 						fill-opacity:1;
 					}
 					text {
 						visibility: visible;
 						//font-weight: bold;
 					}
-					line {
-						stroke:#333;
+					line.slope {
 						stroke-opacity:1;
 						stroke-width:2;
 					}
@@ -181,7 +206,7 @@
 						visibility: visible;
 					}
 					line {
-						stroke:#000;
+						stroke:#000 !important;
 						stroke-opacity:1;
 						stroke-width:3;
 					}
@@ -194,7 +219,7 @@
 
 				&.you {
 					circle {
-						stroke:#000;
+						//stroke:#000;
 						stroke-width:2;
 						fill-opacity:1;
 					}
@@ -202,7 +227,7 @@
 						visibility: visible;
 					}
 					line {
-						stroke:#000;
+						stroke:#000 !important;
 						stroke-opacity:1;
 						stroke-width:3;
 					}
@@ -215,5 +240,36 @@
 			}	
 		}
 		
+	}
+	.call2action {
+		width: 100%;
+		text-align: right;
+		color: #005689;
+		font-size: 16px;
+		margin:20px 0;
+
+		svg {
+			path {
+				fill:#005689;
+			}
+		}
+	}
+	.analysis {
+	    border:1px solid #bdbdbd;
+	    padding:35px;
+	    margin-top:30px;
+	    @include fs-headline(4);
+	    i {
+	    	display: block;
+	    	margin-top:15px;
+	    	color:#767676;
+	    	font-size: 0.8em;
+	    	font-style: normal;
+	    }
+	    transition: opacity 500ms ease-out;
+	    opacity:1;
+	    &.hidden {
+	    	opacity:0;
+	    }
 	}
 }

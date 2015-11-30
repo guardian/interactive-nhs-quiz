@@ -74,9 +74,6 @@ export default class ParallelCoordinates {
 				.enter()
 				.append("div")
 					.attr("class",rows?"row":"column")
-					.attr("rel",(d)=>{
-						return d;
-					})
 					.each(function(d){
 						if(rows) {
 							/*let q=self.options.questions.find((q)=>{

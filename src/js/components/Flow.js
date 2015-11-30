@@ -40,11 +40,12 @@ export default class Flow {
 		} else {
 			
 			console.log(index,this.options.questions.length)
-
+			info["difference (mean-actual)"]=info.mean-info.actual;
+			console.log("INFOOOOO",info)
 			this.user.questions.push(info);
 			console.log("USER USER USER",this.user)
 			//console.log("2 currentQuestion",this.options)
-			if(index<this.options.questions.length){
+			if(index<this.options.questions.length && index < 2){
 
 				this.options.question=this.options.questions[index].id;
 				console.log(this.options)
@@ -64,13 +65,17 @@ export default class Flow {
 		let confirm_button=d3.select("button#confirmCountry")
 										.on("click",function(){
 											d3.event.preventDefault();
-											console.log(self.COUNTRY)
+											if(self.COUNTRY) {
+												console.log(self.COUNTRY)
 
-											self.user.country=self.COUNTRY;
+												self.user.country=self.COUNTRY;
 
-											d3.select("#countrySelector").attr("disabled",true);
-											d3.select(this).attr("disabled",true);
-											self._buildCharts(-1);
+												d3.select("#countrySelector").attr("disabled",true);
+												d3.select(this).attr("disabled",true).classed("disabled",true)
+
+												self._buildCharts(-1);
+											}
+											
 											
 										})
 
@@ -80,7 +85,7 @@ export default class Flow {
 							self.COUNTRY=this.options[this.selectedIndex].value;
 							self.options.country=self.COUNTRY;
 
-							confirm_button.classed("hidden",false)
+							confirm_button.classed("disabled",false)
 
 						})
 						.selectAll("option")
@@ -98,20 +103,25 @@ export default class Flow {
 
 	_buildRanking(){
 		
+
+
 		let avg={
 				country:"YOU",
 				avg:d3.mean(this.user.questions,(d)=>Math.abs(d.mean-d.actual))
 			},
-			ranking=this.options.ranking.concat([avg])
+			ranking=this.options.ranking.concat([avg]);
+
+
+
 		d3.select("#ranking")
 			.classed("hidden",false)
-			.select("ol")
+			.select("ul")
 			.selectAll("li")
-				.data(ranking.sort((a,b)=>(a.avg-b.avg)))
+				.data(ranking.sort((a,b)=>(a.normalized_avg-b.normalized_avg)))
 				.enter()
 				.append("li")
 					.classed("you",(d)=>d.country==="YOU")
 					.classed("selected",(d)=>d.country===this.options.country)
-					.text((d)=>d.country+": "+d.avg)
+					.html((d,i)=>("<span>"+(i<10?"0":"")+(i+1)+".</span> "+d.country))
 	}
 }

@@ -9,7 +9,7 @@
 		"question":"Out of every 100 people in [Country], about how many do you think do not affiliate themselves with any religion – that is, atheists, agnostics and those who say they do not identify with any religion?",
 		"id":"2",
 		"index":1,
-		"text":"Japan and South Korea are the only two countries to not overestimate the proportion of people that do not affiliate themselves with any religion. Nearly all other countries surveyed get the proportion significantly wrong, with respondents in the UK and the US exaggerating the proportion by 20 and 24 points respectively."
+		"text":"Japan and South Korea are the only two countries to not overestimate the proportion of people that do not affiliate themselves with any religion. <i>Nearly all other countries surveyed get the proportion significantly wrong, with respondents in the UK and the US exaggerating the proportion by 20 and 24 points respectively.</i>"
 	},
 	{
 		"question":"How old do you think the average person in [country] is?",
@@ -29,7 +29,7 @@
 		"id":"7",
 		"units":"%",
 		"index":2,
-		"text":"Most countries surveyed overestimate the proportion of wealth owned by the 1%. Interestingly, however, when asked how much wealth should the richest in society hold, the responses are closer to the actual levels."
+		"text":"Most countries surveyed overestimate the proportion of wealth owned by the 1%. <i>Interestingly, however, when asked how much wealth should the richest in society hold, the responses are closer to the actual levels.</i>"
 	},
 	/*
 	{
@@ -49,7 +49,7 @@
 		"id":"9",
 		"units":"%",
 		"index":4,
-		"text":"Respondents are far better informed when it comes to the number of women in politics. However in several nations, including Russia, Mexico, New Zealand and Spain, the rate of error is greater than 10 points."
+		"text":"Respondents are far better informed when it comes to the number of women in politics. <i>However in several nations, including Russia, Mexico, New Zealand and Spain, the rate of error is greater than 10 points.</i>"
 	},
 	{
 		"question":"What percentage of people in your country live in a rural area, that is, outside of a big town or city?",
@@ -63,13 +63,13 @@
 		"id":"11",
 		"units":"%",
 		"index":0,
-		"text":"Every country surveyed, except for Israel and Saudi Arabia, overestimated the proportion of the population born overseas. In several cases, such as in South Africa, India, Brazil and Argentina, the difference between the actual proportion and the median response is greater than 20 points. Norwegians come closest to the actual figure."
+		"text":"Every country surveyed, except for Israel and Saudi Arabia, overestimated the proportion of the population born overseas. <i>In several cases, such as in South Africa, India, Brazil and Argentina, the difference between the actual proportion and the median response is greater than 20 points. Norwegians come closest to the actual figure.</i>"
 	},
 	{
 		"question":"Out of every 100 working-age women in [Country], about how many do you think are in employment?",
 		"id":"12",
 		"index":8,
-		"text":"Conversely, probably one consequence of the global financial crisis has been that many more than otherwise would have taken an interest in the economic state of their country. The error on this particular question was lowered compared with the answers to many other queries. Nevertheless there are several countries where the difference between the actual figure and the median response was greater than 10 points, including in Germany. Americans, who head to the polls to elect a new president next year, got this question spot on."
+		"text":"Conversely, probably one consequence of the global financial crisis has been that many more than otherwise would have taken an interest in the economic state of their country. The error on this particular question was lowered compared with the answers to many other queries. <i>Nevertheless there are several countries where the difference between the actual figure and the median response was greater than 10 points, including in Germany. Americans, who head to the polls to elect a new president next year, got this question spot on.</i>"
 	},
 	{
 		"question":"Out of every 100 young adults aged 25-34  in [Country], about how many do you think live with their parents?",
