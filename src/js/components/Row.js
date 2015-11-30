@@ -146,7 +146,7 @@ export default class Row extends Column {
 		this.line
 			.append("text")
 				.attr("class","title")
-				.attr("x",this.padding.left-3-this.options.isSmallScreen?-3:25)
+				.attr("x",this.padding.left-3-(this.options.isSmallScreen?0:25))
 				.attr("y",(d)=>{
 					if(this.options.isSmallScreen) {
 						return d==="mean"?-24:34;
@@ -835,7 +835,7 @@ export default class Row extends Column {
 
 		this.line
 			.select("text.title")
-				.attr("x",this.padding.left-3-this.options.isSmallScreen?-3:25)
+				.attr("x",this.padding.left-3-(this.options.isSmallScreen?0:25))
 				.attr("y",(d)=>{
 					if(this.options.isSmallScreen) {
 						return d==="mean"?-24:34;
