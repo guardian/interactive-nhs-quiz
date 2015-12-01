@@ -22,7 +22,7 @@
 		"question":"Out of every 100 people in [Country], about how many do you think are aged 14 or younger?",
 		"id":"4",
 		"index":6,
-		"text":"But despite this, respondents in all the countries polled, with the exception of Israel, also overestimate the how many they think are aged 14 or younger."
+		"text":"But despite the previous finding, respondents in all the countries polled, with the exception of Israel, also overestimate how many they think are aged 14 or younger."
 	},
 	{
 		"question":"What proportion of [Country]’s total household wealth do you think the wealthiest 1% own?",
@@ -45,7 +45,7 @@
 		"text":"Most people in the world underestimate how many are overweight or obese. South Koreans are the only respondents to get this answer spot on. "
 	},
 	{
-		"question":"What percentage of politicians in lower or single house – eg in Britain would be Members of Parliament (MPs) – in [Country] are women?",
+		"question":"What percentage of politicians in the lower or single house – eg in Britain it would be members of parliament (MPs) – in [Country] are women?",
 		"id":"9",
 		"units":"%",
 		"index":4,
@@ -69,7 +69,7 @@
 		"question":"Out of every 100 working-age women in [Country], about how many do you think are in employment?",
 		"id":"12",
 		"index":8,
-		"text":"Conversely, probably one consequence of the global financial crisis has been that many more than otherwise would have taken an interest in the economic state of their country. The error on this particular question was lowered compared with the answers to many other queries. <i>Nevertheless there are several countries where the difference between the actual figure and the median response was greater than 10 points, including in Germany. Americans, who head to the polls to elect a new president next year, got this question spot on.</i>"
+		"text":"Conversely, probably one consequence of the global financial crisis has been that more people have​ taken an interest in the state of their country's economy — and in the makeup of its workforce. The error on this particular question was low compared to many other answers. <i>Nevertheless there are several countries where the difference between the actual figure and the median response was greater than 10 points, including in Germany. Americans got this question spot on.</i>"
 	},
 	{
 		"question":"Out of every 100 young adults aged 25-34  in [Country], about how many do you think live with their parents?",
