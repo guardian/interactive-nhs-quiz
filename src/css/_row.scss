@@ -256,6 +256,9 @@
 	}
 
 	&.your {
+		.voronoi {
+			display: none;
+		}
 		.legend ul {
 			li {
 				color:#bdbdbd;
@@ -349,10 +352,19 @@
 		font-size: 12px;
 		color: #bdbdbd;
 		margin:20px 0;
-
+		cursor: pointer;
 		svg {
 			path {
 				fill:#bdbdbd;
+			}
+		}
+
+		&:hover {
+			color:#00456e;
+			svg {
+				path {
+					fill:#00456e;
+				}
 			}
 		}
 	}

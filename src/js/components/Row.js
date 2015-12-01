@@ -39,6 +39,7 @@ export default class Row extends Column {
 		this.container
 				.classed("inactive",!this.options.visible)
 				.classed("your",true)
+				.attr("rel",this.options.index)
 				.append("div")
 				.attr("class","q-title")
 				.append("div")
@@ -370,6 +371,17 @@ export default class Row extends Column {
 		this.container.append("div")
 				.attr("class","call2action next")
 				.html(last?"Check your result &rsaquo;":"Jump to next question <svg width=\"12\" height=\"9\" viewBox=\"-0.525 -4 24 18\" overflow=\"visible\" enable-background=\"new -0.525 -4 24 18\"><path d=\"M23.2.7L12.7 9.1l-1.1.9-1.1-.898L0 .7.5 0l11.1 6.3L22.7 0l.5.7z\"/></svg>")
+				.on("mouseup",()=>{
+					let next=d3.select("div.row[rel=\""+(this.options.index+1)+"\"]").node(),
+						bbox=next.getBoundingClientRect();
+					console.log(next,bbox)
+
+					d3.transition()
+						    .duration(2000)
+						    //.tween("scroll", this._scrollTween(bbox.top))
+						    .tween("scroll", this._scrollTween(this._getElementPosition(next).top+200))
+
+				})
 	}
 
 	_addAnalysis() {
@@ -667,7 +679,7 @@ export default class Row extends Column {
 
 		this.cell = this.svg.append("g")
 					    .attr("class", "voronoi")
-					    .style("display","none")
+					    //.style("display","none")
 					    .attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`)
 					  	.selectAll("g");
 
@@ -1075,5 +1087,25 @@ export default class Row extends Column {
 		
 		this._update()
 
+	}
+	_getElementPosition(el) {
+
+		console.log("getElementPosition",el);
+
+		var parentRect = el.parentNode.getBoundingClientRect(),
+    		elemRect = el.getBoundingClientRect(),
+    		offset   = {
+    			top:elemRect.top - parentRect.top,
+    			left:elemRect.left - parentRect.left
+    		}
+    	console.log(offset)
+    	return offset;
+		
+	}
+	_scrollTween(offset) {
+		return function() {
+			var i = d3.interpolateNumber(window.pageYOffset || document.documentElement.scrollTop, offset);
+			return function(t) { scrollTo(0, i(t)); };
+		};
 	}
 }
