@@ -63,8 +63,22 @@ export default class Flow {
 				this.pc.nextQuestion(this.options.question);	
 			} else {
 				console.log("DONE!!!! USER USER USER",this.user)
+				let obj={
+					answers:{
+						country:this.user.country,
+						q:this.user.questions.map((d)=>d.mean)
+					}
+				};
+				console.log(obj)
 
 				this._buildRanking();
+				console.log("REMIND TO ACTIVATE XHR")
+				return;
+				d3.xhr("http://ec2-54-72-6-69.eu-west-1.compute.amazonaws.com/")
+					.header("Content-Type", "application/json")
+					.post(JSON.stringify(obj),function(error,data){
+						//console.log("SEND!")
+					})
 			}
 			
 		}
@@ -189,8 +203,39 @@ export default class Flow {
 				.data(ranking.sort((a,b)=>(a.standardized-b.standardized)))
 				.enter()
 				.append("li")
+					.attr("class",(d)=>{
+						return this._getCountryArea(d.country);
+					})
 					.classed("you",(d)=>d.country==="YOU")
 					.classed("selected",(d)=>d.country===this.options.country)
 					.html((d,i)=>("<span>"+(i<10?"0":"")+(i+1)+".</span> "+d.country))
+	}
+
+	_getCountryArea(country) {
+
+		if(country==="YOU") {
+			return "you";
+		}
+
+		let region_codes={
+			"002":"africa",
+			"019":"americas",
+			"142":"asia",
+			"150":"europe",
+			"009":"oceania"
+		}
+		let sub_region_codes={
+			"021":"namerica",
+			"005":"samerica",
+			"013":"samerica"
+		}
+		//console.log(country)
+		//console.log(region_codes[this.options.country_info[country]["region-code"]])
+
+		if(sub_region_codes[this.options.country_info[country]["sub-region-code"]]) {
+			return sub_region_codes[this.options.country_info[country]["sub-region-code"]]
+		}
+		
+		return region_codes[this.options.country_info[country]["region-code"]]
 	}
 }

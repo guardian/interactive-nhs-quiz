@@ -44,7 +44,7 @@ export default class Row extends Column {
 				.attr("class","q-title")
 				.append("div")
 					.html((d,i)=>{
-						return "<span>"+(this.options.index+1)+".</span><p>"+this.options.question.question.replace(/\[Country\]/gi,"<i>"+this.options.country+"</i>")+"</p>";
+						return "<span>"+((this.options.index+1)+(this.options.isSmallScreen?(" of "+this.options.n):""))+".</span><p>"+this.options.question.question.replace(/\[Country\]/gi,"<i>"+this.options.country+"</i>")+"</p>";
 					})
 
 		let chart_container=this.container.append("div")
@@ -54,6 +54,10 @@ export default class Row extends Column {
 					.append("svg")
 					.attr("class","chart")
 					.on("touchstart",()=>{
+						if(this.container.classed("your")) {
+							return;
+						}
+						
 						this.touch=true;
 
 						if(this.voronoi_centers) {
@@ -74,6 +78,9 @@ export default class Row extends Column {
 						this.touch=false;
 					})
 					.on("touchmove",()=>{
+							if(this.container.classed("your")) {
+								return;
+							}
 							if(this.voronoi_centers) {
 								d3.event.preventDefault();
 						    	let touch=d3.event.targetTouches[0];
@@ -146,9 +153,11 @@ export default class Row extends Column {
 				.attr("class","zero")
 				.attr("x",this.padding.left-3)
 				.attr("y",(d)=>{
+					/*
 					if(this.options.isSmallScreen) {
 						return d==="mean"?-10:20;
 					}
+					*/
 					return 4;
 				})
 				//.text((this.options.question.range?this.options.question.range[0]:"0")+(this.options.question.units||""))
@@ -158,9 +167,11 @@ export default class Row extends Column {
 				.attr("class","hundred")
 				.attr("x",this.xscale.range()[1]+this.padding.left+3)
 				.attr("y",(d)=>{
+					/*
 					if(this.options.isSmallScreen) {
 						return d==="mean"?-10:20;
 					}
+					*/
 					return 4;
 				})
 				//.text((this.options.question.range?this.options.question.range[1]:"100")+(this.options.question.units||""))
@@ -172,13 +183,16 @@ export default class Row extends Column {
 				.attr("class","title")
 				.attr("x",0)//this.padding.left-3-(this.options.isSmallScreen?0:25))
 				.attr("y",(d)=>{
-					return -90;
+					
 					if(this.options.isSmallScreen) {
-						return d==="mean"?-24:34;
+						return -25;
 					}
-					return 4;
+					return -90;
 				})
 				.text((d)=>{
+					if(this.options.isSmallScreen) {
+						return (d==="mean"?"SURVEY":"ACTUAL");	
+					}
 					return (d==="mean"?"SURVEY ANSWERS":"ACTUAL NUMBERS");
 				})
 
@@ -439,12 +453,12 @@ export default class Row extends Column {
 						})
 		this.legend.append("button")
 				.attr("class","confirm-btn confirm")
-				.text("Compare all countries")
+				.html("&nbsp; See all countries")
 				.on("click",function(){
 					self._toggleStatus();
 					let your=self.container.classed("your");
 					//console.log("AHHHH",your,d3.select(this))
-					d3.select(this).text(your?"Compare all countries":"See your answer")
+					d3.select(this).html(your?"&nbsp; See all countries":"&check; See all countries")
 				})
 	}
 	_addCountries() {
@@ -568,7 +582,11 @@ export default class Row extends Column {
 				.attr("class","country")
 				.text((d)=>(d.country==="YOU"?"You":d.country))
 		text_guess.append("tspan")
-				.text(" guessed ")
+				.text(" ")
+
+		text_guess.append("tspan")
+				.classed("hidden",this.options.isSmallScreen)
+				.text("guessed ")
 
 		text_guess.append("tspan")
 				.attr("class","value")
@@ -658,7 +676,15 @@ export default class Row extends Column {
 				.attr("dx",35);
 		
 		text_guess.append("tspan")
-				.text("Actual answer ")
+				.attr("class","country")
+				.text("Actual")
+		text_guess.append("tspan")
+				.text(" ")
+
+		text_guess.append("tspan")
+				.classed("hidden",this.options.isSmallScreen)
+				.text("answer ")
+				
 
 		text_guess.append("tspan")
 				.attr("class","value")
@@ -1001,20 +1027,16 @@ export default class Row extends Column {
 				.attr("x",this.xscale.range()[1]+this.padding.left+3)
 				.attr("y",(d)=>{
 					if(this.options.isSmallScreen) {
-						return d==="mean"?-10:20;
+						return d==="mean"?20:10;
 					}
 					return 4;
 				})
 
 		this.line
 			.select("text.title")
-				.attr("x",this.padding.left-3-(this.options.isSmallScreen?0:25))
-				/*.attr("y",(d)=>{
-					if(this.options.isSmallScreen) {
-						return d==="mean"?-24:34;
-					}
-					return 4;
-				})*/
+				.attr("x",this.padding.left-3-25)
+				//.attr("x",this.padding.left-3-(this.options.isSmallScreen?0:25))
+				
 
 		this.countries.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
 

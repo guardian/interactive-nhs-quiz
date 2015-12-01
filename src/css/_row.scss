@@ -4,12 +4,22 @@
 	position:relative;
 	overflow: hidden;
 	border-top:1px solid #dfdfdf;
-	padding-top:20px;
-	margin-bottom:100px;
+
+	padding-top:5px;
+	margin-bottom:50px;
+	@include mq(tablet) {
+		padding-top:20px;
+		margin-bottom:100px;
+	}
+	
 
 	.confirm-btn.confirm {
 		display: block;
-		float:right;
+		margin:0 auto;
+		@include mq(tablet) {
+			margin:0;
+			float:right;
+		}
 	}
 	.confirm-btn.next {
 		display: block;
@@ -53,17 +63,27 @@
 		>div {
 			overflow: hidden;
 		}
-		@include fs-headline(4);
+		@include fs-headline(3);
+		font-size:18px;
+		@include mq(tablet) {
+			@include fs-headline(4);
+		}
 		span {
 			color:#bdbdbd;
 			font-size:0.8em;
-			display: inline-block;
-			float: left;
+			display: block;
+			@include mq(tablet) {
+				display: inline-block;
+				float: left;
+			}
+			
 		}
 		p {
 			display: inline-block;
 			float: left;
-		    width: calc(100% - 40px);
+			@include mq(tablet) {
+		    	width: calc(100% - 40px);
+			}
 		    margin: 0;
 			i {
 				font-style: normal;
@@ -92,14 +112,14 @@
 			text.zero,
 			text.hundred {
 				@include fs-textSans(1);
-				text-anchor:start;
+				text-anchor:end;//start;
 				@include mq(tablet) {
 					text-anchor:end;
 				}
 				fill:#aaa;
 			}
 			text.hundred {
-				text-anchor:end;
+				text-anchor:start;//end;
 				@include mq(tablet) {
 					text-anchor:start;
 				}
@@ -107,11 +127,10 @@
 			text.title {
 				@include fs-textSans(1);
 				fill:#bdbdbd;
-				font-size:15px;
 				font-weight: 300;
 				text-anchor:start;
 				@include mq(tablet) {
-					
+					font-size:15px;
 					//text-anchor:end;
 				}
 			}
@@ -168,7 +187,7 @@
 					fill:none;
 				}
 				text {
-					@include fs-header(1);
+					@include fs-textSans(1);
 					font-size:13px;
 					font-weight: 300;
 					text-anchor:start;
@@ -177,7 +196,7 @@
 					
 
 					&.country-value {
-						@include fs-textSans(1);
+						//@include fs-textSans(1);
 						font-weight: normal;
 						text-anchor:end;
 					}
@@ -285,7 +304,6 @@
 				.country {
 					circle {
 						visibility: hidden;
-
 					}
 					&.selected {
 						circle {
@@ -298,7 +316,7 @@
 					}
 					&.highlight {
 						circle {
-							visibility: visible;
+							//visibility: hidden;
 							stroke-width:2;
 						}
 						line.slope {
@@ -323,6 +341,9 @@
 					.value {
 						g.big-label {
 							display: block;
+							tspan.hidden {
+								display: none;
+							}
 							text {
 								@include fs-textSans(1);
 							}
@@ -360,7 +381,10 @@
 
 	.call2action {
 		width: 100%;
-		text-align: right;
+		text-align: center;
+		@include mq(tablet) {
+			text-align: right;
+		}
 		@include fs-textSans(1);
 		font-size: 12px;
 		color: #bdbdbd;
@@ -383,9 +407,15 @@
 	}
 	.analysis {
 	    border:1px solid #bdbdbd;
-	    padding:35px;
+	    padding:15px;
+	    @include fs-headline(3);
+
+	    @include mq(tablet) {
+	    	padding:35px;
+	    	@include fs-headline(4);
+		}
 	    margin-top:30px;
-	    @include fs-headline(4);
+	    
 	    i {
 	    	display: block;
 	    	margin-top:15px;

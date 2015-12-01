@@ -24,8 +24,17 @@ export function init(el, context, config, mediator) {
     });
 
     function loadData() {
+        /*let obj={answers:{country:"Italy",q:[1,2,3,4]}};
+        d3.xhr("http://ec2-54-72-6-69.eu-west-1.compute.amazonaws.com/")
+                    .header("Content-Type", "application/json")
+                    .post(JSON.stringify(obj),function(error,data){
+                        if(error) {
+                            console.log("ERROR!",error)
+                        }
+                        console.log("SEND!")
+                    })
 
-
+        return;*/
         let data=[];
         let country_info={};
         d3.csv(config.assetPath+"/assets/data/perils2.csv",(d)=>{

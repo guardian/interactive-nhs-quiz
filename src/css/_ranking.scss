@@ -2,8 +2,10 @@
 	background-color: #f8f8f8;
 	.subsection {
 		
-		//border-bottom:1px solid #bdbdbd;
-		padding:35px;
+		padding:35px 0;
+		@include mq(tablet) {
+			padding:35px;
+		}
 		margin:0;
 
 		
@@ -11,7 +13,10 @@
 		h3 {
 			@include fs-header(4);
 			font-weight: 800;
-			margin:0 0 35px 0;
+			margin:0 0 10px;
+			@include mq(tablet) {
+				margin-bottom:35px;
+			}
 		}
 	
 		p {
@@ -28,15 +33,23 @@
 		list-style: none;
 		margin:0;
 		padding: 0;
-
-		height: 730px;
-
-		-moz-column-count: 3;
-	    -moz-column-gap: 20px;
-	    -webkit-column-count: 3;
-	    -webkit-column-gap: 20px;
-	    column-count: 3;
-	    column-gap: 20px;
+		
+		-moz-column-count: 1;
+	    -moz-column-gap: 10px;
+	    -webkit-column-count: 2;
+	    -webkit-column-gap: 10px;
+	    column-count: 2;
+	    column-gap: 10px;
+		
+		@include mq(tablet) {
+			height: 730px;
+			-moz-column-count: 3;
+		    -moz-column-gap: 20px;
+		    -webkit-column-count: 3;
+		    -webkit-column-gap: 20px;
+		    column-count: 3;
+		    column-gap: 20px;
+		}
 
 		li {
 			@include fs-textSans(4);
@@ -54,9 +67,16 @@
 			}
 			&.selected {
 				font-weight: bold;
+				span {
+					color:inherit;
+				}
 			}
 			&.you {
 				font-weight: bold;
+				color:#000;
+				span {
+					color:inherit;
+				}
 			}
 		}
 	}
@@ -64,15 +84,24 @@
 	.share {
 	    background-color: #eaeaea;
 	    overflow:hidden;
+	    margin:0 10px;
+	    padding-left:15px;
+	    padding-right:15px;
 		.msg {
-			float: left;
-			width: calc(100% - 140px);
+			@include mq(tablet) {
+				float: left;
+				width: calc(100% - 140px);
+			}
 			p {
 				margin: 0;
 			}
 		}
 	    .btn {
-	    	float: left;
+	    	margin-top:15px;
+	    	@include mq(tablet) {
+	    		float: left;
+	    		margin-top:0px;
+	    	}
 
 	    }
 	}

@@ -10,25 +10,6 @@ export default class ParallelCoordinates {
 		this.data=data;
 
 		console.log("ParallelCoordinates",this.options,this.data)
-		/*
-		this.you={
-			country:"YOU",
-			questions:(["1","2","3","4","7","7b","8","9","10","11","12","13"]).map((d)=>{
-				let c=this.data.find((c)=>{return c.country==this.options.country}),
-					a=c.questions.find((q)=>{return c.question===d}).actual,
-					m=this.options.you,
-					diff=m-a;
-				return {
-					actual:a,
-					mean:m,
-					"difference (mean-actual)":diff,
-					question:d
-				}
-				
-			})
-		}
-		*/
-		//console.log("YOU",this.you)
 
 		this.rows={};
 
@@ -63,14 +44,15 @@ export default class ParallelCoordinates {
 		let pc=this.container.append("div")
 					.attr("class","parallel-coordinates");
 
-		let column=pc.selectAll("div."+(rows?"row":"column"))
-				.data(this.options.questions.filter((d,i)=>{
+		let __data=this.options.questions.filter((d,i)=>{
 					return 1;
-					return d==="1";//1;//i<1;
-				}).sort((a,b)=>{
-					//console.log(":::::::",a,b)
+					return d==="1";
+		});
+
+		let column=pc.selectAll("div."+(rows?"row":"column"))
+				.data(__data).sort((a,b)=>{
 					return a.index-b.index
-				}))
+				})
 				.enter()
 				.append("div")
 					.attr("class",rows?"row":"column")
@@ -87,6 +69,7 @@ export default class ParallelCoordinates {
 										last:d.index===self.options.questions.length-1,
 										//qs:self.options.questions,
 										//l:self.options.questions.length,
+										n:__data.length,
 										question:d,
 										visible:d.id===self.options.question,
 										extents:self.extents,

@@ -33,4 +33,16 @@ $colors-stroke-list: $africa_stroke, $europe_stroke, $oceania_stroke, $namerica_
     .legend li span.key.#{nth($countries-list, $i)} {
         background-color: $current-color;
     }
+
+}
+#ranking {
+    ul {
+        @each $current-color in $colors-list {
+            $i: index($colors-list, $current-color);
+
+            li.selected.#{nth($countries-list, $i)} {
+                color: $current-color;
+            }
+        }
+    }
 }
