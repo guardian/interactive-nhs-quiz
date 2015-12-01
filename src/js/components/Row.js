@@ -19,7 +19,7 @@ export default class Row extends Column {
 		let self=this;
 
 		this.margins={
-			top:70,
+			top:50,
 			left:15,//this.options.isSmallScreen?5:30,
 			bottom:36,
 			right:15//this.options.isSmallScreen?5:30
@@ -184,10 +184,10 @@ export default class Row extends Column {
 				.attr("x",0)//this.padding.left-3-(this.options.isSmallScreen?0:25))
 				.attr("y",(d)=>{
 					
-					if(this.options.isSmallScreen) {
+					/*if(this.options.isSmallScreen) {
 						return -25;
-					}
-					return -90;
+					}*/
+					return -20;
 				})
 				.text((d)=>{
 					if(this.options.isSmallScreen) {
@@ -393,7 +393,7 @@ export default class Row extends Column {
 					d3.transition()
 						    .duration(2000)
 						    //.tween("scroll", this._scrollTween(bbox.top))
-						    .tween("scroll", this._scrollTween(this._getElementPosition(next).top+200))
+						    .tween("scroll", this._scrollTween(this._getElementPosition(next).top+500))
 
 				})
 	}
@@ -453,12 +453,12 @@ export default class Row extends Column {
 						})
 		this.legend.append("button")
 				.attr("class","confirm-btn confirm")
-				.html("&nbsp; See all countries")
+				.html("Compare all countries")
 				.on("click",function(){
 					self._toggleStatus();
 					let your=self.container.classed("your");
 					//console.log("AHHHH",your,d3.select(this))
-					d3.select(this).html(your?"&nbsp; See all countries":"&check; See all countries")
+					d3.select(this).html(your?"Compare all countries":"See your answer")
 				})
 	}
 	_addCountries() {
@@ -571,7 +571,7 @@ export default class Row extends Column {
 			.filter((d)=>((this.options.country === d.country || d.country === "YOU")))
 			.append("g")
 				.attr("class","big-label")
-				.attr("transform",`translate(0,${-(this.margins.top-20)})`)
+				.attr("transform",`translate(0,${-(this.margins.top)})`)
 
 		let text_guess=big_label.append("text")
 				.attr("class","guess")
@@ -669,7 +669,7 @@ export default class Row extends Column {
 			.filter((d)=>((d.country===this.options.country || d.country==="YOU")))
 			.append("g")
 				.attr("class","big-label")
-				.attr("transform",`translate(0,${-(this.margins.top-20)})`)
+				.attr("transform",`translate(0,${-(this.margins.top)})`)
 
 		text_guess=big_label.append("text")
 				.attr("class","guess")

@@ -8,8 +8,8 @@
 	padding-top:5px;
 	margin-bottom:50px;
 	@include mq(tablet) {
-		padding-top:20px;
-		margin-bottom:100px;
+		padding-top:10px;
+		margin-bottom:50px;
 	}
 	
 
@@ -75,6 +75,7 @@
 			@include mq(tablet) {
 				display: inline-block;
 				float: left;
+				line-height: 32px;
 			}
 			
 		}
@@ -380,6 +381,7 @@
 	}
 
 	.call2action {
+		display: none;
 		width: 100%;
 		text-align: center;
 		@include mq(tablet) {
@@ -406,15 +408,17 @@
 		}
 	}
 	.analysis {
-	    border:1px solid #bdbdbd;
+	    background-color:#f1f1f1;
 	    padding:15px;
+
 	    @include fs-headline(3);
+		color:#505050;
 
 	    @include mq(tablet) {
 	    	padding:35px;
 	    	@include fs-headline(4);
 		}
-	    margin-top:30px;
+	    margin-top:15px;
 	    
 	    i {
 	    	display: block;

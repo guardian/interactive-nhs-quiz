@@ -45,7 +45,7 @@
 		"text":"Most people in the world underestimate how many are overweight or obese. South Koreans are the only respondents to get this answer spot on. "
 	},
 	{
-		"question":"What percentage of [politicians in lower or single house – eg in Britain would be Members of Parliament (MPs)] in [Country] are women?",
+		"question":"What percentage of politicians in lower or single house – eg in Britain would be Members of Parliament (MPs) – in [Country] are women?",
 		"id":"9",
 		"units":"%",
 		"index":4,

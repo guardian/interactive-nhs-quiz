@@ -24,16 +24,34 @@ a {
     background-color: white;
 
     @include fs-bodyCopy(1);
+    
 
     padding: 10px;
     @include mq(mobileLandscape) {
         padding: 20px;
     }
+    @include mq(tablet) {
+        padding:0;
+    }
 
-    @each $bp in (tablet, desktop, leftCol, wide) {
+    /*@each $bp in (tablet, desktop, leftCol, wide) {
         @include mq($bp) {
             max-width: map-get($mq-breakpoints, $bp);
         }
+    }*/
+
+    @include mq(desktop) {
+        max-width: 640px;
+        margin-left:0;
+    }
+    @include mq(leftCol) {
+        max-width: 640px;
+        margin-left: 160px;
+    }
+    
+    @include mq(wide) {
+        max-width: 640px;
+        margin-left: 240px;
     }
 }
 
@@ -62,7 +80,7 @@ a {
 .fonts__text-sans { @include fs-textSans(4); }
 
 #country {
-    margin-bottom:100px;
+    margin-bottom:40px;
 }
 
 h2 {
@@ -239,7 +257,7 @@ form {
             @include mq(tablet) {
                 margin-top:8px;
                 margin-left:15px;
-                width:calc(100% - 140px);
+                width:calc(100% - 190px);
             }
         
 
@@ -272,7 +290,7 @@ form {
         padding-right:10px;
         float:right;
         margin:0;
-        //min-width: 210px;
+        min-width: 170px;
     }
 }
 
