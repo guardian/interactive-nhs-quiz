@@ -221,7 +221,7 @@ export default class Flow {
 	            })
 			};
 
-		console.log(avg)
+		//console.log(avg)
 		let ranking=this.options.ranking.concat([
 			{
 				country:"YOU",
@@ -243,7 +243,7 @@ export default class Flow {
 					})
 					.classed("you",(d)=>d.country==="YOU")
 					.classed("selected",(d)=>d.country===this.options.country)
-					.html((d,i)=>("<span>"+(i<10?"0":"")+(i+1)+".</span> "+d.country+":"+d.raw+","+d.adj))
+					.html((d,i)=>("<span>"+(i<10?"0":"")+(i+1)+".</span> "+d.country))
 	}
 
 	_getCountryArea(country) {
