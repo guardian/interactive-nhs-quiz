@@ -566,7 +566,7 @@ export default class Row extends Column {
 		
 		text_guess.append("tspan")
 				.attr("class","country")
-				.text((d)=>(d.country.toLowerCase()))
+				.text((d)=>(d.country==="YOU"?"You":d.country))
 		text_guess.append("tspan")
 				.text(" guessed ")
 

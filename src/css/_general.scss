@@ -67,8 +67,10 @@ a {
 
 h2 {
     @include fs-header(5);
-    max-width:50%;
     margin-bottom: 20px;
+    @include mq(desktop) {
+        max-width:50%;
+    }
 }
 
 .confirm-btn {

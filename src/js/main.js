@@ -97,31 +97,37 @@ export function init(el, context, config, mediator) {
                 return {
                     country:d.country,
                     avg:d3.mean(d.questions,(d)=>Math.abs(d["difference (mean-actual)"])),
-                    normalized_avg:d3.mean(d.questions,(q)=>{
+                    standardized:d3.mean(d.questions,(q)=>{
                         let question=questions.find((qq)=>{
                             return (qq.id===q.question);
                         });
                         if(question) {
-                            let normalized_values={
-                                mean:q.mean/100,
-                                actual:q.actual/100
-                            };
+                            let accuracy_score=(Math.abs(q.mean-q.actual)),
+                                Pm = (q.mean+q.actual)/2,
+                                sdm = Math.sqrt(Pm * (100-Pm)),
+                                sd50 = 50,
+                                st_acc_score = accuracy_score * (sd50 / sdm);
                             if(question.range) {
-                                normalized_values.mean=(q.mean-question.range[0])/(question.range[1]-question.range[0]);
-                                normalized_values.actual=(q.actual-question.range[0])/(question.range[1]-question.range[0])
+                                st_acc_score=accuracy_score;
                             }
-                            let delta=Math.abs(normalized_values.mean-normalized_values.actual);
-                            console.log(d.country,question.id,question.range,q.mean,normalized_values,delta)    
-                            return delta;
+                            /*
+                            if(d.country=="France") {
+                                if(question.range) {
+                                    console.log("!")
+                                }
+                                console.log(d.country,question,q.mean,q.actual,accuracy_score,Pm,sdm,st_acc_score)
+                            }
+                            */
+                            return accuracy_score;
                         }
-                        return "---";
+                        return 0;
                     })
                 }
             })
-            console.log(ranking.sort((a,b)=>(a.normalized_avg-b.normalized_avg)))
+            console.log(ranking.sort((a,b)=>(a.standardized-b.standardized)))
             
 
-           // return;
+            //return;
 
            ;(function() {
                 var throttle = function(type, name, obj) {

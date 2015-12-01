@@ -7,7 +7,18 @@ export default class Flow {
 		this.data=data;
 		this.options=options;
 
+		let search=window.location.search.replace(/\?/gi,""),
+			rankings=this.options.ranking.map((d)=>d.country);
+
+		//console.log(search,rankings)
+		this.COUNTRY=rankings.find((d)=>{
+			return d.toLowerCase() == search.toLowerCase();
+		});
+		this.options.country=this.COUNTRY;
+		//alert(this.COUNTRY)
+
 		this._buildCountrySelector();
+		this._buildRestartCountrySelector();
 		
 		this.user={
 			questions:[
@@ -45,7 +56,7 @@ export default class Flow {
 			this.user.questions.push(info);
 			console.log("USER USER USER",this.user)
 			//console.log("2 currentQuestion",this.options)
-			if(index<this.options.questions.length && index < 2){
+			if(index<this.options.questions.length){// && index < 2){
 
 				this.options.question=this.options.questions[index].id;
 				console.log(this.options)
@@ -63,6 +74,7 @@ export default class Flow {
 	_buildCountrySelector() {
 		let self=this;
 		let confirm_button=d3.select("button#confirmCountry")
+										.classed("disabled",typeof this.COUNTRY === "undefined")
 										.on("click",function(){
 											d3.event.preventDefault();
 											if(self.COUNTRY) {
@@ -94,11 +106,50 @@ export default class Flow {
 						.append("option")
 							.attr("value",(d)=>d)
 							.text((d)=>d)
+							.each(function(d){
+								let search=window.location.search.replace(/\?/gi,"").toLowerCase();
+								if(d.toLowerCase()===search) {
+									d3.select(this).attr("selected","selected")
+								}
+							})
 
-		/*d3.select("#countrySelector")
-				.append("option")
-					.attr("value","none")
-					.text("None of the above")*/
+	}
+
+	_buildRestartCountrySelector() {
+		let self=this;
+		let COUNTRY="";
+		let confirm_button=d3.select("button#restartCountry")
+										.on("click",function(){
+											d3.event.preventDefault();
+											console.log(window.location)
+											if(COUNTRY) {
+												console.log(window.location.origin+window.location.pathname+"?"+COUNTRY)
+
+												let url=window.location.origin+window.location.pathname+"?"+COUNTRY;
+
+
+												window.location=url;	
+											}
+											
+											
+										})
+
+		let countries=d3.select("#restartCountrySelector")
+						.on("change",function(d){
+							//console.log()
+							COUNTRY=this.options[this.selectedIndex].value;
+							
+
+							confirm_button.classed("disabled",false)
+
+						})
+						.selectAll("option")
+						.data(this.data.map((d)=>d.country))
+						.enter()
+						.append("option")
+							.attr("value",(d)=>d)
+							.text((d)=>d)
+
 	}
 
 	_buildRanking(){
@@ -107,7 +158,25 @@ export default class Flow {
 
 		let avg={
 				country:"YOU",
-				avg:d3.mean(this.user.questions,(d)=>Math.abs(d.mean-d.actual))
+				avg:d3.mean(this.user.questions,(d)=>Math.abs(d.mean-d.actual)),
+				standardized:d3.mean(this.user.questions,(q)=>{
+	                let question=this.options.questions.find((qq)=>{
+	                    return (qq.id===q.question);
+	                });
+	                if(question) {
+	                    let accuracy_score=(Math.abs(q.mean-q.actual)),
+	                        Pm = (q.mean+q.actual)/2,
+	                        sdm = Math.sqrt(Pm * (100-Pm)),
+	                        sd50 = 50,
+	                        st_acc_score = accuracy_score * (sd50 / sdm);
+	                    if(question.range) {
+	                        st_acc_score=accuracy_score;
+	                    }
+	                    
+	                    return accuracy_score;
+	                }
+	                return 0;
+	            })
 			},
 			ranking=this.options.ranking.concat([avg]);
 
@@ -117,7 +186,7 @@ export default class Flow {
 			.classed("hidden",false)
 			.select("ul")
 			.selectAll("li")
-				.data(ranking.sort((a,b)=>(a.normalized_avg-b.normalized_avg)))
+				.data(ranking.sort((a,b)=>(a.standardized-b.standardized)))
 				.enter()
 				.append("li")
 					.classed("you",(d)=>d.country==="YOU")

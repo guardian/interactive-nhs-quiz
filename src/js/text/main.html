@@ -1,6 +1,6 @@
 <div class="interactive-container">
 	<div id="country">
-		<h2>To begin, which country do you think you know the best?</h2>
+		<h2>To start, which country do you think you know the best?</h2>
 		<form id="selectYourCountry">
 			<select id="countrySelector" required="true" tabindex="1">
 				<option>Select a country</option>
@@ -9,7 +9,7 @@
 		</form>
 	</div>
     <div id="perils"></div>
-    <div id="ranking" class="hidden2">
+    <div id="ranking" class="hidden">
     	<div class="subsection">
     		<h3>The breakdown</h3>
     		<p>Overall, people in <b>South Korea</b>, <b>Ireland</b> and <b>Poland</b> are the best informed among the countries where all the survey's questions were asked. Respondents in <b>Brazil</b>, <b>India</b> and <b>Mexico</b> occupy the bottom three places of the rankings with the biggest gap between the perception of issues and the actual numbers.</p>	
@@ -20,10 +20,21 @@
     	</div>
     	<div class="subsection share">
     		<h3>Share</h3>
-    		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+    		<div class="msg"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p></div>
+            <div class="btn">
+                <button class="interactive-share" data-network="facebook"></button>
+                <button class="interactive-share" data-network="twitter"></button>
+                <button class="interactive-share" data-network="email"></button>    
+            </div>
     	</div>
     	<div class="subsection">
     		<h3>Or, try again as a different country</h3>
+            <form id="selectYourCountry">
+                <select id="restartCountrySelector" required="true" tabindex="1">
+                    <option>Select a country</option>
+                </select>
+                <button id="restartCountry" class="confirm-btn disabled" >Start the quiz &rsaquo;</button>
+            </form>
     	</div>
     </div>
 </div>
