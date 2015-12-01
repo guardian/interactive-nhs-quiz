@@ -99,4 +99,19 @@ export default class Column {
 		
 		return region_codes[this.options.country_info[country]["region-code"]]
 	}
+	_addDefsShadow(defs) {
+		defs.append("filter")
+				.attr("id","dropshadow")
+				.attr("width","140%")
+				.attr("height","140%")
+				.html(`<feGaussianBlur in="SourceAlpha" result="blur-out" stdDeviation="2" />
+    					<feOffset in="blur-out" result="the-shadow" dx="1" dy="1"/> 
+  						<feColorMatrix in="the-shadow" result="color-out" type="matrix"
+					      values="0 0 0 0   0
+					              0 0 0 0   0 
+					              0 0 0 0   0 
+					              0 0 0 .5 0"/>
+					    <feBlend in="SourceGraphic" in2="color-out" mode="normal"/>
+  					</feMerge>`)
+	}
 }

@@ -27,7 +27,7 @@ $colors-stroke-list: $africa_stroke, $europe_stroke, $oceania_stroke, $namerica_
         stroke: nth($colors-stroke-list, $i);
     }
 	.country.highlight line.slope.#{nth($countries-list, $i)} {
-        stroke: $current-color !important;
+        stroke: nth($colors-stroke-list, $i) !important;
     }
 
     .legend li span.key.#{nth($countries-list, $i)} {

@@ -37,24 +37,31 @@
 	}
 
 	.q-title {
+		>div {
+			overflow: hidden;
+		}
+		@include fs-headline(4);
+		span {
+			color:#bdbdbd;
+			font-size:0.8em;
+			display: inline-block;
+			float: left;
+		}
 		p {
-			@include fs-headline(4);
+			display: inline-block;
+			float: left;
+		    width: calc(100% - 40px);
+		    margin: 0;
 			i {
 				font-style: normal;
 				font-weight: bold;
-			}
-			span {
-				color:#bdbdbd;
-				font-size:0.8em;
 			}
 		}
 	}
 
 	svg.chart {
 		width:100%;
-		height:300px;
-		
-		
+		height:360px;
 
 		g.line {
 			&.hidden {
@@ -136,7 +143,7 @@
 			.country {
 				circle {
 					//stroke:none;
-					stroke-width:2;
+					stroke-width:1;
 					fill-opacity:0.8;
 					//fill:#005689;
 				}
@@ -173,6 +180,10 @@
 						stroke:none;
 						fill-opacity:0;
 					}
+
+					g.big-label {
+						display: none;
+					}
 				}
 
 				&.highlight {
@@ -198,15 +209,15 @@
 
 				&.selected {
 					circle {
-						stroke:#000;
-						stroke-width:2;
+						//stroke:#000;
+						stroke-width:1;
 						fill-opacity:1;
 					}
 					text {
 						visibility: visible;
 					}
 					line {
-						stroke:#000 !important;
+						//stroke:#000 !important;
 						stroke-opacity:1;
 						stroke-width:3;
 					}
@@ -220,14 +231,14 @@
 				&.you {
 					circle {
 						//stroke:#000;
-						stroke-width:2;
+						stroke-width:1;
 						fill-opacity:1;
 					}
 					text {
 						visibility: visible;
 					}
 					line {
-						stroke:#000 !important;
+						//stroke:#000 !important;
 						stroke-opacity:1;
 						stroke-width:3;
 					}
@@ -239,18 +250,109 @@
 				}
 			}	
 		}
+
+		
 		
 	}
+
+	&.your {
+		.legend ul {
+			li {
+				color:#bdbdbd;
+				span {
+					background-color:#bdbdbd;
+				}
+			}
+		}
+		svg.chart {
+			.countries {
+				.country {
+					circle {
+						visibility: hidden;
+
+					}
+					&.selected {
+						circle {
+							visibility: visible;
+						}
+						line.slope {
+							stroke-opacity:1;
+							stroke-width:3;
+						}
+					}
+					&.highlight {
+						circle {
+							visibility: visible;
+							stroke-width:2;
+						}
+						line.slope {
+							stroke-opacity:1;
+							stroke-width:5;
+						}
+						g.value {
+							text.country-value,
+							text.country-name,
+							circle.c {
+								visibility: hidden;	
+							}
+							
+						}
+					}
+					&.you {
+						circle {
+							visibility: visible;
+						}
+
+					}
+					.value {
+						g.big-label {
+							display: block;
+							text {
+								@include fs-textSans(1);
+							}
+							text.value {
+								text-anchor:middle;
+								font-size:24px;
+								font-weight: bold;
+								
+								tspan.unit {
+									font-size:16px;
+								}
+							}
+							text.guess {
+								text-anchor:end;
+								font-size:16px;
+								
+								tspan.country {
+									text-transform: capitalize;	
+									text-decoration: underline;
+									text-decoration-color: #ddd;
+								}
+
+								tspan.value {
+									font-size:24px;
+									font-weight: bold;
+								}
+							}
+							
+						}
+					}
+				}	
+			}
+		}
+	}
+
 	.call2action {
 		width: 100%;
 		text-align: right;
-		color: #005689;
-		font-size: 16px;
+		@include fs-textSans(1);
+		font-size: 12px;
+		color: #bdbdbd;
 		margin:20px 0;
 
 		svg {
 			path {
-				fill:#005689;
+				fill:#bdbdbd;
 			}
 		}
 	}
