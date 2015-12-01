@@ -1,6 +1,7 @@
 import iframeMessenger from 'guardian/iframe-messenger'
 import mainHTML from './text/main.html!text'
 import questions from '../assets/data/questions.json!json';
+import ranking from '../assets/data/ranking.json!json';
 import iso from '../assets/data/iso.json!json';
 import d3 from 'd3'
 import Flow from './components/Flow';
@@ -101,7 +102,7 @@ export function init(el, context, config, mediator) {
             })
             
             //console.log(country_info)
-
+            /*
             let ranking=data.map((d)=>{
                 return {
                     country:d.country,
@@ -119,21 +120,15 @@ export function init(el, context, config, mediator) {
                             if(question.range) {
                                 st_acc_score=accuracy_score;
                             }
-                            /*
-                            if(d.country=="France") {
-                                if(question.range) {
-                                    console.log("!")
-                                }
-                                console.log(d.country,question,q.mean,q.actual,accuracy_score,Pm,sdm,st_acc_score)
-                            }
-                            */
+                            
                             return accuracy_score;
                         }
                         return 0;
                     })
                 }
             })
-            console.log(ranking.sort((a,b)=>(a.standardized-b.standardized)))
+            */
+            //console.log(ranking.sort((a,b)=>(a.standardized-b.standardized)))
             
 
             //return;

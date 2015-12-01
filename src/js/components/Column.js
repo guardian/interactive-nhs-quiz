@@ -3,7 +3,7 @@
 export default class Column {
 
 	constructor(data,options) {
-		console.log(data,options);
+		//console.log(data,options);
 
 		
 
@@ -13,10 +13,10 @@ export default class Column {
 		this.question=options.question;
 
 		this.data=this._filterData(data);
-		console.log(this.data)
+		//console.log(this.data)
 
 		this._setExents(this.data);
-		console.log(this.extents)
+		//console.log(this.extents)
 
 		this.container=d3.select(options.container)
 
@@ -59,7 +59,7 @@ export default class Column {
 	}
 	_filterData(data) {
 		return data.map((d)=>{
-			//console.log(this.question)
+			////console.log(this.question)
 			return {
 				country:d.country,
 				question:d.questions.find((q)=>{
@@ -68,7 +68,7 @@ export default class Column {
 			}
 
 		}).filter((d)=>{
-			//console.log("------>",d)
+			////console.log("------>",d)
 			return !isNaN(d.question.mean) && !isNaN(d.question.actual)
 		})
 	}
@@ -90,8 +90,8 @@ export default class Column {
 			"005":"samerica",
 			"013":"samerica"
 		}
-		//console.log(country)
-		//console.log(region_codes[this.options.country_info[country]["region-code"]])
+		////console.log(country)
+		////console.log(region_codes[this.options.country_info[country]["region-code"]])
 
 		if(sub_region_codes[this.options.country_info[country]["sub-region-code"]]) {
 			return sub_region_codes[this.options.country_info[country]["sub-region-code"]]

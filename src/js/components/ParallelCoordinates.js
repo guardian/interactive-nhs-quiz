@@ -9,7 +9,7 @@ export default class ParallelCoordinates {
 		this.options=options;
 		this.data=data;
 
-		console.log("ParallelCoordinates",this.options,this.data)
+		//console.log("ParallelCoordinates",this.options,this.data)
 
 		this.rows={};
 
@@ -20,10 +20,10 @@ export default class ParallelCoordinates {
 	}
 	_setExtents() {
 
-		console.log(this.data)
+		//console.log(this.data)
 		let diffs=[];
 		this.data.forEach(function(d){
-			//console.log(d)
+			////console.log(d)
 			d.questions.forEach(function(q){
 				diffs.push(q["difference (mean-actual)"])
 			})
@@ -45,23 +45,29 @@ export default class ParallelCoordinates {
 					.attr("class","parallel-coordinates");
 
 		let __data=this.options.questions.filter((d,i)=>{
+					////console.log(d,this.data.find((c)=>c.country===this.options.country))
+					let dd=this.data.find((c)=>c.country===this.options.country),
+						qq=dd.questions.find((q)=>q.question===d.id);
+					////console.log(qq)
+
+					return !isNaN(qq.mean);
+
 					return 1;
 					return d==="1";
 		});
-
+		
+		console.log("CREATING ",this.options.questions.length,"ROWS",this.options.questions)
 		let column=pc.selectAll("div."+(rows?"row":"column"))
-				.data(__data).sort((a,b)=>{
-					return a.index-b.index
-				})
+				.data(this.options.questions)
 				.enter()
 				.append("div")
 					.attr("class",rows?"row":"column")
-					.each(function(d){
+					.each(function(d,i){
 						if(rows) {
 							/*let q=self.options.questions.find((q)=>{
 											return q.id==d;
 										});*/
-							//console.log("Q!!!!",q,d)
+							////console.log("Q!!!!",q,d)
 							self.rows[d.id]=new Row(self.data,
 									{
 										container:this,
@@ -69,7 +75,8 @@ export default class ParallelCoordinates {
 										last:d.index===self.options.questions.length-1,
 										//qs:self.options.questions,
 										//l:self.options.questions.length,
-										n:__data.length,
+										i:i,
+										n:self.options.questions.length,
 										question:d,
 										visible:d.id===self.options.question,
 										extents:self.extents,
@@ -77,7 +84,7 @@ export default class ParallelCoordinates {
 										country_info:self.options.country_info,
 										isSmallScreen:isSmallScreen,
 										nextCallback:function(index,info){
-											//console.log("INFO INFO INFO",info)
+											////console.log("INFO INFO INFO",info)
 											self.options.nextCallback(index,info)
 										}//self.options.nextCallback
 									}
@@ -88,6 +95,7 @@ export default class ParallelCoordinates {
 	}
 
 	nextQuestion(qid) {
+		//console.log("nextQuestion",qid)
 		this.options.question=qid;
 		this.rows[qid].show();
 	}
