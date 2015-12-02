@@ -602,16 +602,18 @@ export default class Row extends Column {
 				})
 		big_label.append("line")
 				.attr("x1",(d)=>{
-					let x=0;
-					if(d.x_mean<100) {
-						x=100-d.x_mean;
+					let x=0,
+						delta=this.isSmallScreen?35:100
+					if(d.x_mean<delta) {
+						x=delta-d.x_mean;
 					}
 					return -x;
 				})
 				.attr("x2",(d)=>{
-					let x=0;
-					if(d.x_mean<100) {
-						x=100-d.x_mean;
+					let x=0,
+						delta=this.isSmallScreen?35:100
+					if(d.x_mean<delta) {
+						x=delta-d.x_mean;
 					}
 					return -x;
 				})
@@ -721,24 +723,27 @@ export default class Row extends Column {
 				.attr("class","big-label")
 				//.attr("transform",`translate(0,${-(this.margins.top)})`)
 				.attr("transform",(d)=>{
-					let x=0;
-					if(d.x_actual<100) {
-						x=100-d.x_actual;
+					let x=0,
+						delta=this.isSmallScreen?35:100
+					if(d.x_actual<delta) {
+						x=delta-d.x_actual;
 					}
 					return `translate(${x},${-(this.margins.top)})`
 				})
 		big_label.append("line")
 				.attr("x1",(d)=>{
-					let x=0;
-					if(d.x_actual<100) {
-						x=100-d.x_actual;
+					let x=0,
+						delta=this.isSmallScreen?35:100
+					if(d.x_actual<delta) {
+						x=delta-d.x_actual;
 					}
 					return -x;
 				})
 				.attr("x2",(d)=>{
-					let x=0;
-					if(d.x_actual<100) {
-						x=100-d.x_actual;
+					let x=0,
+						delta=this.isSmallScreen?35:100
+					if(d.x_actual<delta) {
+						x=delta-d.x_actual;
 					}
 					return -x;
 				})
@@ -746,7 +751,7 @@ export default class Row extends Column {
 				.attr("y2",this.margins.top-14)
 		text_guess=big_label.append("text")
 				.attr("class","guess")
-				.attr("dx",35);
+				.attr("dx",this.isSmallScreen?35:0);
 		
 		text_guess.append("tspan")
 				.attr("class","country")
