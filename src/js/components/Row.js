@@ -603,7 +603,7 @@ export default class Row extends Column {
 		big_label.append("line")
 				.attr("x1",(d)=>{
 					let x=0,
-						delta=this.isSmallScreen?35:100
+						delta=this.options.isSmallScreen?35:100
 					if(d.x_mean<delta) {
 						x=delta-d.x_mean;
 					}
@@ -611,7 +611,7 @@ export default class Row extends Column {
 				})
 				.attr("x2",(d)=>{
 					let x=0,
-						delta=this.isSmallScreen?35:100
+						delta=this.options.isSmallScreen?35:100
 					if(d.x_mean<delta) {
 						x=delta-d.x_mean;
 					}
@@ -724,7 +724,7 @@ export default class Row extends Column {
 				//.attr("transform",`translate(0,${-(this.margins.top)})`)
 				.attr("transform",(d)=>{
 					let x=0,
-						delta=this.isSmallScreen?35:100
+						delta=this.options.isSmallScreen?35:100
 					if(d.x_actual<delta) {
 						x=delta-d.x_actual;
 					}
@@ -733,7 +733,7 @@ export default class Row extends Column {
 		big_label.append("line")
 				.attr("x1",(d)=>{
 					let x=0,
-						delta=this.isSmallScreen?35:100
+						delta=this.options.isSmallScreen?35:100
 					if(d.x_actual<delta) {
 						x=delta-d.x_actual;
 					}
@@ -741,7 +741,7 @@ export default class Row extends Column {
 				})
 				.attr("x2",(d)=>{
 					let x=0,
-						delta=this.isSmallScreen?35:100
+						delta=this.options.isSmallScreen?35:100
 					if(d.x_actual<delta) {
 						x=delta-d.x_actual;
 					}
@@ -751,7 +751,7 @@ export default class Row extends Column {
 				.attr("y2",this.margins.top-14)
 		text_guess=big_label.append("text")
 				.attr("class","guess")
-				.attr("dx",this.isSmallScreen?35:0);
+				.attr("dx",35);//this.options.isSmallScreen?0:35);
 		
 		text_guess.append("tspan")
 				.attr("class","country")

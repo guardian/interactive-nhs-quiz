@@ -300,8 +300,8 @@ export default class Flow {
 		d3.select(".share")
 			.select("p")
 				.text(tweet);
-
-		let shareLink=share(tweet,window.location.origin+window.location.pathname,"");
+		let url="http://www.theguardian.com/world/ng-interactive/2015/dec/02/how-well-do-you-really-know-your-country-take-our-quiz";
+		let shareLink=share(tweet,url,"");
 
 		d3.select(".share")
 			.selectAll("button.interactive-share")
