@@ -20,6 +20,14 @@
 			margin:0;
 			float:right;
 		}
+
+		&.disabled,
+        &.disabled:hover {
+            
+            background-color: #bdbdbd;
+            cursor: default;
+            pointer-events: none;
+        }
 	}
 	.confirm-btn.next {
 		display: block;

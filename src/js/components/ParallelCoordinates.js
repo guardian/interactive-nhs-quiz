@@ -56,7 +56,7 @@ export default class ParallelCoordinates {
 					return d==="1";
 		});
 		
-		console.log("CREATING ",this.options.questions.length,"ROWS",this.options.questions)
+		//console.log("CREATING ",this.options.questions.length,"ROWS",this.options.questions)
 		let column=pc.selectAll("div."+(rows?"row":"column"))
 				.data(this.options.questions)
 				.enter()

@@ -2,7 +2,7 @@ const twitterBaseUrl = 'https://twitter.com/intent/tweet?text=';
 const facebookBaseUrl = 'https://www.facebook.com/sharer/sharer.php?ref=responsive&u=';
 const googleBaseUrl = 'https://plus.google.com/share?url=';
 
-export default function share(title, shareURL, hashTag) {
+export function share(title, shareURL, hashTag) {
     return function (network, extra='') {
         var twitterMessage = `${extra}${title} ${hashTag}`;
         var shareWindow;

@@ -99,8 +99,9 @@
 	    .btn {
 	    	margin-top:15px;
 	    	@include mq(tablet) {
-	    		float: left;
+	    		float: right;
 	    		margin-top:0px;
+	    		margin-right: 30px;
 	    	}
 
 	    }

@@ -241,7 +241,7 @@ export default class Row extends Column {
 			.on("dragstart", () => {
 				d3.event.sourceEvent.stopPropagation(); // silence other listeners
 				//this.my.select("text.inactive").classed("inactive",false)
-					
+				this.confirmButton.classed("disabled",false)
 			})
 			.on("dragend",function(){
 
@@ -328,6 +328,7 @@ export default class Row extends Column {
 		this.confirmButton=this.container.append("button")
 								.attr("class","confirm-btn confirm")
 								.text("See your results")
+								.classed("disabled",true)
 								.on("click",()=>{
 									
 

@@ -1,4 +1,6 @@
 import ParallelCoordinates from './ParallelCoordinates';
+import { share } from '../lib/share';
+
 export default class Flow {
 	constructor(data,options) {
 
@@ -16,7 +18,7 @@ export default class Flow {
 		});
 		this.options.country=this.COUNTRY;
 		//alert(this.COUNTRY)
-		console.log(this.COUNTRY)
+		//console.log(this.COUNTRY)
 
 
 		this._buildCountrySelector();
@@ -183,7 +185,11 @@ export default class Flow {
 
 						})
 						.selectAll("option")
-						.data(this.data.map((d)=>d.country))
+						.data(this.data.map((d)=>d.country).sort((a,b)=>{
+							if(a < b) return -1;
+						    if(a > b) return 1;
+						    return 0;
+						}))
 						.enter()
 						.append("option")
 							.attr("value",(d)=>d)
@@ -193,7 +199,7 @@ export default class Flow {
 
 	_buildRanking(){
 		
-		console.log("BUILD RANKING",this.user)
+		//console.log("BUILD RANKING",this.user)
 
 
 		let avg={
@@ -250,7 +256,7 @@ export default class Flow {
 		}));
 	}
 	_buildShare(values) {
-		console.log("_buildShare",values)
+		//console.log("_buildShare",values)
 
 		let you=values.find((d)=>d.country==="YOU"),
 			country=values.find((d)=>d.country===this.options.country);
@@ -294,6 +300,17 @@ export default class Flow {
 		d3.select(".share")
 			.select("p")
 				.text(tweet);
+
+		let shareLink=share(tweet,window.location.origin+window.location.pathname,"");
+
+		d3.select(".share")
+			.selectAll("button.interactive-share")
+			.on("click",function(){
+				let _this=d3.select(this),
+					network=_this.attr("data-network");
+				shareLink(network)
+			})
+
 	}
 	_getCountryArea(country) {
 

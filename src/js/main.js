@@ -42,7 +42,7 @@ export function init(el, context, config, mediator) {
             return d;
         },(all_data)=>{
 
-            console.log(all_data);
+            //console.log(all_data);
 
             all_data.forEach((d)=>{
                 let __type=d.type.trim().toLowerCase(),
