@@ -245,7 +245,10 @@ form {
     overflow: hidden;
 
     ul {
-     
+            
+            list-style: none !important;
+            list-style-type: none !important;
+
             margin:0;
             
             padding:0;
