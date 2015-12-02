@@ -26,6 +26,9 @@ $colors-stroke-list: $africa_stroke, $europe_stroke, $oceania_stroke, $namerica_
         fill: $current-color;
         stroke: nth($colors-stroke-list, $i);
     }
+    .my path.#{nth($countries-list, $i)} {
+        stroke: nth($colors-stroke-list, $i);
+    }
 	.country.highlight line.slope.#{nth($countries-list, $i)} {
         stroke: nth($colors-stroke-list, $i) !important;
     }

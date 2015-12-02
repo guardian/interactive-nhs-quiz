@@ -250,10 +250,10 @@ export default class Row extends Column {
 		function dragmove(d) {
 		  	d3.select(this)
 		  		.attr("transform",()=>{
-		  			console.log(d3.event,d.x_mean,__Y)
+		  			//console.log(d3.event,d.x_mean,__Y)
 		  			let x=d.x_mean+d3.event.dx,
 		  				y=__Y;
-		  			console.log(d.x_mean,d3.event.dx)
+		  			//console.log(d.x_mean,d3.event.dx)
 		  			
 		  			x=x<self.xscale.range()[0]?self.xscale.range()[0]:x;
 		  			x=x>self.xscale.range()[1]?self.xscale.range()[1]:x;
@@ -296,7 +296,16 @@ export default class Row extends Column {
 					})
 					.attr("filter","url(#dropshadow)")
 					
-		
+		this.my.append("path")
+					.attr("d","m20,-7l7,7l-7,7")
+					.attr("class",(d)=>{
+						return "float-right "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+					})
+		this.my.append("path")
+					.attr("d","m-20,-7l-7,7l7,7")
+					.attr("class",(d)=>{
+						return "float-left "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+					})
 		this.my
 			.append("text")
 					.attr("class","country-value inactive")

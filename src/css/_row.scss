@@ -1,3 +1,14 @@
+@keyframes float-left {
+  0%   {transform: translateX(0)}
+  50%  {transform: translateX(-5px)} 
+  0% {transform: translateX(0)}
+}
+@keyframes float-right {
+  0%   {transform: translateX(0)}
+  50%  {transform: translateX(5px)} 
+  0% {transform: translateX(0)}
+}
+
 .row {
 	width:100%;
 	margin-bottom:30px;
@@ -43,6 +54,18 @@
 	&.inactive {
 		opacity: 0.2;
 		pointer-events: none;
+
+		svg.chart {
+			g.countries {
+				&.my {
+					.country.you {
+						path {
+							display: none;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	.chart-container {
@@ -148,6 +171,11 @@
 		
 		.countries {
 			&.my {
+
+				
+
+				
+
 				.country.you {
 					cursor: ew-resize;
 					circle {
@@ -155,7 +183,17 @@
 						stroke-width:1;
 						//fill:$you;
 					}
-
+					path {
+						stroke-width:2;
+						fill:none;
+						&.float-left{
+							animation: float-left 1s ease infinite;	
+						}
+						&.float-right{
+							animation: float-right 1s ease infinite;	
+						}
+						
+					}
 					text {
 						
 						@include fs-textSans(4);

@@ -96,7 +96,7 @@ export default class Flow {
 
 				this._buildRanking();
 				//console.log("REMIND TO ACTIVATE XHR")
-				return;
+				//return;
 				d3.xhr("http://ec2-54-72-6-69.eu-west-1.compute.amazonaws.com/")
 					.header("Content-Type", "application/json")
 					.post(JSON.stringify(obj),function(error,data){
