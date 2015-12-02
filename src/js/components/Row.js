@@ -1,6 +1,7 @@
 import Column from './Column'
 import { hasTouchScreen } from '../lib/detect'
 import { getViewport } from '../lib/detect'
+import { detectIE } from '../lib/detect'
 
 export default class Row extends Column {
 
@@ -8,7 +9,7 @@ export default class Row extends Column {
 		super(data,options)
 
 		//console.log("ROW",options)
-		
+		this.IE=detectIE();
 		this._addYourSlider();
 
 		this.touch=false;
@@ -287,14 +288,17 @@ export default class Row extends Column {
 								})
 								.call(drag);
 
-		this.my.append("circle")
+		let c=this.my.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
 					.attr("r",18)
 					.attr("class",(d)=>{
 						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
-					.attr("filter","url(#dropshadow)")
+		if(!this.IE) {
+			c.attr("filter","url(#dropshadow)")
+		}
+					
 					
 		this.my.append("path")
 					.attr("d","m20,-7l7,7l-7,7")
