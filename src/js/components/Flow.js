@@ -272,8 +272,12 @@ export default class Flow {
 
 		if(country && country.adj) {
 			diff=country.adj/you.adj;
+			let the_country=country.country;
+			if(the_country==="UK" || the_country==="United States" || the_country==="Netherlands") {
+				the_country="the "+the_country
+			}
 			tweets=tweets.map((d)=>{
-				return d.replace(/\[Country\]/gi,country.country)
+				return d.replace(/\[Country\]/gi,the_country)
 			})
 		}
 

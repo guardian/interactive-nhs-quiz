@@ -54,11 +54,11 @@ function isReload() {
     }
 }
 
-function isIOS() {
+export function isIOS() {
     return /(iPad|iPhone|iPod touch)/i.test(navigator.userAgent);
 }
 
-function isAndroid() {
+export function isAndroid() {
     return /Android/i.test(navigator.userAgent);
 }
 

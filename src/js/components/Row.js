@@ -2,6 +2,7 @@ import Column from './Column'
 import { hasTouchScreen } from '../lib/detect'
 import { getViewport } from '../lib/detect'
 import { detectIE } from '../lib/detect'
+import { isAndroid } from '../lib/detect'
 
 export default class Row extends Column {
 
@@ -11,6 +12,7 @@ export default class Row extends Column {
 		//console.log("ROW",options)
 		this.IE=detectIE();
 		this._addYourSlider();
+		this.isAndroid=isAndroid();
 
 		this.touch=false;
 		//this._addCountries();
@@ -45,7 +47,18 @@ export default class Row extends Column {
 				.attr("class","q-title")
 				.append("div")
 					.html((d,i)=>{
-						return "<span>"+((this.options.i+1)+(this.options.isSmallScreen?(" of "+this.options.n):""))+".</span><p>"+this.options.question.question.replace(/\[Country\]/gi,"<i>"+this.options.country+"</i>")+"</p>";
+
+						let the_country = this.options.country;
+
+						if(the_country==="UK" || the_country==="United States" || the_country==="Netherlands") {
+							the_country="the "+the_country
+						}
+
+						let the_question = this.options.question.question.replace(/\[Country\]/gi,the_country);
+
+						the_question=the_question.replace(/(the the)/gi,"the");
+
+						return "<span>"+((this.options.i+1)+(this.options.isSmallScreen?(" of "+this.options.n):""))+".</span><p>"+the_question+"</p>";
 					})
 
 		let chart_container=this.container.append("div")
@@ -62,6 +75,11 @@ export default class Row extends Column {
 						this.touch=true;
 
 						if(this.voronoi_centers) {
+
+							if (this.isAndroid && window.GuardianJSInterface) {
+								window.GuardianJSInterface.registerRelatedCardsTouch(true);
+							}
+
 							d3.event.preventDefault();
 					    	let touch=d3.event.targetTouches[0];
 
@@ -77,6 +95,9 @@ export default class Row extends Column {
 					})
 					.on("touchend",()=>{
 						this.touch=false;
+						if (this.isAndroid && window.GuardianJSInterface) {
+							window.GuardianJSInterface.registerRelatedCardsTouch(false);
+						}
 					})
 					.on("touchmove",()=>{
 							if(this.container.classed("your")) {
