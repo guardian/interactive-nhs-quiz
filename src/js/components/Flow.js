@@ -243,9 +243,58 @@ export default class Flow {
 					})
 					.classed("you",(d)=>d.country==="YOU")
 					.classed("selected",(d)=>d.country===this.options.country)
-					.html((d,i)=>("<span>"+(i<10?"0":"")+(i+1)+".</span> "+d.country))
-	}
+					.html((d,i)=>("<span>"+(i<9?"0":"")+(i+1)+".</span> "+d.country))
 
+		this._buildShare(ranking.filter((c)=>{
+			return c.country==="YOU" || c.country===this.options.country
+		}));
+	}
+	_buildShare(values) {
+		console.log("_buildShare",values)
+
+		let you=values.find((d)=>d.country==="YOU"),
+			country=values.find((d)=>d.country===this.options.country);
+
+		let diff="---";
+
+		let tweets=([
+			"I know [Country] better than people in [Country]! How well do you know your country? Take the quiz ",
+			"I don't know [Country] as well as people in [Country] :( How well do you know your country? Take the quiz ",
+			"I know [Country] just as well as people in [Country]. How well do you know your country? Take the quiz ",
+			"How well do you really know your country? Take the quiz"
+		])
+
+		if(country && country.adj) {
+			diff=country.adj/you.adj;
+			tweets=tweets.map((d)=>{
+				return d.replace(/\[Country\]/gi,country.country)
+			})
+		}
+
+		
+
+		
+
+		//console.log(country,"/",you,diff)
+
+		let tweet=tweets[2];
+
+		if(diff==="---") {
+			tweet=tweets[3]
+		}
+
+		if(diff>1.4) {
+			tweet=tweets[0]
+		}
+
+		if(diff<0.6) {
+			tweet=tweets[1]
+		}
+
+		d3.select(".share")
+			.select("p")
+				.text(tweet);
+	}
 	_getCountryArea(country) {
 
 		if(country==="YOU") {
