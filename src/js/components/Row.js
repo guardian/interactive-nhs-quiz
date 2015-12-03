@@ -74,12 +74,13 @@ export default class Row extends Column {
 						
 						this.touch=true;
 
-						if(this.voronoi_centers) {
-
-							if (this.isAndroid && window.GuardianJSInterface) {
+						if (this.isAndroid && window.GuardianJSInterface) {
 								window.GuardianJSInterface.registerRelatedCardsTouch(true);
 							}
 
+						if(this.voronoi_centers) {
+
+					
 							d3.event.preventDefault();
 					    	let touch=d3.event.targetTouches[0];
 
@@ -264,8 +265,16 @@ export default class Row extends Column {
 				d3.event.sourceEvent.stopPropagation(); // silence other listeners
 				//this.my.select("text.inactive").classed("inactive",false)
 				this.confirmButton.classed("disabled",false)
+				if (this.isAndroid && window.GuardianJSInterface) {
+								window.GuardianJSInterface.registerRelatedCardsTouch(true);
+							}
+
 			})
 			.on("dragend",function(){
+
+				if (this.isAndroid && window.GuardianJSInterface) {
+								window.GuardianJSInterface.registerRelatedCardsTouch(false);
+							}
 
 			})
 		let __Y=self.yscale("mean")+self.padding.top;
