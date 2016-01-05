@@ -1,6 +1,6 @@
 import Column from './Column';
 import Row from './Row';
-import { getViewport } from '../lib/detect'
+import { getViewport } from '../lib/detect';
 
 export default class ParallelCoordinates {
 
@@ -13,7 +13,7 @@ export default class ParallelCoordinates {
 
 		this.rows={};
 
-		this.container=d3.select(options.container)
+		this.container=d3.select(options.container);
 
 		this._setExtents();
 		this._buildChart(true);
@@ -25,7 +25,7 @@ export default class ParallelCoordinates {
 		this.data.forEach(function(d){
 			////console.log(d)
 			d.questions.forEach(function(q){
-				diffs.push(q["difference (mean-actual)"])
+				diffs.push(q["difference (mean-actual)"]);
 			})
 		})
 
