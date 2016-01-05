@@ -10,24 +10,22 @@ export default class Flow {
 		this.options=options;
 
 		let search=window.location.search.replace(/\?/gi,""),
-			rankings=this.options.ranking.map((d)=>d.country);
+			rankings=[];
 
-		////console.log(search,rankings)
-		this.COUNTRY=rankings.find((d)=>{
-			return d.toLowerCase() == search.toLowerCase();
-		});
-		this.options.country=this.COUNTRY;
-		//alert(this.COUNTRY)
-		//console.log(this.COUNTRY)
+		this.COUNTRY=this.options.country;
+		
+		console.log(data)
+		console.log(options)
 
-
-		this._buildCountrySelector();
-		this._buildRestartCountrySelector();
+		//this._buildCountrySelector();
+		//this._buildRestartCountrySelector();
 		
 		this.user={
 			questions:[
 			]
 		};
+
+		this._buildCharts(-1);
 
 		//this.currentQuestion=-1;
 		//new ParallelCoordinates(this.data,this.options)
@@ -228,32 +226,43 @@ export default class Flow {
 			};
 
 		//console.log(avg)
-		let ranking=this.options.ranking.concat([
+		/*let ranking=this.options.ranking.concat([
 			{
 				country:"YOU",
 				adj:Math.round(d3.sum(avg.adj)*(122/171.85))
 			}
-		]);
+		]);*/
 
 
 
 		d3.select("#ranking")
 			.classed("hidden",false)
-			.select("ul")
+			
+			/*.select("ul")
 			.selectAll("li")
 				.data(ranking.sort((a,b)=>(a.adj-b.adj)))
 				.enter()
 				.append("li")
 					.attr("class",(d)=>{
-						return this._getCountryArea(d.country);
+						return d.country;//this._getCountryArea(d.country);
 					})
 					.classed("you",(d)=>d.country==="YOU")
 					.classed("selected",(d)=>d.country===this.options.country)
-					.html((d,i)=>("<span>"+(i<9?"0":"")+(i+1)+".</span> "+d.country))
+					.html((d,i)=>("<span>"+(i<9?"0":"")+(i+1)+".</span> "+d.country))*/
 
-		this._buildShare(ranking.filter((c)=>{
+		/*this._buildShare(ranking.filter((c)=>{
 			return c.country==="YOU" || c.country===this.options.country
-		}));
+		}));*/
+		this._buildShare([
+			{
+				country:"YOU",
+				adj:Math.round(d3.sum(avg.adj)*(122/171.85))
+			},
+			{
+				country:"UK",
+				adj:Math.round(d3.sum(avg.adj)*(122/171.85))	
+			}
+		])
 	}
 	_buildShare(values) {
 		//console.log("_buildShare",values)

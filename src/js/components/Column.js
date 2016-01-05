@@ -72,7 +72,7 @@ export default class Column {
 			return !isNaN(d.question.mean) && !isNaN(d.question.actual)
 		})
 	}
-	_getCountryArea(country) {
+	/*_getCountryArea(country) {
 
 		if(country==="YOU") {
 			return "you";
@@ -98,7 +98,7 @@ export default class Column {
 		}
 		
 		return region_codes[this.options.country_info[country]["region-code"]]
-	}
+	}*/
 	_addDefsShadow(defs) {
 		defs.append("filter")
 				.attr("id","dropshadow")

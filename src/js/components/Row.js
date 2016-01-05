@@ -23,15 +23,15 @@ export default class Row extends Column {
 
 		this.margins={
 			top:50,
-			left:15,//this.options.isSmallScreen?5:30,
+			left:25,//this.options.isSmallScreen?5:30,
 			bottom:36,
-			right:15//this.options.isSmallScreen?5:30
+			right:25//this.options.isSmallScreen?5:30
 		}
 		this.padding={
 			top:40,
-			left:20,//this.options.isSmallScreen?0:50,
+			left:30,//this.options.isSmallScreen?0:50,
 			bottom:40,
-			right:20//this.options.isSmallScreen?0:30
+			right:30//this.options.isSmallScreen?0:30
 		}
 
 		
@@ -67,7 +67,7 @@ export default class Row extends Column {
 		this.svg = chart_container
 					.append("svg")
 					.attr("class","chart")
-					.on("touchstart",()=>{
+					/*.on("touchstart",()=>{
 						if(this.container.classed("your")) {
 							return;
 						}
@@ -123,8 +123,8 @@ export default class Row extends Column {
 						if(this.voronoi_centers) {
 							this.highlightCountry()
 						}
-					})
-		this._addLegend();
+					})*/
+		//this._addLegend();
 		let defs=this.svg.append("defs");
 		this._addDefsShadow(defs);
 		
@@ -139,19 +139,21 @@ export default class Row extends Column {
 		let w=WIDTH-(this.margins.left+this.padding.left+this.margins.right+this.padding.right),
 			h=HEIGHT-(this.margins.top+this.padding.top+this.margins.bottom+this.padding.bottom);
 
-		this.xscale=d3.scale.linear().domain(this.extents.values).range([0,w]).nice()
+		
+		console.log(this.extents)
+		this.xscale=d3.scale.linear().domain(this.extents.values).range([0,w]);//.nice()
 
 		
 
 		this.yscale=d3.scale.ordinal().domain(["mean","actual"]).rangePoints([0,h])
 		this.colorscale=d3.scale.linear().domain(this.extents.difference).range(["#b82266","#298422","#b82266"])
 		
-		this.voronoi = d3.geom.voronoi()
-    					.clipExtent([[-2, -2], [w + 2, HEIGHT + 2]]);
+		//this.voronoi = d3.geom.voronoi()
+    	//				.clipExtent([[-2, -2], [w + 2, HEIGHT + 2]]);
     	
 
 		this.line=this.svg.selectAll("g.line")
-					.data(["mean","actual"])
+					.data(["mean"])//,"actual"
 					.enter()
 					.append("g")
 					.attr("class","line")
@@ -184,7 +186,7 @@ export default class Row extends Column {
 					return 4;
 				})
 				//.text((this.options.question.range?this.options.question.range[0]:"0")+(this.options.question.units||""))
-				.text(this.xscale.domain()[0]+(this.options.question.units||""))
+				.text(d3.format(",.0f")(this.xscale.domain()[0])+(this.options.question.units||""))
 		this.line
 			.append("text")
 				.attr("class","hundred")
@@ -198,18 +200,16 @@ export default class Row extends Column {
 					return 4;
 				})
 				//.text((this.options.question.range?this.options.question.range[1]:"100")+(this.options.question.units||""))
-				.text(this.xscale.domain()[1]+(this.options.question.units||""))
+				.text(d3.format(",.0f")(this.xscale.domain()[1])+(this.options.question.units||""))
 				//.text("100%")
 
-		this.line
+		/*this.line
 			.append("text")
 				.attr("class","title")
 				.attr("x",0)//this.padding.left-3-(this.options.isSmallScreen?0:25))
 				.attr("y",(d)=>{
 					
-					/*if(this.options.isSmallScreen) {
-						return -25;
-					}*/
+					
 
 					return d==="mean"?-22:32;
 				})
@@ -218,7 +218,7 @@ export default class Row extends Column {
 						return (d==="mean"?"SURVEY":"ACTUAL");	
 					}
 					return (d==="mean"?"SURVEY ANSWERS":"ACTUAL NUMBERS");
-				})
+				})*/
 
 		this.countries=this.svg
 						.append("g")
@@ -246,7 +246,7 @@ export default class Row extends Column {
 									question:{
 										actual: my_country?my_country.question.actual:0,
 										"difference (mean-actual)": 0,
-										mean: 50,
+										mean: d3.mean(this.xscale.domain()),
 										question: this.options.question
 									}
 								}])
@@ -299,8 +299,8 @@ export default class Row extends Column {
 		  		})
 		  		.select("text.country-value")
 		  			.text((d)=>{
-		  				
-		  				return d3.format(",.0f")(d.question.mean)+(self.options.question.units||"");
+		  				let mod=d.question.mean/1000>1?1000:1;
+		  				return d3.format(",.0f")(Math.round(d.question.mean/mod)*mod)+(self.options.question.units||"");
 		  			})
 		}
 
@@ -323,7 +323,8 @@ export default class Row extends Column {
 					.attr("cy",0)
 					.attr("r",18)
 					.attr("class",(d)=>{
-						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+						return d.country=="YOU"?d.selected_country:d.country;
+						//return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 		if(!this.IE) {
 			c.attr("filter","url(#dropshadow)")
@@ -333,12 +334,14 @@ export default class Row extends Column {
 		this.my.append("path")
 					.attr("d","m20,-7l7,7l-7,7")
 					.attr("class",(d)=>{
-						return "float-right "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+						return "float-right "+(d.country=="YOU"?d.selected_country:d.country);
+						//return "float-right "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 		this.my.append("path")
 					.attr("d","m-20,-7l-7,7l7,7")
 					.attr("class",(d)=>{
-						return "float-left "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+						return "float-right "+(d.country=="YOU"?d.selected_country:d.country);
+						//return "float-left "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 		this.my
 			.append("text")
@@ -401,10 +404,10 @@ export default class Row extends Column {
 
 		this._setExents();
 
-		this.xscale.domain([
+		/*this.xscale.domain([
 			Math.min(this.extents.mean[0],this.extents.actual[0]),
 			Math.max(this.extents.mean[1],this.extents.actual[1])
-		]).nice()
+		]).nice()*/
 
 		this.line
 			.select("text.zero")
@@ -527,17 +530,7 @@ export default class Row extends Column {
 									.classed("you",(d)=>{
 										return d.country === "YOU";
 									})
-									/*.on("mouseenter",(d)=>{
-										country
-											.classed("highlight",(c)=>{
-												return c.country === d.country;
-											})
-											.filter((c)=>{
-												////console.log(c.country,d.country,this)
-												return (c.country === d.country) || (d.country === this.options.country)
-											})
-											.moveToFront()
-									})*/
+
 		this.country
 			.filter((c)=>{
 				return (c.country === this.options.country)
@@ -545,9 +538,10 @@ export default class Row extends Column {
 			.moveToFront()
 
 		
-		this.slope=this.country.append("line")
+		/*this.slope=this.country.append("line")
 						.attr("class",(d)=>{
-							return "slope "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+							return "slope "+(d.country=="YOU"?d.selected_country:d.country);
+							//return "slope "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 						})
 						.attr("x1",(d)=>{
 							return this.xscale(d.question.mean)
@@ -560,7 +554,7 @@ export default class Row extends Column {
 						})
 						.attr("y2",(d)=>{
 							return this.yscale("actual")+this.padding.top
-						})
+						})*/
 
 						
 		this.samples=[];
@@ -585,7 +579,8 @@ export default class Row extends Column {
 					.attr("cy",0)
 					.attr("r",(d)=>((this.options.country === d.country || d.country === "YOU") && your)?12:5)
 					.attr("class",(d)=>{
-						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+						return (d.country=="YOU"?d.selected_country:d.country);
+						//return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 
 					
@@ -687,7 +682,8 @@ export default class Row extends Column {
 		this.mean
 			.append("circle")
 				.attr("class",(d)=>{
-					return "c "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+					return "c "+(d.country=="YOU"?d.selected_country:d.country);
+					//return "c "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 				})
 				.attr("cx",0)
 				.attr("cy",-14)
@@ -699,7 +695,7 @@ export default class Row extends Column {
 								.attr("class","value")
 								.attr("transform",(d)=>{
 									let x=this.xscale(d.question.actual),
-										y=this.yscale("actual")+this.padding.top;
+										y=this.yscale("mean")+this.padding.top;
 
 									this.samples.push([x,y])
 
@@ -716,7 +712,8 @@ export default class Row extends Column {
 					//.attr("r",your?8:3)
 					.attr("r",(d)=>((this.options.country === d.country || d.country === "YOU") && your)?12:5)
 					.attr("class",(d)=>{
-						return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+						return (d.country=="YOU"?d.selected_country:d.country);
+						//return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 
 		this.actual
@@ -809,19 +806,20 @@ export default class Row extends Column {
 		this.actual
 			.append("circle")
 				.attr("class",(d)=>{
-					return "c "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
+					return "c "+(d.country=="YOU"?d.selected_country:d.country);
+					//return "c "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 				})
 				.attr("cx",0)
 				.attr("cy",14)
 				.attr("r",3)
 
-		this.cell = this.svg.append("g")
+		/*this.cell = this.svg.append("g")
 					    .attr("class", "voronoi")
 					    //.style("display","none")
 					    .attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`)
-					  	.selectAll("g");
+					  	.selectAll("g");*/
 
-		this._resample(10);
+		//this._resample(10);
 
 		
 		this.highlightCountry([])
@@ -1047,7 +1045,7 @@ export default class Row extends Column {
 		return found.map((d)=>{return d.country});
 
 	}
-	_findVoronoi(x,y) {
+	/*_findVoronoi(x,y) {
 
 		////console.log(x,y,this.voronoi_centers)
 		let delta=1000,
@@ -1064,8 +1062,8 @@ export default class Row extends Column {
 		let countries=this._findCountry(this.xscale.invert(found[0]),(found[1]>this.padding.top)?"actual":"mean",found[1]);
 		////console.log(countries)
 		return countries;
-	}
-	_resample(samplesPerSegment) {
+	}*/
+	/*_resample(samplesPerSegment) {
 			
 		////console.log(samples,voronoi(samples))
 		this.voronoi_data=this.voronoi(this.samples).filter((d)=>{return typeof d !== 'undefined'});
@@ -1092,7 +1090,7 @@ export default class Row extends Column {
 		
 		this.cell.select("circle").attr("transform", function(d) { return "translate(" + d.point + ")"; });
 		this.cell.select("path").attr("d", function(d) { return "M" + d.join("L") + "Z"; });
-	}
+	}*/
 	
 	show() {
 		this.container
@@ -1156,14 +1154,14 @@ export default class Row extends Column {
 			return;
 		}
 
-		this.slope.attr("x1",(d)=>{
+		/*this.slope.attr("x1",(d)=>{
 					return this.xscale(d.question.mean)
 				})
 				.attr("x2",(d)=>{
 					return this.xscale(d.question.actual)
-				});
+				});*/
 		this.samples=[];
-		this.mean.attr("transform",(d)=>{
+		/*this.mean.attr("transform",(d)=>{
 						let x=this.xscale(d.question.mean),
 							y=this.yscale("mean")+this.padding.top;
 
@@ -1182,15 +1180,15 @@ export default class Row extends Column {
 									d.x_actual=x;
 
 									return `translate(${x},${y})`;
-								})
+								})*/
 
-		if(this.voronoi_centers) {
+		/*if(this.voronoi_centers) {
 			////console.log(this.samples)
 			let w=this.WIDTH-(this.margins.left+this.padding.left+this.margins.right+this.padding.right);
 			this.voronoi.clipExtent([[-2, -2], [w + 2, this.HEIGHT + 2]]);
 			//this.cell.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`)
 			this._resample(10);
-		}
+		}*/
 	}
 	_resize() {
 		////console.log("RESIZEEEEEE",this.options.index)

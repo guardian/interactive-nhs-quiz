@@ -5,48 +5,94 @@ import mainHTML from './text/main.html!text';
 //import iso from '../assets/data/iso.json!json';
 import d3 from 'd3';
 //import addSections from './components/section';
-//import Flow from './components/Flow';
+import Flow from './components/Flow';
 
-//import { requestAnimationFrame, cancelAnimationFrame } from './lib/request-animation-frame-shim';
+import { requestAnimationFrame, cancelAnimationFrame } from './lib/request-animation-frame-shim';
 
 export function init(el, context, config, mediator) {
     iframeMessenger.enableAutoResize();
 
     el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
-
-    let dataKey = "1PMgGCWZtZGctS_TynkMZxzzvtCbwr2rM8bEFxAgLdC8",
-        dataSrc = "http://interactive.guim.co.uk/docsdata-test/" + dataKey + ".json";
-
-    d3.json(dataSrc, (json) => {
-        let data = json.sheets.Sheet1;
-
-        let sections = d3.select(".js-sections")
-        .selectAll("section")
-        .data(data).enter()
-        .append("section");
-
-        sections
-        .append("h3")
-        .text((d, i) => (i+1) + " " + d.question);
-    });
-}
-    /*
+    
     let frameRequest = requestAnimationFrame(function checkInnerHTML(time) {
-    //console.log(time)
-    var b=document.querySelector("#perils");
-    if(b && b.getBoundingClientRect().height) {
-        cancelAnimationFrame(checkInnerHTML);
-        loadData();
-        return; 
-    }
-    frameRequest = requestAnimationFrame(checkInnerHTML);
-});
+        //console.log(time)
+        var b=document.querySelector("#NHSQuiz");
+        if(b && b.getBoundingClientRect().height) {
+            cancelAnimationFrame(checkInnerHTML);
+            loadData();
+            return; 
+        }
+        frameRequest = requestAnimationFrame(checkInnerHTML);
+    });
+};
 
 function loadData() {
 
     let data=[];
     let country_info={};
-    d3.csv(config.assetPath+"/assets/data/perils2.csv",(d)=>{
+
+    let dataKey = "1PMgGCWZtZGctS_TynkMZxzzvtCbwr2rM8bEFxAgLdC8",
+        dataSrc = "http://interactive.guim.co.uk/docsdata-test/" + dataKey + ".json";
+
+    d3.json(dataSrc, (json) => {
+        let questions = json.sheets.Sheet1;
+
+        /*let sections = d3.select(".js-sections")
+                            .selectAll("section")
+                            .data(data).enter()
+                            .append("section");
+
+        sections
+            .append("h3")
+            .text((d, i) => (i+1) + " " + d.question);*/
+        console.log(questions);
+
+        
+
+//return d.answer.indexOf("-")<0
+        new Flow([
+            {
+                country:"UK",
+                questions:questions.filter((d,i)=>{return i===4;}).map((d,i)=>{
+                        let mean=((+d.min) + (+d.max))/2,
+                            actual=+d.answer;
+
+                        //console.log(d.answer,actual);
+                        //console.log(d.min,d.max,mean)
+                        return {
+                            actual:actual,
+                            range:[+d.min,+d.max],
+                            mean:mean,
+                            "difference (mean-actual)": mean-actual,
+                            question:i,
+                            source:d.source,
+                            units:d.symbol
+                        }
+                    }
+                )
+            }
+        ],{
+            country:"UK",
+            container:"#NHSQuiz",
+            questions:questions
+                        .filter((d,i)=>{return i===4;return d.answer.indexOf("-")<0})
+                        .map((d,i)=>{
+                            return {
+                                id:i,
+                                index:i,
+                                question:d.question,
+                                text:d.explanation,
+                                range:[+d.min,+d.max],
+                                units:d.symbol,
+                                source:d.source
+                            }
+                        })
+        })
+
+    });
+
+
+    /*d3.csv(config.assetPath+"/assets/data/perils2.csv",(d)=>{
         return d;
     },(all_data)=>{
 
@@ -109,39 +155,32 @@ function loadData() {
             })
         })
 
-        ;(function() {
-            var throttle = function(type, name, obj) {
-                var obj = obj || window;
-                var running = false;
-                var func = function() {
-                    if (running) { return; }
-                    running = true;
-                    requestAnimationFrame(() => {
-                        obj.dispatchEvent(new CustomEvent(name));
-                        running = false;
-                    });
-                };
-                obj.addEventListener(type, func);
-            };
-
-            //* init - you can init any event
-            throttle ("resize", "optimizedResize");
-        })();
-
-        new Flow(data,{
-            container:"#perils",
-            //questions_data:questions_data,
-            questions:questions.sort((a,b)=>(a.index-b.index)),
-                country_info:country_info,
-            ranking:ranking
-        })
     })
-}
+    */
 
 }
+
+;(function() {
+    var throttle = function(type, name, obj) {
+        var obj = obj || window;
+        var running = false;
+        var func = function() {
+            if (running) { return; }
+            running = true;
+            requestAnimationFrame(() => {
+                obj.dispatchEvent(new CustomEvent(name));
+                running = false;
+            });
+        };
+        obj.addEventListener(type, func);
+    };
+
+    //* init - you can init any event
+    throttle ("resize", "optimizedResize");
+})();
 
 d3.selection.prototype.moveToFront = function() {
     return this.each(function(){
         this.parentNode.appendChild(this);
     });
-};*/
+};
