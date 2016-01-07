@@ -413,15 +413,15 @@
 							}
 							text {
 								@include fs-textSans(1);
-								font-size:18px;
+								font-size:16px;
 							}
 							text.value {
 								text-anchor:middle;
-								font-size:22px;
+								font-size:20px;
 								font-weight: bold;
 								
 								tspan.unit {
-									font-size:18px;
+									font-size:16px;
 								}
 							}
 							text.guess {
@@ -429,7 +429,7 @@
 									text-anchor:end;	
 								}
 								
-								font-size:18px;
+								font-size:16px;
 								
 								tspan.country {
 									
@@ -438,7 +438,7 @@
 								}
 
 								tspan.value {
-									font-size:22px;
+									font-size:20px;
 									font-weight: bold;
 								}
 

@@ -53,7 +53,7 @@ function loadData() {
         new Flow([
             {
                 country:"Others",
-                questions:questions.filter((d,i)=>{return i===0;}).map((d,i)=>{
+                questions:questions.filter((d,i)=>{return 1;}).map((d,i)=>{
                         let answer=d.answer,
                             mean=((+d.min) + (+d.max))/2,
                             actual=+d.answer;
@@ -82,7 +82,7 @@ function loadData() {
             country:"Others",
             container:"#NHSQuiz",
             questions:questions
-                        .filter((d,i)=>{return i===0;return d.answer.indexOf("-")<0})
+                        .filter((d,i)=>{return 1;return d.answer.indexOf("-")<0})
                         .map((d,i)=>{
                             return {
                                 id:i,

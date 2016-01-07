@@ -83,7 +83,7 @@ export default class Flow {
 				//console.log(this.options)
 				this.pc.nextQuestion(this.options.question);
 			} else {
-				//console.log("DONE!!!! USER USER USER",this.user)
+				console.log("DONE!!!! USER USER USER",this.user)
 				let obj={
 					answers:{
 						country:this.user.country,
@@ -93,13 +93,14 @@ export default class Flow {
 				//console.log(obj)
 
 				this._buildRanking();
-				//console.log("REMIND TO ACTIVATE XHR")
+				
+				console.log("REMIND TO ACTIVATE XHR")
 				//return;
-				d3.xhr("http://ec2-54-72-6-69.eu-west-1.compute.amazonaws.com/")
+				/*d3.xhr("http://ec2-54-72-6-69.eu-west-1.compute.amazonaws.com/")
 					.header("Content-Type", "application/json")
 					.post(JSON.stringify(obj),function(error,data){
 						////console.log("SEND!")
-					})
+					})*/
 			}
 			
 		}
@@ -276,7 +277,7 @@ export default class Flow {
 			"I know [Country] better than people in [Country]! How well do you know your country? Take the quiz ",
 			"I don't know [Country] as well as people in [Country] :( How well do you know your country? Take the quiz ",
 			"I know [Country] just as well as people in [Country]. How well do you know your country? Take the quiz ",
-			"How well do you really know your country? Take the quiz"
+			"How well do you really know the NHS? Take the quiz"
 		])
 
 		if(country && country.adj) {
