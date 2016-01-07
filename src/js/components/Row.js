@@ -25,7 +25,7 @@ export default class Row extends Column {
 			top:50,
 			left:25,//this.options.isSmallScreen?5:30,
 			bottom:36,
-			right:25//this.options.isSmallScreen?5:30
+			right:30//this.options.isSmallScreen?5:30
 		}
 		this.padding={
 			top:40,
@@ -126,7 +126,7 @@ export default class Row extends Column {
 					})*/
 		//this._addLegend();
 		let defs=this.svg.append("defs");
-		this._addDefsShadow(defs);
+		//this._addDefsShadow(defs);
 		
 		let bbox=this.svg.node().getBoundingClientRect(),
 			WIDTH=bbox.width,
@@ -168,11 +168,11 @@ export default class Row extends Column {
 			.append("rect")
 				.attr("class","bg")
 				.attr("x",this.padding.left)
-				.attr("y",-4)
+				.attr("y",-3)
 				.attr("width",this.xscale.range()[1])
-				.attr("height",8)
-				.attr("rx",4)
-				.attr("ry",4)
+				.attr("height",6)
+				.attr("rx",3)
+				.attr("ry",3)
 		this.line
 			.append("text")
 				.attr("class","zero")
@@ -186,7 +186,15 @@ export default class Row extends Column {
 					return 4;
 				})
 				//.text((this.options.question.range?this.options.question.range[0]:"0")+(this.options.question.units||""))
-				.text(d3.format(",.0f")(this.xscale.domain()[0])+(this.options.question.units||""))
+				.text(this._getFormattedValue(this.xscale.domain()[0]));
+				/*.text(()=>{
+					return _getFormattedValue(this.xscale.domain()[0]);
+
+					if(this.options.question.units && this.options.units==="£") {
+						return (this.options.question.units||"")+d3.format(",.0f")(this.xscale.domain()[0])	
+					}
+					return d3.format(",.0f")(this.xscale.domain()[0])+(this.options.question.units||"")
+				})*/
 		this.line
 			.append("text")
 				.attr("class","hundred")
@@ -199,9 +207,9 @@ export default class Row extends Column {
 					*/
 					return 4;
 				})
-				//.text((this.options.question.range?this.options.question.range[1]:"100")+(this.options.question.units||""))
-				.text(d3.format(",.0f")(this.xscale.domain()[1])+(this.options.question.units||""))
-				//.text("100%")
+				.text(this._getFormattedValue(this.xscale.domain()[1]));
+				//.text(d3.format(",.0f")(this.xscale.domain()[1])+(this.options.question.units||""))
+				
 
 		/*this.line
 			.append("text")
@@ -226,7 +234,13 @@ export default class Row extends Column {
 							.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
 
 	}
-
+	_getFormattedValue(d) {
+		//console.log("GET FORMATTED VALUE",d,this.options.question.units)
+		if(this.options.question.units && this.options.question.units==="£") {
+			return "£"+d3.format(",.0f")(d)	
+		}
+		return d3.format(",.0f")(d)+(this.options.question.units||"")
+	}
 	_addYourSlider() {
 		let self=this;
 
@@ -246,6 +260,7 @@ export default class Row extends Column {
 									question:{
 										actual: my_country?my_country.question.actual:0,
 										"difference (mean-actual)": 0,
+										answer: my_country?my_country.question.answer:0,
 										mean: d3.mean(this.xscale.domain()),
 										question: this.options.question
 									}
@@ -279,6 +294,7 @@ export default class Row extends Column {
 			})
 		let __Y=self.yscale("mean")+self.padding.top;
 		function dragmove(d) {
+			//var self=this;
 		  	d3.select(this)
 		  		.attr("transform",()=>{
 		  			//console.log(d3.event,d.x_mean,__Y)
@@ -290,19 +306,27 @@ export default class Row extends Column {
 		  			x=x>self.xscale.range()[1]?self.xscale.range()[1]:x;
 		  			
 		  			d.question.mean=Math.round(self.xscale.invert(x));
+
+		  			let mod=d.question.mean/100>1?100:1;
+					d.question.mean=Math.round(d.question.mean/mod)*mod
+
 		  			d.question["difference (mean-actual)"]=d.question.mean-d.question.actual;
 		  			
 		  			d.x_mean=x;//self.xscale(d.question.mean);
 		  			
+		  			//let mod=d.question.mean/1000>1?1000:1;
+					//d.x_mean=Math.round(d.question.mean/mod)*mod;
 
 		  			return `translate(${x},${y})`;
 		  		})
 		  		.select("text.country-value")
 		  			.text((d)=>{
-		  				let mod=d.question.mean/1000>1?1000:1;
-		  				return d3.format(",.0f")(Math.round(d.question.mean/mod)*mod)+(self.options.question.units||"");
+		  				//let mod=d.question.mean/1000>1?1000:1;
+		  				return self._getFormattedValue(d.question.mean)
+		  				//return d3.format(",.0f")((d.question.mean))+(self.options.question.units||"");
 		  			})
 		}
+
 
 		this.my=this.my_country.append("g")
 								.attr("class","value")
@@ -327,20 +351,20 @@ export default class Row extends Column {
 						//return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 		if(!this.IE) {
-			c.attr("filter","url(#dropshadow)")
+			//c.attr("filter","url(#dropshadow)")
 		}
 					
 					
 		this.my.append("path")
 					.attr("d","m20,-7l7,7l-7,7")
 					.attr("class",(d)=>{
-						return "float-right "+(d.country=="YOU"?d.selected_country:d.country);
+						return "float-right";//+(d.country=="YOU"?d.selected_country:d.country);
 						//return "float-right "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 		this.my.append("path")
 					.attr("d","m-20,-7l-7,7l7,7")
 					.attr("class",(d)=>{
-						return "float-right "+(d.country=="YOU"?d.selected_country:d.country);
+						return "float-left";//+(d.country=="YOU"?d.selected_country:d.country);
 						//return "float-left "+this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 		this.my
@@ -392,7 +416,7 @@ export default class Row extends Column {
 										.select(".chart-container.init")
 										.classed("init",false)
 										
-									this._addAnalysis();
+									this._addAnalysis(self.my_country.datum());
 									if(typeof self.options.nextCallback !== 'undefined') {
 										self.options.nextCallback(self.options.i,self.my_country.datum().question);
 									}
@@ -411,10 +435,12 @@ export default class Row extends Column {
 
 		this.line
 			.select("text.zero")
-				.text(this.xscale.domain()[0]+(this.options.question.units||""))
+				.text(this._getFormattedValue(this.xscale.domain()[0]))
+				//.text(d3.format(",.0f")(this.xscale.domain()[0])+(this.options.question.units||""))
 		this.line
 			.select("text.hundred")
-				.text(this.xscale.domain()[1]+(this.options.question.units||""))
+				.text(this._getFormattedValue(this.xscale.domain()[1]))
+				//.text(d3.format(",.0f")(this.xscale.domain()[1])+(this.options.question.units||""))
 	}
 	_addNextButton(last) {
 		let self=this;
@@ -453,20 +479,31 @@ export default class Row extends Column {
 				})
 	}
 
-	_addAnalysis() {
+	_addAnalysis(datum) {
 		let self=this;
+
+		console.log(datum)
+
+		let delta=datum.question.mean-datum.question.actual,
+			text_delta=delta>0?"higher":"lower",
+			sentence="Your answer is "+(this._getFormattedValue(delta))+" "+text_delta+" than the real value";
+
+		if(delta===0) {
+			sentence="Your answer is correct!";
+		}
+
 		let analysis=this.container.append("div")
 				.attr("class","analysis hidden")
 				.html(()=>{
 					//console.log(this.options)
-					return this.options.question.text
+					return "<h3>"+sentence+"</h3>"+this.options.question.text+"<div class=\"source\">Source: "+datum.question.question.source+"</div>"
 				})
 		setTimeout(()=>{
 			analysis.classed("hidden",false)	
 		},500)
 		
 	}
-	_addLegend() {
+	/*_addLegend() {
 		let self=this;
 
 		let regions=[
@@ -515,8 +552,9 @@ export default class Row extends Column {
 					////console.log("AHHHH",your,d3.select(this))
 					d3.select(this).html(your?"Compare all countries":"See your answer")
 				})
-	}
+	}*/
 	_addCountries() {
+
 		this.line.classed("hidden",false)
 		this.country=this.countries
 							.selectAll("g.country")
@@ -557,17 +595,17 @@ export default class Row extends Column {
 						})*/
 
 						
-		this.samples=[];
+		//this.samples=[];
 
 		this.mean=this.country.append("g")
-								.attr("class","value")
+								.attr("class","value mean")
 								.attr("transform",(d)=>{
 									let x=this.xscale(d.question.mean),
 										y=this.yscale("mean")+this.padding.top;
 
 									d.x_mean=x;
 
-									this.samples.push([x,y])
+									//this.samples.push([x,y])
 
 									return `translate(${x},${y})`;
 								});
@@ -577,25 +615,25 @@ export default class Row extends Column {
 		this.mean.append("circle")
 					.attr("cx",0)
 					.attr("cy",0)
-					.attr("r",(d)=>((this.options.country === d.country || d.country === "YOU") && your)?12:5)
+					.attr("r",(d)=>((this.options.country === d.country || d.country === "YOU") && your)?9:5)
 					.attr("class",(d)=>{
 						return (d.country=="YOU"?d.selected_country:d.country);
 						//return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
 
 					
-		
+		/*
 		this.mean
 			.append("text")
 					.attr("class","country-value")
 					.attr("x",-5)
 					.attr("y",(d)=>{
 						return -10;
-						return (d.country===this.options.country || d.country==="YOU")?-26:-10
+						//return (d.country===this.options.country || d.country==="YOU")?-26:-10
 					})
 					//.attr("filter","url(#dropshadow)")
 					.text((d)=>{
-						return d.question.mean+(this.options.question.units||"");
+						return d3.format(",.0f")(d.question.mean)+(this.options.question.units||"");
 					})
 
 		this.mean.append("text")
@@ -603,7 +641,7 @@ export default class Row extends Column {
 					.attr("x",5)
 					.attr("y",(d)=>{
 						return -10;
-						return (d.country===this.options.country || d.country==="YOU")?-26:-25
+						//return (d.country===this.options.country || d.country==="YOU")?-26:-25
 					})
 					.text(function(d){
 						return d.country;
@@ -611,22 +649,24 @@ export default class Row extends Column {
 					.each(function(d){
 						d.width_mean=this.getBBox().width+45+3*2
 					})
-
+		*/
 
 
 		let big_label=this.mean
 			.filter((d)=>((this.options.country === d.country || d.country === "YOU")))
+			//.filter((d)=>((d.country === "YOU")))
 			.append("g")
 				.attr("class","big-label")
+				.classed("you",(d)=>(d.country==="YOU"))
 				.attr("transform",(d)=>{
 					let x=0,
 						y=this.margins.top;
 					if(d.x_mean<100) {
 						x=100-d.x_mean;
 					}
-					if(this.options.country === d.country) {
+					/*if(this.options.country === d.country) {
 						y=y-25;
-					}
+					}*/
 					return `translate(${x},${-(y)})`
 				})
 		big_label.append("line")
@@ -649,37 +689,68 @@ export default class Row extends Column {
 				.attr("y1",4)
 				.attr("y2",(d)=>{
 					let y=this.margins.top;
-					if(this.options.country === d.country) {
+					/*if(this.options.country === d.country) {
 						y=y-25;
-					}
+					}*/
 					return y-14	
 				})
 		let text_guess=big_label.append("text")
 				.attr("class","guess")
-				.attr("dx",35);
+				.classed("right-aligned",(d,i)=>{
+					let other=this.data[(i+1)%2];
+					//console.log("!!!!!!!!!!",d,i,other)
+					if(d.question.mean===other.question.mean) {
+						d.rightAligned=(i===0);
+						return i===0;
+					}
+					if(d.question.mean<other.question.mean) {
+						d.rightAligned=true;
+						return true;
+					}
+					d.rightAligned=false;
+					return false;
+				})
+				.attr("dx",(d)=>(d.rightAligned?5:-5));
 		
 		
 		text_guess.append("tspan")
 				.attr("class","country")
+				.attr("x",0)
+				.attr("y",-18)
 				.text((d)=>(d.country==="YOU"?"You":d.country))
+				//.attr("y",20)
+
 		text_guess.append("tspan")
 				.text(" ")
 
 		text_guess.append("tspan")
 				.classed("hidden",this.options.isSmallScreen)
-				.text("guessed ")
+				.text((d)=>(d.country === "YOU"?"said ":"said "))
 
-		text_guess.append("tspan")
+		if(this.options.question.units==="£") {
+			text_guess.append("tspan")
+				.attr("x",0)
+				.attr("y",0)
+				.attr("class","units")
+				.text(this.options.question.units)	
+		}
+
+		let val=text_guess.append("tspan")
 				.attr("class","value")
-				.text((d)=>(d.question.mean))
+				.text((d)=>(d3.format(",.0f")(d.question.mean)))
 
-		text_guess.append("tspan")
-				.text(this.options.question.units)
+		if(this.options.question.units!=="£") {
+			val.attr("x",0).attr("y",0)
+			text_guess.append("tspan")
+				.attr("class","units")
+				.text(this.options.question.units)	
+		}
+		
 
 
 
 
-		this.mean
+		/*this.mean
 			.append("circle")
 				.attr("class",(d)=>{
 					return "c "+(d.country=="YOU"?d.selected_country:d.country);
@@ -687,17 +758,17 @@ export default class Row extends Column {
 				})
 				.attr("cx",0)
 				.attr("cy",-14)
-				.attr("r",3)
+				.attr("r",3)*/
 
 		this.actual=this.country
 							//.filter((d)=>d.country!==this.options.country)
 							.append("g")
-								.attr("class","value")
+								.attr("class","value actual")
 								.attr("transform",(d)=>{
 									let x=this.xscale(d.question.actual),
 										y=this.yscale("mean")+this.padding.top;
 
-									this.samples.push([x,y])
+									//this.samples.push([x,y])
 
 									d.x_actual=x;
 
@@ -710,12 +781,12 @@ export default class Row extends Column {
 					.attr("cx",0)
 					.attr("cy",0)
 					//.attr("r",your?8:3)
-					.attr("r",(d)=>((this.options.country === d.country || d.country === "YOU") && your)?12:5)
+					.attr("r",(d)=>((this.options.country === d.country || d.country === "YOU") && your)?9:5)
 					.attr("class",(d)=>{
 						return (d.country=="YOU"?d.selected_country:d.country);
 						//return this._getCountryArea(d.country=="YOU"?d.selected_country:d.country)
 					})
-
+		/*
 		this.actual
 			.append("text")
 					.attr("class","country-value")
@@ -726,7 +797,7 @@ export default class Row extends Column {
 						return (d.country===this.options.country || d.country==="YOU")?-26:-10
 					})
 					.text((d)=>{
-						return d.question.actual+(this.options.question.units||"");
+						return d3.format(",.0f")(d.question.actual)+(this.options.question.units||"");
 					})
 
 		
@@ -747,6 +818,7 @@ export default class Row extends Column {
 						d.width_actual=this.getBBox().width+45+3*2
 						//d.width=d3.max([this.getBBox().width+5,d.width])
 					})
+		*/
 
 		big_label=this.actual
 			.filter((d)=>((d.country===this.options.country || d.country==="YOU")))
@@ -759,7 +831,7 @@ export default class Row extends Column {
 					if(d.x_actual<delta) {
 						x=delta-d.x_actual;
 					}
-					return `translate(${x},${-(this.margins.top)})`
+					return `translate(${x},${-(this.margins.top*0)})`
 				})
 		big_label.append("line")
 				.attr("x1",(d)=>{
@@ -778,32 +850,48 @@ export default class Row extends Column {
 					}
 					return -x;
 				})
-				.attr("y1",4)
+				.attr("y1",16)
 				.attr("y2",this.margins.top-14)
+
+		//ACTUAL LABEL
 		text_guess=big_label.append("text")
 				.attr("class","guess")
-				.attr("dx",35);//this.options.isSmallScreen?0:35);
-		
+				.attr("dx",35)//this.options.isSmallScreen?0:35);
+				.attr("dy",60)
+				
 		text_guess.append("tspan")
 				.attr("class","country")
 				.text("Actual")
 		text_guess.append("tspan")
 				.text(" ")
-
 		text_guess.append("tspan")
 				.classed("hidden",this.options.isSmallScreen)
 				.text("answer ")
-				
+
+		if(this.options.question.units==="£") {
+			text_guess.append("tspan")
+				.attr("class","units")
+				.text(this.options.question.units)	
+		}
 
 		text_guess.append("tspan")
 				.attr("class","value")
-				.text((d)=>(d.question.actual))
-
-		text_guess.append("tspan")
-				.text(this.options.question.units)
+				.text((d)=>{
+					console.log("------->",d.question)
+					if(d.question.answer.length>1) {
+						return d.question.answer.map((d)=>d3.format(",.0f")(d)).join("-");
+					}
+					return (d3.format(",.0f")(d.question.actual))
+				})
+		if(this.options.question.units!=="£") {
+			text_guess.append("tspan")
+				.attr("class","units")
+				.text(this.options.question.units)	
+		}
+		
 
 		
-		this.actual
+		/*this.actual
 			.append("circle")
 				.attr("class",(d)=>{
 					return "c "+(d.country=="YOU"?d.selected_country:d.country);
@@ -811,7 +899,7 @@ export default class Row extends Column {
 				})
 				.attr("cx",0)
 				.attr("cy",14)
-				.attr("r",3)
+				.attr("r",3)*/
 
 		/*this.cell = this.svg.append("g")
 					    .attr("class", "voronoi")
@@ -821,8 +909,8 @@ export default class Row extends Column {
 
 		//this._resample(10);
 
-		
-		this.highlightCountry([])
+		this._hideDrag([]);
+		//this.highlightCountry([])
 
 	}
 	_toggleStatus() {
@@ -839,7 +927,7 @@ export default class Row extends Column {
 	highlightCountry(countries) {
 		
 
-
+		
 		if(!countries) {
 			countries=[];
 		}
@@ -847,15 +935,15 @@ export default class Row extends Column {
 		let __you=this.data.find((d)=>d.country==="YOU");
 
 		countries=countries.concat(["YOU",this.options.country]);//,__you.selected_country])
-
+		
 		let __countries=this.data.filter((c)=>{
 				return countries.indexOf(c.country)>-1
 			});
 			
 						
 
-		////console.log(countries,__countries)		
-
+		console.log(countries,__countries)		
+		
 		let prev_mean={
 				x:0,
 				y:0
@@ -919,10 +1007,10 @@ export default class Row extends Column {
 
 
 
-		this.mean
+		/*this.mean
 				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
 				.select("circle.c")
-					.attr("cy",(d)=>(d.y_mean_pos* -16)-14)
+					.attr("cy",(d)=>(d.y_mean_pos* -16)-14)*/
 
 		this.mean
 				.classed("hidden-value",true)
@@ -931,10 +1019,15 @@ export default class Row extends Column {
 					let index=__countries.map((c)=>(c.country)).indexOf(d.country);
 					return index>0 && __countries[index-1].x_mean===d.x_mean
 				})
-				.selectAll("text:not(.guess)")
-					.attr("dy",(d)=>d.y_mean_pos* -16)
+				//.selectAll("text:not(.guess)")
+				.selectAll("text")
+					.attr("dy",(d)=>{
+						console.log("!!!!",d)
+						return d.y_mean_pos* -18;
+					})
+		
 
-
+		/*
 
 		__countries=__countries.sort((a,b)=>{
 			if(a.country==="YOU") {
@@ -1002,8 +1095,18 @@ export default class Row extends Column {
 				.selectAll("text")
 					.attr("dy",(d)=>d.y_actual_pos*18)
 		
+		*/
 
+		
 
+	}
+	_hideDrag(countries) {
+		
+		if(!countries) {
+			countries=[];
+		}
+		countries=countries.concat(["YOU",this.options.country]);
+		
 		this.country
 			.classed("highlight",(c)=>{
 				return countries.indexOf(c.country)>-1;
@@ -1012,7 +1115,6 @@ export default class Row extends Column {
 				return (countries.indexOf(c.country)>-1) || (c.country === this.options.country) || c.country==="YOU"
 			})
 			.moveToFront()
-
 	}
 	_findCountry(value,type,y) {
 		

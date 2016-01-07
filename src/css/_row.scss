@@ -78,7 +78,7 @@
 			svg.chart {
 				g.line {
 					rect.bg {
-						stroke:#bdbdbd;
+						stroke:none;
 						stroke-width:1;
 					}
 					text.title {
@@ -126,20 +126,20 @@
 
 	svg.chart {
 		width:100%;
-		height:220px;
+		height:200px;
 
 		g.line {
 			&.hidden {
 				display:none;
 			}
 			line.bg {
-				stroke:#ddd;
+				stroke:#DAE3E7;
 				stroke-width:1;
 				shape-rendering: crispEdges;
 				fill:none;
 			}
 			rect.bg {
-				fill:#eaeaea;
+				fill:#DAE3E7;
 			}
 			text.zero,
 			text.hundred {
@@ -148,7 +148,7 @@
 				@include mq(tablet) {
 					text-anchor:end;
 				}
-				fill:#aaa;
+				fill:#8CA6B4;
 			}
 			text.hundred {
 				text-anchor:start;//end;
@@ -184,6 +184,7 @@
 						//fill:$you;
 					}
 					path {
+						stroke:#5bc4bf;
 						stroke-width:2;
 						fill:none;
 						&.float-left{
@@ -379,9 +380,28 @@
 							
 						}
 					}
+					.mean circle {
+						visibility: visible;
+						fill:#d0dadd;
+					}
+					text {
+						fill:#bdbdbd;
+					}
 					&.you {
 						circle {
 							visibility: visible;
+							fill:#5bc4bf;
+						}
+						.mean circle {
+							visibility: visible;
+							fill:#5bc4bf;
+						}
+						.actual circle {
+							visibility: visible;
+							fill:#fdba2c;
+						}
+						text {
+							fill:#333;
 						}
 
 					}
@@ -393,28 +413,36 @@
 							}
 							text {
 								@include fs-textSans(1);
+								font-size:18px;
 							}
 							text.value {
 								text-anchor:middle;
-								font-size:24px;
+								font-size:22px;
 								font-weight: bold;
 								
 								tspan.unit {
-									font-size:16px;
+									font-size:18px;
 								}
 							}
 							text.guess {
-								text-anchor:end;
-								font-size:16px;
+								&.right-aligned {
+									text-anchor:end;	
+								}
+								
+								font-size:18px;
 								
 								tspan.country {
 									
-									text-decoration: underline;
-									text-decoration-color: #ddd;
+									//text-decoration: underline;
+									//text-decoration-color: #ddd;
 								}
 
 								tspan.value {
-									font-size:24px;
+									font-size:22px;
+									font-weight: bold;
+								}
+
+								tspan.units {
 									font-weight: bold;
 								}
 							}
@@ -460,14 +488,22 @@
 	}
 	.analysis {
 	    background-color:#f1f1f1;
-	    padding:15px;
+	    padding:20px 55px;
+		
+		h3 {
+			color:#5bc4bf;
+			@include fs-textSans(4);
+			font-size:18px;
+			font-weight: bold;
+		}
 
 	    @include fs-headline(3);
-		color:#505050;
+		color:#767676;
 
 	    @include mq(tablet) {
-	    	padding:35px;
+	    	//padding:35px;
 	    	@include fs-headline(4);
+	    	font-size:22px;
 		}
 	    margin-top:15px;
 	    
@@ -482,6 +518,11 @@
 	    opacity:1;
 	    &.hidden {
 	    	opacity:0;
+	    }
+
+	    .source {
+	    	margin-top:20px;
+	    	@include fs-textSans(1);
 	    }
 	}
 }

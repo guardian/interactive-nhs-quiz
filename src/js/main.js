@@ -52,15 +52,22 @@ function loadData() {
 //return d.answer.indexOf("-")<0
         new Flow([
             {
-                country:"UK",
-                questions:questions.filter((d,i)=>{return i===4;}).map((d,i)=>{
-                        let mean=((+d.min) + (+d.max))/2,
+                country:"Others",
+                questions:questions.filter((d,i)=>{return i===0;}).map((d,i)=>{
+                        let answer=d.answer,
+                            mean=((+d.min) + (+d.max))/2,
                             actual=+d.answer;
+
+                        if(answer.indexOf("-")>-1) {
+                            answer=answer.split("-").map((d)=>(+d));
+                            actual=d3.mean(answer);
+                        }
 
                         //console.log(d.answer,actual);
                         //console.log(d.min,d.max,mean)
                         return {
                             actual:actual,
+                            answer:answer,
                             range:[+d.min,+d.max],
                             mean:mean,
                             "difference (mean-actual)": mean-actual,
@@ -72,10 +79,10 @@ function loadData() {
                 )
             }
         ],{
-            country:"UK",
+            country:"Others",
             container:"#NHSQuiz",
             questions:questions
-                        .filter((d,i)=>{return i===4;return d.answer.indexOf("-")<0})
+                        .filter((d,i)=>{return i===0;return d.answer.indexOf("-")<0})
                         .map((d,i)=>{
                             return {
                                 id:i,
