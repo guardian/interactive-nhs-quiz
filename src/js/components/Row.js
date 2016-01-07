@@ -236,10 +236,11 @@ export default class Row extends Column {
 	}
 	_getFormattedValue(d,perc_points) {
 		//console.log("GET FORMATTED VALUE",d,this.options.question.units)
+
 		if(this.options.question.units && this.options.question.units==="£") {
 			return "£"+d3.format(",.0f")(d)	
 		}
-		if(perc_points) {
+		if(perc_points && this.options.question.units==="%") {
 			return d3.format(",.0f")(d)+("&nbsp;percentage points"||"")	
 		}
 		return d3.format(",.0f")(d)+(this.options.question.units||"")
@@ -431,11 +432,6 @@ export default class Row extends Column {
 
 		this._setExents();
 
-		/*this.xscale.domain([
-			Math.min(this.extents.mean[0],this.extents.actual[0]),
-			Math.max(this.extents.mean[1],this.extents.actual[1])
-		]).nice()*/
-
 		this.line
 			.select("text.zero")
 				.text(this._getFormattedValue(this.xscale.domain()[0]))
@@ -496,13 +492,28 @@ export default class Row extends Column {
 		}
 
 		let analysis=this.container.append("div")
-				.attr("class","analysis hidden")
+				.attr("class","analysis")
 				.html(()=>{
 					//console.log(this.options)
 					return "<h3>"+sentence+"</h3>"+this.options.question.text+"<div class=\"source\">Source: "+datum.question.question.source+"</div>"
 				})
+
+		let chart;
+		if(this.options.question.chart!=="") {
+			chart=analysis.append("div")
+				.attr("class","chart");
+			let iframe=chart
+						.append("iframe")
+							.attr("width","100%")
+							.attr("height",this.options.question.chart_height)
+							.attr("frameborder","0")
+							.attr("src",this.options.question.chart)
+			
+		}
+		
+
 		setTimeout(()=>{
-			analysis.classed("hidden",false)	
+			analysis.classed("hidden",false);
 		},500)
 		
 	}
@@ -1146,7 +1157,7 @@ export default class Row extends Column {
 				.attr("x1",this.padding.left)
 				.attr("x2",this.xscale.range()[1]+this.padding.left)
 
-		this.line
+		/*this.line
 			.select("text.zero")
 				.attr("x",this.padding.left-3)
 				.attr("y",(d)=>{
@@ -1163,7 +1174,7 @@ export default class Row extends Column {
 						return d==="mean"?20:10;
 					}
 					return 4;
-				})
+				})*/
 
 		this.line
 			.select("text.title")

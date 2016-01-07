@@ -1,4 +1,4 @@
-import iframeMessenger from 'guardian/iframe-messenger';
+//import iframeMessenger from 'guardian/iframe-messenger';
 import mainHTML from './text/main.html!text';
 //import questions from '../assets/data/questions.json!json';
 //import ranking from '../assets/data/ranking.json!json';
@@ -10,7 +10,7 @@ import Flow from './components/Flow';
 import { requestAnimationFrame, cancelAnimationFrame } from './lib/request-animation-frame-shim';
 
 export function init(el, context, config, mediator) {
-    iframeMessenger.enableAutoResize();
+    //iframeMessenger.enableAutoResize();
 
     el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
     
@@ -32,7 +32,7 @@ function loadData() {
     let country_info={};
 
     let dataKey = "1PMgGCWZtZGctS_TynkMZxzzvtCbwr2rM8bEFxAgLdC8",
-        dataSrc = "http://interactive.guim.co.uk/docsdata-test/" + dataKey + ".json";
+        dataSrc = "https://interactive.guim.co.uk/docsdata-test/" + dataKey + ".json";
 
     d3.json(dataSrc, (json) => {
         let questions = json.sheets.Sheet1;
@@ -57,7 +57,7 @@ function loadData() {
                         let answer=d.answer,
                             mean=((+d.min) + (+d.max))/2,
                             actual=+d.answer;
-                        
+
 
                         if(answer.indexOf("-")>-1) {
                             answer=answer.split("-").map((d)=>(+d));
@@ -92,7 +92,9 @@ function loadData() {
                                 text:d.explanation,
                                 range:[+d.min,+d.max],
                                 units:d.symbol,
-                                source:d.source
+                                source:d.source,
+                                chart:d.chart,
+                                chart_height:d.h
                             }
                         })
         })

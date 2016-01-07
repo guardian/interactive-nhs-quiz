@@ -198,123 +198,88 @@ export default class Flow {
 
 	_buildRanking(){
 		
-		//console.log("BUILD RANKING",this.user)
+		console.log("BUILD RANKING",this.user)
 
 
 		let avg={
 				country:"YOU",
-				avg:d3.mean(this.user.questions,(d)=>Math.abs(d.mean-d.actual)),
-				adj:this.user.questions.map((q)=>{
-	                let question=this.options.questions.find((qq)=>{
-	                	//console.log(q,qq)
-	                    return (qq.id===q.question.id);
-	                });
-	                if(question) {
-	                	//console.log(question)
-	                    let accuracy_score=(Math.abs(q.mean-q.actual)),
-	                        Pm = (q.mean+q.actual)/2,
-	                        sdm = Math.sqrt(Pm * (100-Pm)),
-	                        sd50 = 50,
-	                        st_acc_score = accuracy_score * (sd50 / sdm);
-	                    if(question.range) {
-	                        st_acc_score=accuracy_score;
-	                    }
-	                    
-	                    return st_acc_score;
-	                }
-	                return 0;
-	            })
+				diff_perc:this.user.questions.map((q)=>{
+					let perc_mean=(q.mean-q.question.range[0])/(q.question.range[1]-q.question.range[0]),
+						perc_actual=(q.actual-q.question.range[0])/(q.question.range[1]-q.question.range[0]),
+						perc_diff=Math.abs(perc_mean-perc_actual);
+					return perc_diff;
+				})
 			};
+		let other_avg={
+			country:this.data[0].country,
+			diff_perc:this.data[0].questions.map((q)=>{
+				let perc_mean=(q.mean-q.range[0])/(q.range[1]-q.range[0]),
+					perc_actual=(q.actual-q.range[0])/(q.range[1]-q.range[0]),
+					perc_diff=Math.abs(perc_mean-perc_actual);
+				return perc_diff;
+			})
+		}
+		avg.mean_diff_perc=d3.mean(avg.diff_perc);
+		other_avg.mean_diff_perc=d3.mean(other_avg.diff_perc);
 
-		//console.log(avg)
-		/*let ranking=this.options.ranking.concat([
-			{
-				country:"YOU",
-				adj:Math.round(d3.sum(avg.adj)*(122/171.85))
-			}
-		]);*/
+		
+		
 
+		avg.you_others_diff=(avg.mean_diff_perc-other_avg.mean_diff_perc);
 
+		avg.you_other=0; //default worse
+		if(Math.abs(avg.you_others_diff)<=0.05) { // -+ %5 similar
+			avg.you_other=1;
+		}
+		if(avg.you_others_diff<-0.05) { // <-5% better
+			avg.you_other=2;
+		}
+
+		avg.you_actual=0; //default bad
+		if(avg.mean_diff_perc<=0.5) {
+			avg.you_actual=1;
+		}
+		if(avg.mean_diff_perc<=0.2) {
+			avg.you_actual=2;
+		}
+
+		console.log(avg,other_avg)
 
 		d3.select("#ranking")
 			.classed("hidden",false)
 			
-			/*.select("ul")
-			.selectAll("li")
-				.data(ranking.sort((a,b)=>(a.adj-b.adj)))
-				.enter()
-				.append("li")
-					.attr("class",(d)=>{
-						return d.country;//this._getCountryArea(d.country);
-					})
-					.classed("you",(d)=>d.country==="YOU")
-					.classed("selected",(d)=>d.country===this.options.country)
-					.html((d,i)=>("<span>"+(i<9?"0":"")+(i+1)+".</span> "+d.country))*/
-
-		/*this._buildShare(ranking.filter((c)=>{
-			return c.country==="YOU" || c.country===this.options.country
-		}));*/
-		this._buildShare([
-			{
-				country:"YOU",
-				adj:Math.round(d3.sum(avg.adj)*(122/171.85))
-			},
-			{
-				country:"UK",
-				adj:Math.round(d3.sum(avg.adj)*(122/171.85))	
-			}
-		])
+			
+		this._buildShare(avg)
 	}
-	_buildShare(values) {
-		//console.log("_buildShare",values)
+	_buildShare(avg) {
 
-		let you=values.find((d)=>d.country==="YOU"),
-			country=values.find((d)=>d.country===this.options.country);
+		console.log(avg)
 
-		let diff="---";
-
-		let tweets=([
-			"I know [Country] better than people in [Country]! How well do you know your country? Take the quiz ",
-			"I don't know [Country] as well as people in [Country] :( How well do you know your country? Take the quiz ",
-			"I know [Country] just as well as people in [Country]. How well do you know your country? Take the quiz ",
-			"How well do you really know the NHS? Take the quiz"
-		])
-
-		if(country && country.adj) {
-			diff=country.adj/you.adj;
-			let the_country=country.country;
-			if(the_country==="UK" || the_country==="United States" || the_country==="Netherlands") {
-				the_country="the "+the_country
-			}
-			tweets=tweets.map((d)=>{
-				return d.replace(/\[Country\]/gi,the_country)
-			})
-		}
-
-		
-
-		
-
-		//console.log(country,"/",you,diff)
-
-		let tweet=tweets[2];
-
-		if(diff==="---") {
-			tweet=tweets[3]
-		}
-
-		if(diff>1.4) {
-			tweet=tweets[0]
-		}
-
-		if(diff<0.6) {
-			tweet=tweets[1]
-		}
+		let you_others=[
+			"Compared to other Guardian readers you answered better than most.",
+			"Compared to other Guardian readers you were about as correct as most people.",
+			"Compared to other Guardian readers you fared worse than most people."
+		];
+		let you_actual=[
+			"Well, it seems you don't know too much about the NHS.",
+			"Good job, it seems you know some things about the NHS.",
+			"Congratulations, you know a lot about the NHS!"
+		]
+		let tweets=[
+			"It seems I don't know too much about the NHS",
+			"It seems I know some things about the NHS",
+			"I know a lot about the NHS!"
+		]
+		let tweet=tweets[avg.you_other]+". How well do you really know the NHS? Take the quiz";
+		d3.select("#ranking p")
+			.html(you_actual[avg.you_actual]+"<br/>"+you_others[avg.you_other])
 
 		d3.select(".share")
 			.select("p")
-				.text(tweet);
-		let url="http://www.theguardian.com/world/ng-interactive/2015/dec/02/how-well-do-you-really-know-your-country-take-our-quiz";
+				.html(tweet);
+
+		//let url="http://www.theguardian.com/world/ng-interactive/2015/dec/02/how-well-do-you-really-know-your-country-take-our-quiz";
+		let url="http://gu.com/p/4ftjf";//window.location;
 		let shareLink=share(tweet,url,"");
 
 		d3.select(".share")
@@ -324,8 +289,8 @@ export default class Flow {
 					network=_this.attr("data-network");
 				shareLink(network)
 			})
-
 	}
+	
 	_getCountryArea(country) {
 
 		if(country==="YOU") {

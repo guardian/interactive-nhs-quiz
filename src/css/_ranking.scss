@@ -4,9 +4,9 @@
 	padding-bottom:20px;
 	.subsection {
 		
-		padding:35px 0;
+		padding:20px 0;
 		@include mq(tablet) {
-			padding:35px;
+			padding:20px 55px;
 		}
 		margin:0;
 
@@ -17,12 +17,13 @@
 			font-weight: 800;
 			margin:0 0 10px;
 			@include mq(tablet) {
-				margin-bottom:35px;
+				margin-bottom:20px;
 			}
 		}
 	
 		p {
 			@include fs-headline(3);
+			font-style:italic;
 		}
 	}	
 	
@@ -84,17 +85,19 @@
 	}
 
 	.share {
-	    background-color: #eaeaea;
+	    //background-color: #eaeaea;
 	    overflow:hidden;
-	    margin:0 10px;
-	    padding-left:15px;
-	    padding-right:15px;
+	    margin:0px;
+	    //padding-left:15px;
+	    //padding-right:15px;
 		.msg {
+
 			@include mq(tablet) {
 				float: left;
 				width: calc(100% - 140px);
 			}
 			p {
+				font-style:normal;
 				margin: 0;
 			}
 		}
