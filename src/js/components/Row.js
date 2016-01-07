@@ -58,7 +58,7 @@ export default class Row extends Column {
 
 						the_question=the_question.replace(/(the the)/gi,"the");
 
-						return "<span>"+((this.options.i+1)+(this.options.isSmallScreen?(" of "+this.options.n):""))+".</span><p>"+the_question+"</p>";
+						return "<span>"+((this.options.i+1)+(this.options.isSmallScreen?(" of "+this.options.n):""))+".&nbsp;</span><p>"+the_question+"</p>";
 					})
 
 		let chart_container=this.container.append("div")
@@ -234,10 +234,13 @@ export default class Row extends Column {
 							.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
 
 	}
-	_getFormattedValue(d) {
+	_getFormattedValue(d,perc_points) {
 		//console.log("GET FORMATTED VALUE",d,this.options.question.units)
 		if(this.options.question.units && this.options.question.units==="£") {
 			return "£"+d3.format(",.0f")(d)	
+		}
+		if(perc_points) {
+			return d3.format(",.0f")(d)+("&nbsp;percentage points"||"")	
 		}
 		return d3.format(",.0f")(d)+(this.options.question.units||"")
 	}
@@ -308,7 +311,7 @@ export default class Row extends Column {
 		  			d.question.mean=Math.round(self.xscale.invert(x));
 
 		  			let mod=d.question.mean/100>1?100:1;
-					d.question.mean=Math.round(d.question.mean/mod)*mod
+					d.question.mean=mod>1?Math.round(d.question.mean/mod)*mod:d.question.mean;
 
 		  			d.question["difference (mean-actual)"]=d.question.mean-d.question.actual;
 		  			
@@ -486,7 +489,7 @@ export default class Row extends Column {
 
 		let delta=datum.question.mean-datum.question.actual,
 			text_delta=delta>0?"higher":"lower",
-			sentence="Your answer is "+(this._getFormattedValue(Math.abs(delta)))+" "+text_delta+" than the real value";
+			sentence="Your answer is "+(this._getFormattedValue(Math.abs(delta),true))+" "+text_delta+" than the actual value";
 
 		if(delta===0) {
 			sentence="Your answer is correct!";
@@ -620,7 +623,7 @@ export default class Row extends Column {
 					let x=0,
 						y=this.margins.top;
 					if(d.x_mean<100) {
-						x=100-d.x_mean;
+						//x=100-d.x_mean;
 					}
 					/*if(this.options.country === d.country) {
 						y=y-25;
@@ -630,7 +633,7 @@ export default class Row extends Column {
 		big_label.append("line")
 				.attr("x1",(d)=>{
 					let x=0,
-						delta=this.options.isSmallScreen?35:100
+						delta=this.options.isSmallScreen?0:0
 					if(d.x_mean<delta) {
 						x=delta-d.x_mean;
 					}
@@ -638,7 +641,7 @@ export default class Row extends Column {
 				})
 				.attr("x2",(d)=>{
 					let x=0,
-						delta=this.options.isSmallScreen?35:100
+						delta=this.options.isSmallScreen?0:0
 					if(d.x_mean<delta) {
 						x=delta-d.x_mean;
 					}
@@ -709,7 +712,12 @@ export default class Row extends Column {
 
 		let val=text_guess.append("tspan")
 				.attr("class","value")
-				.text((d)=>(d3.format(",.0f")(d.question.mean)))
+				.text((d)=>{
+					if(d.question.mean%1>0) {
+						return (d3.format(",.1f")(d.question.mean))	
+					}
+					return (d3.format(",.0f")(d.question.mean))
+				})
 
 		if(this.options.question.units!=="£") {
 			val.attr("x",(d)=>(d.delta_x)).attr("y",10)
@@ -808,6 +816,9 @@ export default class Row extends Column {
 					console.log("------->",d.question)
 					if(typeof d.question.answer !== 'string') {
 						return d.question.answer.map((d)=>d3.format(",.0f")(d)).join("-");
+					}
+					if(d.question.actual%1>0) {
+						return (d3.format(",.1f")(d.question.actual))	
 					}
 					return (d3.format(",.0f")(d.question.actual))
 				})

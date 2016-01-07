@@ -148,7 +148,7 @@
 				@include mq(tablet) {
 					text-anchor:end;
 				}
-				fill:#8CA6B4;
+				fill:#bdbdbd;
 			}
 			text.hundred {
 				text-anchor:start;//end;
@@ -413,15 +413,15 @@
 							}
 							text {
 								@include fs-textSans(1);
-								font-size:16px;
+								font-size:14px;
 							}
 							text.value {
 								text-anchor:middle;
-								font-size:20px;
+								font-size:14px;
 								font-weight: bold;
 								
 								tspan.unit {
-									font-size:16px;
+									font-size:14px;
 								}
 							}
 							text.guess {
@@ -429,21 +429,38 @@
 									text-anchor:end;	
 								}
 								
-								font-size:16px;
+								font-size:14px;
 								
 								tspan.country {
 									
-									//text-decoration: underline;
-									//text-decoration-color: #ddd;
 								}
 
 								tspan.value {
-									font-size:20px;
+									font-size:16px;
 									font-weight: bold;
 								}
 
 								tspan.units {
 									font-weight: bold;
+								}
+							}
+							@include mq(tablet) {
+								text {
+									font-size:16px;
+									&.value {
+										font-size:20px;
+
+										tspan.unit {
+											font-size:16px;
+										}
+									}
+									&.guess {
+										font-size:14px;
+										tspan.value {
+											font-size:20px;
+										}
+									}
+
 								}
 							}
 							line {
@@ -488,29 +505,29 @@
 	}
 	.analysis {
 	    background-color:#f1f1f1;
-	    padding:20px 55px;
+	    padding:20px;
 		
 		h3 {
 			color:#5bc4bf;
 			@include fs-textSans(4);
-			font-size:18px;
+			font-size:14px;
 			font-weight: bold;
 		}
 
-	    @include fs-headline(3);
-		color:#767676;
+	    @include fs-headline(2);
+		color:#333;
 
 	    @include mq(tablet) {
-	    	//padding:35px;
+	    	padding:20px 55px;
 	    	@include fs-headline(4);
-	    	font-size:22px;
+	    	font-size:20px;
 		}
 	    margin-top:15px;
 	    
 	    i {
 	    	display: block;
 	    	margin-top:15px;
-	    	color:#767676;
+	    	color:#333;
 	    	font-size: 0.8em;
 	    	font-style: normal;
 	    }

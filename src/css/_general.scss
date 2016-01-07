@@ -43,11 +43,11 @@ a {
 
     @include mq(desktop) {
         max-width: 640px;
-        margin-left: 160px;//0;
+        margin-left: 160px;
     }
     @include mq(leftCol) {
         max-width: 640px;
-        margin-left: 240px;//160px;
+        margin-left: 160px;
     }
     
     @include mq(wide) {

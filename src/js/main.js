@@ -57,6 +57,7 @@ function loadData() {
                         let answer=d.answer,
                             mean=((+d.min) + (+d.max))/2,
                             actual=+d.answer;
+                        
 
                         if(answer.indexOf("-")>-1) {
                             answer=answer.split("-").map((d)=>(+d));
