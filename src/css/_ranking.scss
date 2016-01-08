@@ -4,7 +4,7 @@
 	padding-bottom:20px;
 	.subsection {
 		
-		padding:20px 0;
+		padding:20px;
 		@include mq(tablet) {
 			padding:20px 55px;
 		}
@@ -23,7 +23,12 @@
 	
 		p {
 			@include fs-headline(3);
+			font-size: 16px;
+    		line-height: 22px;
 			font-style:italic;
+			@include mq(tablet) {
+				@include fs-headline(3);
+			}
 		}
 	}	
 	

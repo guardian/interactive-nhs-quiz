@@ -1,29 +1,58 @@
-import Column from './Column'
+//import Column from './Column'
 import { hasTouchScreen } from '../lib/detect'
 import { getViewport } from '../lib/detect'
 import { detectIE } from '../lib/detect'
 import { isAndroid } from '../lib/detect'
 
-export default class Row extends Column {
+export default function Row(data,options) {
 
-	constructor(data,options) {
-		super(data,options)
+	
 
-		//console.log("ROW",options)
-		this.IE=detectIE();
-		this._addYourSlider();
-		this.isAndroid=isAndroid();
+	this._setExents=function() {
+		this.extents={
+			values:this.options.question.range || [0,100],
+			mean:d3.extent(this.data,function(d){
+				return d.question.mean
+			}),
+			actual:d3.extent(this.data,function(d){
+				return d.question.actual
+			}),
+			_difference:d3.extent(this.data,function(d){
+				return d.question["difference (mean-actual)"]
+			}),
+			diff_min:Math.abs(d3.min(this.data,function(d){
+							return d.question["difference (mean-actual)"]
+						})),
+			diff_max:Math.abs(d3.max(this.data,function(d){
+							return d.question["difference (mean-actual)"]
+						})),
+			difference:[-this.options.extents.difference,0,this.options.extents.difference]
+		}
+		//this.extents.difference=[-d3.max([this.extents.diff_min,this.extents.diff_max]),0,d3.max([this.extents.diff_min,this.extents.diff_max])]
+		//this.extents.difference=[this.options.max_difference]
+	}
+	this._filterData=function(data) {
+		return data.map((d)=>{
+			////console.log(this.question)
+			return {
+				country:d.country,
+				question:d.questions.find((q)=>{
+					return q.question === this.question.id
+				})
+			}
 
-		this.touch=false;
-		//this._addCountries();
+		}).filter((d)=>{
+			////console.log("------>",d)
+			return !isNaN(d.question.mean) && !isNaN(d.question.actual)
+		})
 	}
 
-	_buildVisual() {
+	this._buildVisual=function() {
 		let self=this;
 
 		this.margins={
 			top:50,
-			left:25,//this.options.isSmallScreen?5:30,
+			left:this.options.isSmallScreen?35:25,
 			bottom:36,
 			right:55//this.options.isSmallScreen?5:30
 		}
@@ -140,7 +169,7 @@ export default class Row extends Column {
 			h=HEIGHT-(this.margins.top+this.padding.top+this.margins.bottom+this.padding.bottom);
 
 		
-		console.log(this.extents)
+		//console.log(this.extents)
 		this.xscale=d3.scale.linear().domain(this.extents.values).range([0,w]);//.nice()
 
 		
@@ -234,7 +263,7 @@ export default class Row extends Column {
 							.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
 
 	}
-	_getFormattedValue(d,perc_points) {
+	this._getFormattedValue=function(d,perc_points) {
 		//console.log("GET FORMATTED VALUE",d,this.options.question.units)
 
 		if(this.options.question.units && this.options.question.units==="£") {
@@ -245,7 +274,7 @@ export default class Row extends Column {
 		}
 		return d3.format(",.0f")(d)+(this.options.question.units||"")
 	}
-	_addYourSlider() {
+	this._addYourSlider=function() {
 		let self=this;
 
 		let my_country=this.options.country?this.data.find((c)=>(c.country===this.options.country)):null;
@@ -428,7 +457,7 @@ export default class Row extends Column {
 									this._addNextCallToAction(this.options.last);
 								})
 	}
-	_updateScale() {
+	this._updateScale=function() {
 
 		this._setExents();
 
@@ -441,7 +470,7 @@ export default class Row extends Column {
 				.text(this._getFormattedValue(this.xscale.domain()[1]))
 				//.text(d3.format(",.0f")(this.xscale.domain()[1])+(this.options.question.units||""))
 	}
-	_addNextButton(last) {
+	this._addNextButton=function(last) {
 		let self=this;
 		this.confirmButton.remove();
 		this.container.append("button")
@@ -459,7 +488,7 @@ export default class Row extends Column {
 
 				})
 	}
-	_addNextCallToAction(last) {
+	this._addNextCallToAction=function(last) {
 		let self=this;
 		this.confirmButton.remove();
 		this.container.append("div")
@@ -478,10 +507,10 @@ export default class Row extends Column {
 				})
 	}
 
-	_addAnalysis(datum) {
+	this._addAnalysis=function(datum) {
 		let self=this;
 
-		console.log(datum)
+		//console.log(datum)
 
 		let delta=datum.question.mean-datum.question.actual,
 			text_delta=delta>0?"higher":"lower",
@@ -517,57 +546,8 @@ export default class Row extends Column {
 		},500)
 		
 	}
-	/*_addLegend() {
-		let self=this;
-
-		let regions=[
-			{
-				name:"Africa",
-				c:"africa"
-			},
-			{
-				name:"Asia",
-				c:"asia"
-			},
-			{
-				name:"Oceania",
-				c:"oceania"
-			},
-			{
-				name:"US & Canada",
-				c:"namerica"
-			},
-			{
-				name:"Latin America",
-				c:"samerica"
-			},
-			{
-				name:"Europe",
-				c:"europe"
-			}
-		];
-		this.legend = this.container.select(".chart-container").append("div")
-						.attr("class","legend");
-		this.legend.append("ul")
-				.selectAll("li")
-					.data(regions)
-					.enter()
-					.append("li")
-						.attr("class",(d)=>(d.c))
-						.html((d)=>{
-							return "<span class=\"key "+d.c+"\"></span> "+d.name;
-						})
-		this.legend.append("button")
-				.attr("class","confirm-btn confirm")
-				.html("Compare all countries")
-				.on("click",function(){
-					self._toggleStatus();
-					let your=self.container.classed("your");
-					////console.log("AHHHH",your,d3.select(this))
-					d3.select(this).html(your?"Compare all countries":"See your answer")
-				})
-	}*/
-	_addCountries() {
+	
+	this._addCountries=function() {
 
 		this.line.classed("hidden",false)
 		this.country=this.countries
@@ -824,7 +804,7 @@ export default class Row extends Column {
 		val=text_guess.append("tspan")
 				.attr("class","value")
 				.text((d)=>{
-					console.log("------->",d.question)
+					//console.log("------->",d.question)
 					if(typeof d.question.answer !== 'string') {
 						return d.question.answer.map((d)=>d3.format(",.0f")(d)).join("-");
 					}
@@ -845,7 +825,7 @@ export default class Row extends Column {
 		//this.highlightCountry([])
 
 	}
-	_toggleStatus() {
+	this._toggleStatus=function() {
 		let your=!this.container.classed("your");
 		this.container.classed("your",your);
 
@@ -856,7 +836,7 @@ export default class Row extends Column {
 				.attr("r",your?8:5)
 
 	}
-	highlightCountry(countries) {
+	this.highlightCountry=function(countries) {
 		
 
 		
@@ -959,80 +939,12 @@ export default class Row extends Column {
 					})
 		
 
-		/*
-
-		__countries=__countries.sort((a,b)=>{
-			if(a.country==="YOU") {
-				return -1;
-			}
-			if(b.country==="YOU") {
-				return 1;
-			}
-			return a.x_actual - b.x_actual;
-		})
-		////console.log("sorted",__countries.map(d=>d.country).join("-"))
-		////console.log("sorted",__countries.map(d=>d.x_actual).join("-"))
-		__countries.forEach((d,i)=>{
-			////console.log(d.country)
-			if(!i) {
-				d.y_actual_pos=0;
-			} else {
-
-				let prev=__countries[i-1];
-				////console.log("prev is ",prev.country)
-
-				if(
-					(d.x_actual-(prev.x_actual+prev.width_actual)>0)
-					||
-					(prev.x_actual-(d.x_actual+d.width_actual)>0)
-				) {
-					////console.log("don't overlap")
-					if(
-						(d.x_actual-(__you.x_actual+__you.width_actual)>0)
-						||
-						(__you.x_actual-(d.x_actual+d.width_actual)>0)
-					) {
-						d.y_actual_pos=0;
-					} else {
-						////console.log("but overlaps with YOU");
-						d.y_actual_pos=1;	
-					}
-				} else {
-					////console.log("they overlap")
-					d.y_actual_pos=prev.y_actual_pos+1;
-					////console.log(prev.country,"===",__you.selected_country)
-					if(prev.country===__you.selected_country) {
-						d.y_actual_pos--;
-					}
-					//d.y_actual_pos=prev.y_actual_pos+1;	
-				}
-				
-			}
-		})
-		//console.clear()
-
-		this.actual
-				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
-				.select("circle.c")
-					.attr("cy",(d)=>(d.y_actual_pos*18)+14)
-
-		this.actual
-				.filter((d)=>(__countries.map((d)=>(d.country)).indexOf(d.country)>-1))
-				.classed("hidden-value",(d,i)=>{
-					//return i>0 && __countries[i-1].x_mean===d.x_mean;
-					////console.log(__countries)
-					let index=__countries.map((c)=>(c.country)).indexOf(d.country);
-					return index>0 && __countries[index-1].x_actual===d.x_actual
-				})
-				.selectAll("text")
-					.attr("dy",(d)=>d.y_actual_pos*18)
 		
-		*/
 
 		
 
 	}
-	_hideDrag(countries) {
+	this._hideDrag=function(countries) {
 		
 		if(!countries) {
 			countries=[];
@@ -1048,7 +960,7 @@ export default class Row extends Column {
 			})
 			.moveToFront()
 	}
-	_findCountry(value,type,y) {
+	this._findCountry=function(value,type,y) {
 		
 
 		////console.log(value,type,y)
@@ -1126,12 +1038,12 @@ export default class Row extends Column {
 		this.cell.select("path").attr("d", function(d) { return "M" + d.join("L") + "Z"; });
 	}*/
 	
-	show() {
+	this.show=function() {
 		this.container
 				.classed("hidden",false)
 				.classed("inactive",false)
 	}
-	_update() {
+	this._update=function() {
 
 		this.myLine.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
 
@@ -1224,7 +1136,7 @@ export default class Row extends Column {
 			this._resample(10);
 		}*/
 	}
-	_resize() {
+	this._resize=function() {
 		////console.log("RESIZEEEEEE",this.options.index)
 
 		let bbox=this.svg.node().getBoundingClientRect(),
@@ -1254,7 +1166,7 @@ export default class Row extends Column {
 		this._update()
 
 	}
-	_getElementPosition(el) {
+	this._getElementPosition=function(el) {
 
 		//console.log("getElementPosition",el);
 
@@ -1268,10 +1180,43 @@ export default class Row extends Column {
     	return offset;
 		
 	}
-	_scrollTween(offset) {
+	this._scrollTween=function(offset) {
 		return function() {
 			var i = d3.interpolateNumber(window.pageYOffset || document.documentElement.scrollTop, offset);
 			return function(t) { scrollTo(0, i(t)); };
 		};
 	}
+
+	//function constructor(data,options) {
+		
+		this.options=options;
+		this.question=options.question;
+
+		this.data=this._filterData(data);
+		//console.log(this.data)
+
+		
+		//console.log(this.extents)
+
+		this.container=d3.select(options.container)
+
+		
+
+        window.addEventListener("optimizedResize", () => {
+            this._resize();
+        });
+
+        this._setExents(this.data);
+		this._buildVisual();
+		this._addYourSlider();
+
+		//console.log("ROW",options)
+		this.IE=detectIE();
+		this.isAndroid=isAndroid();
+		this.touch=false;
+		
+	//};
+
+	//constructor(data,options);
+
 }

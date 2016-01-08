@@ -15,6 +15,9 @@
 	position:relative;
 	overflow: hidden;
 	border-top:1px solid #dfdfdf;
+	.embed & {
+		border-top:none;
+	}
 
 	padding-top:5px;
 	margin-bottom:50px;
@@ -108,14 +111,17 @@
 				float: left;
 				line-height: 32px;
 			}
-			
+			.embed & {
+				display: none;
+			}
 		}
 		p {
 			display: inline-block;
 			float: left;
-			line-height: 30px;
+			line-height: 24px;
 			@include mq(tablet) {
 		    	width: calc(100% - 40px);
+		    	line-height: 30px;
 			}
 		    margin: 0;
 			i {
@@ -512,10 +518,12 @@
 			color:#5bc4bf;
 			@include fs-textSans(4);
 			font-size:14px;
+			line-height: 18px;
 			font-weight: bold;
 		}
 
 	    @include fs-headline(2);
+	    line-height: 22px;
 		color:#333;
 
 	    @include mq(tablet) {

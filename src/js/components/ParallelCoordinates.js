@@ -1,10 +1,9 @@
-import Column from './Column';
 import Row from './Row';
 import { getViewport } from '../lib/detect';
 
-export default class ParallelCoordinates {
+export default function ParallelCoordinates(data,options) {
 
-	constructor(data,options) {
+	//constructor(data,options) {
 
 		this.options=options;
 		this.data=data;
@@ -15,10 +14,10 @@ export default class ParallelCoordinates {
 
 		this.container=d3.select(options.container);
 
-		this._setExtents();
-		this._buildChart(true);
-	}
-	_setExtents() {
+		
+	//}
+
+	this._setExtents=function() {
 
 		//console.log(this.data)
 		let diffs=[];
@@ -35,7 +34,7 @@ export default class ParallelCoordinates {
 
 	}
 
-	_buildChart(rows) {
+	this._buildChart=function(rows) {
 		let self=this;
 
 		let viewport=getViewport(),
@@ -94,10 +93,13 @@ export default class ParallelCoordinates {
 					})
 	}
 
-	nextQuestion(qid) {
+	this.nextQuestion=function(qid) {
 		//console.log("nextQuestion",qid)
 		this.options.question=qid;
 		this.rows[qid].show();
 	}
 
+
+	this._setExtents();
+	this._buildChart(true);
 }

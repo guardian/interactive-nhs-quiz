@@ -1,38 +1,34 @@
 import ParallelCoordinates from './ParallelCoordinates';
 import { share } from '../lib/share';
 
-export default class Flow {
-	constructor(data,options) {
+export default function Flow(data,options) {
+	
+	var self=this;
 
-		this.name="FLOW";
+	this.name="FLOW";
 
-		this.data=data;
-		this.options=options;
+	this.data=data;
+	this.options=options;
 
-		let search=window.location.search.replace(/\?/gi,""),
-			rankings=[];
+	let search=window.location.search.replace(/\?/gi,""),
+		rankings=[];
 
-		this.COUNTRY=this.options.country;
-		
-		console.log(data)
-		console.log(options)
+	this.COUNTRY=this.options.country;
+	
+	//console.log(data)
+	//console.log(options)
+	
+	this.user={
+		questions:[
+		]
+	};
 
-		//this._buildCountrySelector();
-		//this._buildRestartCountrySelector();
-		
-		this.user={
-			questions:[
-			]
-		};
+	
+	
+	//console.log(this)
+	
 
-		this._buildCharts(-1);
-
-		//this.currentQuestion=-1;
-		//new ParallelCoordinates(this.data,this.options)
-
-	}
-
-	_buildCharts(index,info) {
+	this._buildCharts=function(index,info) {
 		let self=this;
 
 		
@@ -83,122 +79,51 @@ export default class Flow {
 				//console.log(this.options)
 				this.pc.nextQuestion(this.options.question);
 			} else {
-				console.log("DONE!!!! USER USER USER",this.user)
+				//console.log("DONE!!!! USER USER USER",this.user,this.options.embed)
 				let obj={
 					answers:{
-						country:this.user.country,
-						q:this.user.questions.map((d)=>d.mean)
+						country:"NHS",
+						q:this.user.questions.map((d,i)=>{
+							return {
+								q:this.options.embed || i,
+								v:d.mean
+							}
+						})
 					}
 				};
-				//console.log(obj)
-
-				this._buildRanking();
 				
-				console.log("REMIND TO ACTIVATE XHR")
+
+				if(!this.options.embed) {
+					this._buildRanking();	
+				}
+				
+				//console.log(obj.answers.q)
+				let q={answers:obj.answers.q};
+				//console.log(JSON.stringify(q))
+				//console.log("REMIND TO ACTIVATE XHR")
 				//return;
-				/*d3.xhr("http://ec2-54-72-6-69.eu-west-1.compute.amazonaws.com/")
+				
+				d3.xhr("http://ec2-54-72-6-69.eu-west-1.compute.amazonaws.com/?key="+(this.options.embed?"embednhs":"nhs"))
 					.header("Content-Type", "application/json")
-					.post(JSON.stringify(obj),function(error,data){
-						////console.log("SEND!")
-					})*/
+					.post(JSON.stringify(q),function(error,data){
+						//console.log("SEND!")
+					})
+				
 			}
 			
 		}
 		
 	}
 
-	_buildCountrySelector() {
-		let self=this;
-		let confirm_button=d3.select("button#confirmCountry")
-										.classed("disabled",typeof this.COUNTRY === "undefined")
-										.on("click",function(){
-											d3.event.preventDefault();
-											if(self.COUNTRY) {
-												//console.log(self.COUNTRY)
+	this._buildCharts(-1);
 
-												self.user.country=self.COUNTRY;
+	
 
-												d3.select("#countrySelector").attr("disabled",true);
-												d3.select(this).attr("disabled",true).classed("disabled",true)
+	
 
-												self._buildCharts(-1);
-											}
-											
-											
-										})
-
-		let countries=d3.select("#countrySelector")
-						.on("change",function(d){
-							////console.log()
-							self.COUNTRY=this.options[this.selectedIndex].value;
-							self.options.country=self.COUNTRY;
-
-							confirm_button.classed("disabled",false)
-
-						})
-						.selectAll("option")
-						.data(this.data.map((d)=>d.country).sort((a,b)=>{
-							if(a < b) return -1;
-						    if(a > b) return 1;
-						    return 0;
-						}))
-						.enter()
-						.append("option")
-							.attr("value",(d)=>d)
-							.text((d)=>d)
-							.each(function(d){
-								let search=window.location.search.replace(/\?/gi,"").toLowerCase();
-								if(d.toLowerCase()===search) {
-									d3.select(this).attr("selected","selected")
-								}
-							})
-
-	}
-
-	_buildRestartCountrySelector() {
-		let self=this;
-		let COUNTRY="";
-		let confirm_button=d3.select("button#restartCountry")
-										.on("click",function(){
-											d3.event.preventDefault();
-											//console.log(window.location)
-											if(COUNTRY) {
-												//console.log(window.location.origin+window.location.pathname+"?"+COUNTRY)
-
-												let url=window.location.origin+window.location.pathname+"?"+COUNTRY;
-
-
-												window.location=url;	
-											}
-											
-											
-										})
-
-		let countries=d3.select("#restartCountrySelector")
-						.on("change",function(d){
-							////console.log()
-							COUNTRY=this.options[this.selectedIndex].value;
-							
-
-							confirm_button.classed("disabled",false)
-
-						})
-						.selectAll("option")
-						.data(this.data.map((d)=>d.country).sort((a,b)=>{
-							if(a < b) return -1;
-						    if(a > b) return 1;
-						    return 0;
-						}))
-						.enter()
-						.append("option")
-							.attr("value",(d)=>d)
-							.text((d)=>d)
-
-	}
-
-	_buildRanking(){
+	this._buildRanking=function(){
 		
-		console.log("BUILD RANKING",this.user)
+		//console.log("BUILD RANKING",this.user)
 
 
 		let avg={
@@ -243,7 +168,7 @@ export default class Flow {
 			avg.you_actual=2;
 		}
 
-		console.log(avg,other_avg)
+		//console.log(avg,other_avg)
 
 		d3.select("#ranking")
 			.classed("hidden",false)
@@ -251,14 +176,15 @@ export default class Flow {
 			
 		this._buildShare(avg)
 	}
-	_buildShare(avg) {
+	this._buildShare=function(avg) {
 
-		console.log(avg)
+		//console.log(avg)
 
 		let you_others=[
-			"Compared to other Guardian readers you answered better than most.",
+			"Compared to other Guardian readers you fared worse than most people.",
 			"Compared to other Guardian readers you were about as correct as most people.",
-			"Compared to other Guardian readers you fared worse than most people."
+			"Compared to other Guardian readers you answered better than most."
+			
 		];
 		let you_actual=[
 			"Well, it seems you don't know too much about the NHS.",
@@ -291,31 +217,5 @@ export default class Flow {
 			})
 	}
 	
-	_getCountryArea(country) {
-
-		if(country==="YOU") {
-			return "you";
-		}
-
-		let region_codes={
-			"002":"africa",
-			"019":"americas",
-			"142":"asia",
-			"150":"europe",
-			"009":"oceania"
-		}
-		let sub_region_codes={
-			"021":"namerica",
-			"005":"samerica",
-			"013":"samerica"
-		}
-		////console.log(country)
-		////console.log(region_codes[this.options.country_info[country]["region-code"]])
-
-		if(sub_region_codes[this.options.country_info[country]["sub-region-code"]]) {
-			return sub_region_codes[this.options.country_info[country]["sub-region-code"]]
-		}
-		
-		return region_codes[this.options.country_info[country]["region-code"]]
-	}
+	
 }

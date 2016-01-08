@@ -1,61 +1,90 @@
-//import iframeMessenger from 'guardian/iframe-messenger';
 import mainHTML from './text/main.html!text';
-//import questions from '../assets/data/questions.json!json';
-//import ranking from '../assets/data/ranking.json!json';
-//import iso from '../assets/data/iso.json!json';
 import d3 from 'd3';
-//import addSections from './components/section';
 import Flow from './components/Flow';
 
 import { requestAnimationFrame, cancelAnimationFrame } from './lib/request-animation-frame-shim';
 
 export function init(el, context, config, mediator) {
-    //iframeMessenger.enableAutoResize();
 
     el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
     
+    let q,
+        query=window.location.search.replace("?","").split("=");
+    if(query[0]==="q") {
+        q=+query[1];
+        q=(isNaN(q)||q===0)?1:q;
+    }
+
     let frameRequest = requestAnimationFrame(function checkInnerHTML(time) {
         //console.log(time)
         var b=document.querySelector("#NHSQuiz");
         if(b && b.getBoundingClientRect().height) {
             cancelAnimationFrame(checkInnerHTML);
-            loadData();
+
+            if(q) {
+                d3.select(el).classed("embed",true)
+            }
+            retrieveAVG(q);
             return; 
         }
         frameRequest = requestAnimationFrame(checkInnerHTML);
     });
 };
+function retrieveAVG(q) {
+    let avgSrc="https://interactive.guim.co.uk/2016/01/nhs-quiz/averages-"+(q?"embed":"")+"nhs.json";
 
-function loadData() {
+    d3.json(avgSrc, (json) => {
+        //console.log("JSON",json)
+        loadData(q,json);
+    })
+
+}
+function loadData(q,avg) {
 
     let data=[];
     let country_info={};
 
-    let dataKey = "1PMgGCWZtZGctS_TynkMZxzzvtCbwr2rM8bEFxAgLdC8",
-        dataSrc = "https://interactive.guim.co.uk/docsdata-test/" + dataKey + ".json";
+    let dataKey = "1PMgGCWZtZGctS_TynkMZxzzvtCbwr2rM8bEFxAgLdC8";
+
+    if(q) {
+        dataKey = "1PMgGCWZtZGctS_TynkMZxzzvtCbwr2rM8bEFxAgLdC8"; //load embeddable questions
+    }
+
+    let dataSrc = "https://interactive.guim.co.uk/docsdata-test/" + dataKey + ".json";
 
     d3.json(dataSrc, (json) => {
         let questions = json.sheets.Sheet1;
-
-        /*let sections = d3.select(".js-sections")
-                            .selectAll("section")
-                            .data(data).enter()
-                            .append("section");
-
-        sections
-            .append("h3")
-            .text((d, i) => (i+1) + " " + d.question);*/
-        console.log(questions);
-
-        
-
-//return d.answer.indexOf("-")<0
+        //console.log(questions);
+        if(q<1 || q>questions.length-1) {
+            q=1;
+        }
+        //return d.answer.indexOf("-")<0
         new Flow([
             {
                 country:"Others",
-                questions:questions.filter((d,i)=>{return 1;}).map((d,i)=>{
+                questions:questions.filter((d,i)=>{
+                    //return i<3;
+                    if(typeof q === "number") {
+                        return i===q-1;
+                    }
+                    return 1;
+                }).map((d,i)=>{
+
+                        let index=q || i;
+                        
+                        let q_avg=0,
+                            range_mean=d3.mean([+d.min,+d.max]);
+
+                        //if(typeof q === "number") {
+                        q_avg=avg.find((a)=>(a.q===index));
+                        //}
+                        
+                            
+
+                        //console.log("AVGGGGG",avg,i,q_avg)
+
                         let answer=d.answer,
-                            mean=((+d.min) + (+d.max))/2,
+                            mean=q_avg?(q_avg.avg>100?Math.round(q_avg.avg):q_avg.avg):range_mean,
                             actual=+d.answer;
 
 
@@ -82,8 +111,15 @@ function loadData() {
         ],{
             country:"Others",
             container:"#NHSQuiz",
+            embed:q,
             questions:questions
-                        .filter((d,i)=>{return 1;return d.answer.indexOf("-")<0})
+                        .filter((d,i)=>{
+                            //return i<3;
+                            if(typeof q === "number") {
+                                return i===q-1;
+                            }
+                            return 1;
+                        })
                         .map((d,i)=>{
                             return {
                                 id:i,
@@ -102,74 +138,31 @@ function loadData() {
     });
 
 
-    /*d3.csv(config.assetPath+"/assets/data/perils2.csv",(d)=>{
-        return d;
-    },(all_data)=>{
-
-        //console.log(all_data);
-
-        all_data.forEach((d)=>{
-            let __type=d.type.trim().toLowerCase(),
-                __question=d.question;
-
-            d3.entries(d).filter((field)=>{
-                return field.key!=="question" && field.key!=="type"
-            }).forEach((field)=>{
-
-
-                var country=data.find((c)=>{
-                    return c.country==field.key.trim()
-                });
-
-                if(country) {
-                    var question=country.questions.find((q)=>{
-                        return q.question==__question;
-                    });
-                    if(question) {
-                        question[__type]=isNaN(+field.value)?field.value:+field.value;
-                    } else {
-                        let quest={
-                            question:__question
-                        }
-                        if(field.value==="") {
-                            field.value="--"
-                        }
-                        quest[__type]=(isNaN(+field.value))?field.value:+field.value;
-                        country.questions.push(quest);
-
-                    }
-                    //country[__type]=isNaN(+field.value)?field.value:+field.value;
-                    country.questions.sort((a,b)=>{
-                        return +a.question - +b.question;
-                    })
-                } else {
-                    let record={
-                        questions:[],
-                        country:field.key.trim()
-                    };
-                    let quest={
-                        question:__question
-                    }
-                    quest[__type]=isNaN(+field.value)?field.value:+field.value;
-                    record.questions.push(quest);
-                    data.push(record);
-
-                    country_info[record.country]=iso.find((d)=>{
-                        return d.name === record.country || d.name2===record.country;
-                    });
-                }
-
-
-
-
-            })
-        })
-
-    })
-    */
+    
 
 }
+if (!Array.prototype.find) {
+  Array.prototype.find = function(predicate) {
+    if (this === null) {
+      throw new TypeError('Array.prototype.find called on null or undefined');
+    }
+    if (typeof predicate !== 'function') {
+      throw new TypeError('predicate must be a function');
+    }
+    var list = Object(this);
+    var length = list.length >>> 0;
+    var thisArg = arguments[1];
+    var value;
 
+    for (var i = 0; i < length; i++) {
+      value = list[i];
+      if (predicate.call(thisArg, value, i, list)) {
+        return value;
+      }
+    }
+    return undefined;
+  };
+}
 ;(function() {
     var throttle = function(type, name, obj) {
         var obj = obj || window;
