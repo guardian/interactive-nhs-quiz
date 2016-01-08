@@ -47,7 +47,8 @@ function loadData(q,avg) {
     let dataKey = "1PMgGCWZtZGctS_TynkMZxzzvtCbwr2rM8bEFxAgLdC8";
 
     if(q) {
-        dataKey = "1PMgGCWZtZGctS_TynkMZxzzvtCbwr2rM8bEFxAgLdC8"; //load embeddable questions
+        //http://interactive.guim.co.uk/docsdata-test/17diSfLk__ZaslGCKaXf4h6N7QW4WZ2wfRWsIWHP7G7A.json
+        dataKey = "17diSfLk__ZaslGCKaXf4h6N7QW4WZ2wfRWsIWHP7G7A"; //load embeddable questions
     }
 
     let dataSrc = "https://interactive.guim.co.uk/docsdata-test/" + dataKey + ".json";
