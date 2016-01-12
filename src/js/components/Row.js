@@ -96,66 +96,10 @@ export default function Row(data,options) {
 		this.svg = chart_container
 					.append("svg")
 					.attr("class","chart")
-					/*.on("touchstart",()=>{
-						if(this.container.classed("your")) {
-							return;
-						}
-						
-						this.touch=true;
-
-						if (this.isAndroid && window.GuardianJSInterface) {
-								window.GuardianJSInterface.registerRelatedCardsTouch(true);
-							}
-
-						if(this.voronoi_centers) {
-
 					
-							d3.event.preventDefault();
-					    	let touch=d3.event.targetTouches[0];
-
-					    	var e = touch.target;
-						    var dim = this.svg.node().getBoundingClientRect();
-						    var x = touch.clientX - dim.left;
-						    var y = touch.clientY - dim.top;
-
-					    	let countries=this._findVoronoi(x,y)
-					    	this.highlightCountry(countries)
-
-						}
-					})
-					.on("touchend",()=>{
-						this.touch=false;
-						if (this.isAndroid && window.GuardianJSInterface) {
-							window.GuardianJSInterface.registerRelatedCardsTouch(false);
-						}
-					})
-					.on("touchmove",()=>{
-							if(this.container.classed("your")) {
-								return;
-							}
-							if(this.voronoi_centers) {
-								d3.event.preventDefault();
-						    	let touch=d3.event.targetTouches[0];
-
-						    	var e = touch.target;
-							    var dim = this.svg.node().getBoundingClientRect();
-							    var x = touch.clientX - dim.left;
-							    var y = touch.clientY - dim.top;
-
-						    	let countries=this._findVoronoi(x,y)
-						    	this.highlightCountry(countries)
-
-							}
-					    	
-					})
-					.on("mouseout",()=>{
-						if(this.voronoi_centers) {
-							this.highlightCountry()
-						}
-					})*/
-		//this._addLegend();
+		
 		let defs=this.svg.append("defs");
-		//this._addDefsShadow(defs);
+		
 		
 		let bbox=this.svg.node().getBoundingClientRect(),
 			WIDTH=bbox.width,
@@ -176,10 +120,6 @@ export default function Row(data,options) {
 
 		this.yscale=d3.scale.ordinal().domain(["mean","actual"]).rangePoints([0,h])
 		this.colorscale=d3.scale.linear().domain(this.extents.difference).range(["#b82266","#298422","#b82266"])
-		
-		//this.voronoi = d3.geom.voronoi()
-    	//				.clipExtent([[-2, -2], [w + 2, HEIGHT + 2]]);
-    	
 
 		this.line=this.svg.selectAll("g.line")
 					.data(["mean"])//,"actual"
@@ -207,55 +147,19 @@ export default function Row(data,options) {
 				.attr("class","zero")
 				.attr("x",this.padding.left-3)
 				.attr("y",(d)=>{
-					/*
-					if(this.options.isSmallScreen) {
-						return d==="mean"?-10:20;
-					}
-					*/
 					return 4;
 				})
-				//.text((this.options.question.range?this.options.question.range[0]:"0")+(this.options.question.units||""))
 				.text(this._getFormattedValue(this.xscale.domain()[0]));
-				/*.text(()=>{
-					return _getFormattedValue(this.xscale.domain()[0]);
 
-					if(this.options.question.units && this.options.units==="£") {
-						return (this.options.question.units||"")+d3.format(",.0f")(this.xscale.domain()[0])	
-					}
-					return d3.format(",.0f")(this.xscale.domain()[0])+(this.options.question.units||"")
-				})*/
 		this.line
 			.append("text")
 				.attr("class","hundred")
 				.attr("x",this.xscale.range()[1]+this.padding.left+3)
 				.attr("y",(d)=>{
-					/*
-					if(this.options.isSmallScreen) {
-						return d==="mean"?-10:20;
-					}
-					*/
 					return 4;
 				})
 				.text(this._getFormattedValue(this.xscale.domain()[1]));
-				//.text(d3.format(",.0f")(this.xscale.domain()[1])+(this.options.question.units||""))
-				
 
-		/*this.line
-			.append("text")
-				.attr("class","title")
-				.attr("x",0)//this.padding.left-3-(this.options.isSmallScreen?0:25))
-				.attr("y",(d)=>{
-					
-					
-
-					return d==="mean"?-22:32;
-				})
-				.text((d)=>{
-					if(this.options.isSmallScreen) {
-						return (d==="mean"?"SURVEY":"ACTUAL");	
-					}
-					return (d==="mean"?"SURVEY ANSWERS":"ACTUAL NUMBERS");
-				})*/
 
 		this.countries=this.svg
 						.append("g")
@@ -263,22 +167,21 @@ export default function Row(data,options) {
 							.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
 
 	}
-	this._getFormattedValue=function(d,perc_points) {
+	this._getFormattedValue=function(d,perc_points,_decimals) {
 		//console.log("GET FORMATTED VALUE",d,this.options.question.units)
-
+		let decimals=_decimals || 0;
 		if(this.options.question.units && this.options.question.units==="£") {
-			return "£"+d3.format(",.0f")(d)	
+			return "£"+d3.format(",."+decimals+"d")(d)	
 		}
 		if(perc_points && this.options.question.units==="%") {
-			return d3.format(",.0f")(d)+("&nbsp;percentage points"||"")	
+			return d3.format(",."+decimals+"d")(d)+("&nbsp;percentage points"||"")	
 		}
-		return d3.format(",.0f")(d)+(this.options.question.units||"")
+		return d3.format(",."+decimals+"d")(d)+(this.options.question.units||"")
 	}
 	this._addYourSlider=function() {
 		let self=this;
 
 		let my_country=this.options.country?this.data.find((c)=>(c.country===this.options.country)):null;
-		//console.log("MY COUNTRY",my_country,this.options.country,this.data)
 
 		this.myLine=this.svg
 						.append("g")
@@ -338,10 +241,34 @@ export default function Row(data,options) {
 		  			x=x<self.xscale.range()[0]?self.xscale.range()[0]:x;
 		  			x=x>self.xscale.range()[1]?self.xscale.range()[1]:x;
 		  			
-		  			d.question.mean=Math.round(self.xscale.invert(x));
 
-		  			let mod=d.question.mean/100>1?100:1;
-					d.question.mean=mod>1?Math.round(d.question.mean/mod)*mod:d.question.mean;
+
+		  			d.question.mean=self.xscale.invert(x);
+
+		  			
+					
+		  			let decimal=Math.round(d.question.actual%1*10);
+		  			//console.log("decimal",decimal)
+		  			let mod=decimal%2;
+		  			
+		  			if(decimal===0) {
+		  				mod=0;
+		  				d.question.mean=Math.round(d.question.mean);
+		  			}
+		  			d.question.decimal=decimal;
+
+		  			//console.log("!!!!",x,d.question.actual,decimal,(self.extents.values[1]-self.extents.values[0]))
+					//console.log("x",x,"actual",d.question.actual,"mean",d.question.mean,"mod",mod,"new mean",d.question.mean+mod/10)
+					//if(self.extents.values[1]-self.extents.values[0]<99) {
+					//	d.questions.mean=d.question.mean;
+					//} else {
+						//d.question.mean=mod>1?Math.round(d.question.mean/mod)*mod:d.question.mean;	
+					//}
+
+					let thousands=d.question.mean/100>1?100:1;
+					d.question.mean=thousands>1?Math.round(d.question.mean/thousands)*thousands:d.question.mean;
+
+					d.question.mean=d.question.mean+mod/10;
 
 		  			d.question["difference (mean-actual)"]=d.question.mean-d.question.actual;
 		  			
@@ -355,7 +282,8 @@ export default function Row(data,options) {
 		  		.select("text.country-value")
 		  			.text((d)=>{
 		  				//let mod=d.question.mean/1000>1?1000:1;
-		  				return self._getFormattedValue(d.question.mean)
+		  				//return d3.round(d.question.mean,2);
+		  				return self._getFormattedValue(d3.round(d.question.mean,1),false,d.question.decimal>0)
 		  				//return d3.format(",.0f")((d.question.mean))+(self.options.question.units||"");
 		  			})
 		}
@@ -511,10 +439,10 @@ export default function Row(data,options) {
 		let self=this;
 
 		//console.log(datum)
-
-		let delta=datum.question.mean-datum.question.actual,
+		//self._getFormattedValue(d3.round(d.question.mean,1),false,d.question.decimal>0)
+		let delta=d3.round(datum.question.mean-datum.question.actual,1),
 			text_delta=delta>0?"higher":"lower",
-			sentence="Your answer is "+(this._getFormattedValue(Math.abs(delta),true))+" "+text_delta+" than the actual value";
+			sentence="Your answer is "+(this._getFormattedValue(Math.abs(delta),true,datum.question.decimal>0))+" "+text_delta+" than the actual value";
 
 		if(delta===0) {
 			sentence="Your answer is correct!";
@@ -526,6 +454,8 @@ export default function Row(data,options) {
 					//console.log(this.options)
 					return "<h3>"+sentence+"</h3>"+this.options.question.text+"<div class=\"source\">Source: "+datum.question.question.source+"</div>"
 				})
+
+		
 
 		let chart;
 		if(this.options.question.chart!=="") {
@@ -540,6 +470,11 @@ export default function Row(data,options) {
 			
 		}
 		
+		analysis.append("a")
+				.attr("class","link-to-quiz")
+				.attr("href","http://gu.com/p/4ftjf")
+				.attr("alt","How well do you know the NHS? Take the quiz")
+				.text("How well do you know the NHS? Take the quiz")
 
 		setTimeout(()=>{
 			analysis.classed("hidden",false);

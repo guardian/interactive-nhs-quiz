@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="main.css" />
+        <title></title>
+    </head>
+    <body>
+
+        <!-- Use the same figure elm as NGW -->
+        <figure class="element-interactive interactive"></figure>
+
+        <!-- Libs -->
+        <script src="/main.js"></script>
+
+        <!-- Simulate boot.js -->
+        <script>
+          //var el = document.querySelector('.interactive');
+          //require = curl;
+          //curl(['boot.js'], function(app) {
+                //app.boot(el);
+          //});
+            var config = {
+                'assetPath': '<%= assetPath %>'
+            };
+
+            var el = document.querySelector('.interactive');
+            main.init(el)
+        </script>
+    <body>
+</html>

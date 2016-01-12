@@ -14,6 +14,15 @@ export function init(el, context, config, mediator) {
         q=+query[1];
         q=(isNaN(q)||q===0)?1:q;
     }
+    if(!q) {
+        let qid=el.getAttribute("data-alt");
+        if(qid && qid!=="") {
+            q=+qid;
+        }    
+    }
+    
+    //let qid= isNaN(+el.getAttribute("data-alt"))?(+qid):q;
+
 
     let frameRequest = requestAnimationFrame(function checkInnerHTML(time) {
         //console.log(time)

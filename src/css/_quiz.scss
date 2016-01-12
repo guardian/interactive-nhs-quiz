@@ -1,15 +1,26 @@
 .short-border {
 	display:none;
-	width:50px;
-	height:0;
-	border-bottom:1px solid #000;
-	margin-bottom:15px;
+	//width:72px;
+	//height:0;
+	border-top:1px solid #dcdcdc;
+	padding-top:5px;
+	//margin-bottom:15px;
 	margin-top:15px;
+	//overflow:visible;
+	
+	@include fs-header(1);
+	color:#5bc4bf;
 	.embed & {
-		display: block;
+		display: inline-block;
 	}
 }
 #NHSQuiz {
 	width:100%;
 	min-height:100px;
+
+	.embed & {
+		padding-bottom:10px;
+		border-bottom:1px solid #dcdcdc;
+		margin-bottom:20px;
+	}
 }

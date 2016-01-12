@@ -11,19 +11,25 @@
 
 .row {
 	width:100%;
-	margin-bottom:30px;
+	margin-bottom:50px;
 	position:relative;
 	overflow: hidden;
 	border-top:1px solid #dfdfdf;
 	.embed & {
 		border-top:none;
+		margin-bottom:20px;
 	}
 
 	padding-top:5px;
-	margin-bottom:50px;
+	
 	@include mq(tablet) {
 		padding-top:10px;
 		margin-bottom:50px;
+		.embed & {
+			padding-top:0;
+			margin-bottom:20px;
+		}
+		
 	}
 	
 
@@ -556,6 +562,17 @@
 	    	width:100%;
 	    	margin-left:-8px;
 	    	margin-top:30px;
+	    	padding-top:20px;
+	    	iframe {
+	    		border:none;
+	    	}
+	    }
+
+	    .link-to-quiz {
+	    	display: block;
+	    	border-top:1px solid #fff;
+	    	width:100%;
+	    	margin-top:20px;
 	    	padding-top:20px;
 	    	iframe {
 	    		border:none;
