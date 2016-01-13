@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         watch: {
             js: {
                 files: ['src/js/**/*'],
-                tasks: ['shell:interactive'],
+                tasks: ['shell:interactive','shell:embed'],
             },
             css: {
                 files: ['src/css/**/*'],
@@ -24,6 +24,10 @@ module.exports = function(grunt) {
             harness: {
                 files: ['harness/**/*'],
                 tasks: ['harness']
+            },
+            embed: {
+                files: ['src/embed.html'],
+                tasks: ['embed']
             }
         },
 
@@ -44,12 +48,25 @@ module.exports = function(grunt) {
                 files: {
                     'build/fonts.css': 'harness/fonts.scss'
                 }
+            },
+            embed: {
+                files: {
+                    'build/embed.css': 'src/css/embed.scss'
+                }
             }
         },
 
         shell: {
             interactive: {
                 command: './node_modules/.bin/jspm bundle-sfx <%= visuals.jspmFlags %> src/js/main build/main.js --format amd',
+                options: {
+                    execOptions: {
+                        cwd: '.'
+                    }
+                }
+            },
+            embed: {
+                command: './node_modules/.bin/jspm bundle-sfx <%= visuals.jspmFlags %> src/js/embed build/embed.js',
                 options: {
                     execOptions: {
                         cwd: '.'
@@ -68,6 +85,11 @@ module.exports = function(grunt) {
                 'files': {
                     'build/boot.js': ['src/js/boot.js.tpl'],
                 }
+            },
+            'embed': {
+                'files': {
+                    'build/embed.html': ['src/embed.html']
+                }
             }
         },
 
@@ -75,11 +97,6 @@ module.exports = function(grunt) {
             harness: {
                 files: [
                     {expand: true, cwd: 'harness/', src: ['curl.js', 'embed.html','index.html', 'immersive.html', 'interactive.html'], dest: 'build'},
-                ]
-            },
-            embed: {
-                files: [
-                    {expand: true, cwd: 'harness/', src: ['embed.html'], dest: 'build'},
                 ]
             },
             assets: {
@@ -94,9 +111,13 @@ module.exports = function(grunt) {
                         src: ['boot.js','embed.html'],
                         dest: 'deploy/<%= visuals.timestamp %>'
                     },
+                    // EMBED
+                    {
+                        'deploy/<%= visuals.timestamp %>/embed/embed.html': 'build/embed.html'
+                    },
                     { // ASSETS
                         expand: true, cwd: 'build/',
-                        src: ['embed.html','main.js', 'main.css', 'main.js.map', 'main.css.map', 'assets/**/*'],
+                        src: ['main.js', 'main.css', 'embed.js', 'embed.css', 'main.js.map', 'main.css.map', 'assets/**/*'],
                         dest: 'deploy/<%= visuals.timestamp %>/<%= visuals.timestamp %>'
                     }
                 ]
@@ -174,7 +195,7 @@ module.exports = function(grunt) {
                     { // BOOT
                         expand: true,
                         cwd: 'deploy/<%= visuals.timestamp %>',
-                        src: ['boot.js','embed.html'],
+                        src: ['boot.js','embed/embed.html'],
                         dest: '<%= visuals.s3.path %>',
                         params: { CacheControl: 'max-age=60' }
                     }]
@@ -215,13 +236,18 @@ module.exports = function(grunt) {
     grunt.registerTask('boot_url', function() {
         grunt.log.write('\nBOOT URL: '['green'].bold)
         grunt.log.writeln(grunt.template.process('<%= visuals.s3.domain %><%= visuals.s3.path %>/boot.js'))
+
+        grunt.log.write('\nEMBED: '['green'].bold)
+        grunt.log.writeln(grunt.template.process('<%= visuals.s3.domain %><%= visuals.s3.path %>/embed/embed.html'))
     })
 
     grunt.registerTask('harness', ['copy:harness', 'sass:harness', 'symlink:fonts'])
-    grunt.registerTask('interactive', ['shell:interactive', 'template:bootjs', 'sass:interactive', 'copy:assets'])
-    grunt.registerTask('default', ['clean', 'harness', 'interactive', 'connect', 'watch']);
-    grunt.registerTask('build', ['clean', 'interactive']);
-    grunt.registerTask('deploy', ['loadDeployConfig', 'prompt:visuals', 'build', 'copy:embed','copy:deploy', 'aws_s3', 'boot_url']);
+    grunt.registerTask('embed', ['shell:embed', 'sass:embed', 'template:embed']);
+    grunt.registerTask('interactive', ['shell:interactive', 'template:bootjs', 'sass:interactive'])
+    grunt.registerTask('all', ['interactive', 'harness', 'embed', 'copy:assets'])
+    grunt.registerTask('default', ['clean', 'harness', 'all', 'connect', 'watch']);
+    grunt.registerTask('build', ['clean', 'all']);
+    grunt.registerTask('deploy', ['loadDeployConfig', 'prompt:visuals', 'build', 'copy:deploy', 'aws_s3', 'boot_url']);
 
     grunt.loadNpmTasks('grunt-aws');
 

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="<%= assetPath %>/embed.css" />
+</head>
+<body>
+    <div class="nhs-interactive interactive embed"></div>
+    <script src="<%= assetPath %>/embed.js"></script>
+    <script>
+        init(document.querySelector('.nhs-interactive'), {'assetPath': '<%= assetPath %>'});
+    </script>
+</body>
+</html>
