@@ -171,6 +171,9 @@ export default function Row(data,options) {
 		//console.log("GET FORMATTED VALUE",d,this.options.question.units)
 		let decimals=_decimals || 0;
 		if(this.options.question.units && this.options.question.units==="£") {
+			if(d>999999) {
+				return "£"+d3.format("s")(d).replace(/G/gi,"bn");	
+			}
 			return "£"+d3.format(",."+decimals+"d")(d)	
 		}
 		if(perc_points && this.options.question.units==="%") {
@@ -639,6 +642,9 @@ export default function Row(data,options) {
 		let val=text_guess.append("tspan")
 				.attr("class","value")
 				.text((d)=>{
+					
+					return this._getFormattedValue(d3.round(d.question.mean,1),false,d.question.decimal>0)
+					
 					if(d.question.mean%1>0) {
 						return (d3.format(",.1f")(d.question.mean))	
 					}
@@ -743,6 +749,7 @@ export default function Row(data,options) {
 					if(typeof d.question.answer !== 'string') {
 						return d.question.answer.map((d)=>d3.format(",.0f")(d)).join("-");
 					}
+					return this._getFormattedValue(d3.round(d.question.actual,1),false,d.question.decimal>0)
 					if(d.question.actual%1>0) {
 						return (d3.format(",.1f")(d.question.actual))	
 					}
