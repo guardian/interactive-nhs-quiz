@@ -27,7 +27,7 @@ export function loadData(q,avg) {
     d3.json(dataSrc, (json) => {
         let questions = json.sheets.Sheet1;
         //console.log(questions);
-        if(q<1 || q>questions.length-1) {
+        if(q<1 || q>questions.length) {
             q=1;
         }
         //return d.answer.indexOf("-")<0

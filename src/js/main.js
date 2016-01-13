@@ -1,7 +1,5 @@
-import iframeMessenger from 'guardian/iframe-messenger'
+//import iframeMessenger from 'guardian/iframe-messenger'
 import mainHTML from './text/main.html!text';
-
-
 
 import { retrieveAVG } from './lib/loadData';
 import { requestAnimationFrame, cancelAnimationFrame } from './lib/request-animation-frame-shim';
@@ -10,7 +8,9 @@ export function init(el, context, config, mediator) {
 
     el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
 
-    let q,
+    let q;
+
+    /*let q,
         query=window.location.search.replace("?","").split("=");
     if(query[0]==="q") {
         q=+query[1];
@@ -21,7 +21,7 @@ export function init(el, context, config, mediator) {
         if(qid && qid!=="") {
             q=+qid;
         }    
-    }
+    }*/
     
     //let qid= isNaN(+el.getAttribute("data-alt"))?(+qid):q;
 
@@ -32,10 +32,10 @@ export function init(el, context, config, mediator) {
         if(b && b.getBoundingClientRect().height) {
             cancelAnimationFrame(checkInnerHTML);
 
-            if(q) {
+            /*if(q) {
                 d3.select(el).classed("embed",true)
                 iframeMessenger.enableAutoResize();
-            }
+            }*/
             retrieveAVG(q);
             return; 
         }
