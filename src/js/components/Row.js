@@ -167,19 +167,23 @@ export default function Row(data,options) {
 							.attr("transform",`translate(${this.margins.left+this.padding.left},${this.margins.top})`);
 
 	}
-	this._getFormattedValue=function(d,perc_points,_decimals) {
-		//console.log("GET FORMATTED VALUE",d,this.options.question.units)
-		let decimals=_decimals || 0;
+	this._getFormattedValue=function(d,perc_points,_decimals,no_units) {
+
+		
+		let decimals=_decimals?1:0;
 		if(this.options.question.units && this.options.question.units==="£") {
 			if(d>999999) {
-				return "£"+d3.format("s")(d).replace(/G/gi,"bn");	
+				return (no_units?"":"£")+d3.format("s")(d).replace(/G/gi,"bn");	
 			}
-			return "£"+d3.format(",."+decimals+"d")(d)	
+			return (no_units?"":"£")+d3.format(",."+decimals+"f")(d)	
 		}
 		if(perc_points && this.options.question.units==="%") {
 			return d3.format(",."+decimals+"d")(d)+("&nbsp;percentage points"||"")	
 		}
-		return d3.format(",."+decimals+"d")(d)+(this.options.question.units||"")
+		
+		//console.log("GET FORMATTED VALUE",d,perc_points,_decimals,no_units,"decimals:"+decimals)
+		//return d3.format(",."+decimals+"d")(d)
+		return d3.format(",."+decimals+"f")(d)+(this.options.question.units?(no_units?"":this.options.question.units):"")
 	}
 	this._addYourSlider=function() {
 		let self=this;
@@ -472,12 +476,14 @@ export default function Row(data,options) {
 							.attr("src",this.options.question.chart)
 			
 		}
-		
-		analysis.append("a")
+		if(this.options.embed) {
+			analysis.append("a")
 				.attr("class","link-to-quiz")
 				.attr("href","http://gu.com/p/4ftjf")
 				.attr("alt","How well do you know the NHS? Take the quiz")
 				.text("How well do you know the NHS? Take the quiz")
+		}
+		
 
 		setTimeout(()=>{
 			analysis.classed("hidden",false);
@@ -642,13 +648,16 @@ export default function Row(data,options) {
 		let val=text_guess.append("tspan")
 				.attr("class","value")
 				.text((d)=>{
+					let decimal=Math.round(d.question.mean%1*10);
+					//console.log("!!!!",d.question.mean,decimal,d3.round(d.question.mean,1))
 					
-					return this._getFormattedValue(d3.round(d.question.mean,1),false,d.question.decimal>0)
-					
+					return this._getFormattedValue(d3.round(d.question.mean,1),false,decimal>0,true)
+					/*
 					if(d.question.mean%1>0) {
 						return (d3.format(",.1f")(d.question.mean))	
 					}
 					return (d3.format(",.0f")(d.question.mean))
+					*/
 				})
 
 		if(this.options.question.units!=="£") {
@@ -749,7 +758,7 @@ export default function Row(data,options) {
 					if(typeof d.question.answer !== 'string') {
 						return d.question.answer.map((d)=>d3.format(",.0f")(d)).join("-");
 					}
-					return this._getFormattedValue(d3.round(d.question.actual,1),false,d.question.decimal>0)
+					return this._getFormattedValue(d3.round(d.question.actual,1),false,d.question.decimal>0,true)
 					if(d.question.actual%1>0) {
 						return (d3.format(",.1f")(d.question.actual))	
 					}

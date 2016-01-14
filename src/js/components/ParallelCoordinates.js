@@ -82,6 +82,7 @@ export default function ParallelCoordinates(data,options) {
 										country:self.options.country,
 										country_info:self.options.country_info,
 										isSmallScreen:isSmallScreen,
+										embed:self.options.embed,
 										nextCallback:function(index,info){
 											////console.log("INFO INFO INFO",info)
 											self.options.nextCallback(index,info)

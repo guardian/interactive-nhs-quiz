@@ -103,7 +103,7 @@ export default function Flow(data,options) {
 				//console.log("REMIND TO ACTIVATE XHR")
 				//return;
 				
-				d3.xhr("http://ec2-54-72-6-69.eu-west-1.compute.amazonaws.com/?key="+(this.options.embed?"embednhs":"nhs"))
+				d3.xhr("https://ec2-54-72-6-69.eu-west-1.compute.amazonaws.com/?key="+(this.options.embed?"embednhs":"nhs"))
 					.header("Content-Type", "application/json")
 					.post(JSON.stringify(q),function(error,data){
 						//console.log("SEND!")
