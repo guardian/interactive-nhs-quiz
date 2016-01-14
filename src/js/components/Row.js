@@ -114,9 +114,7 @@ export default function Row(data,options) {
 
 		
 		//console.log(this.extents)
-		this.xscale=d3.scale.linear().domain(this.extents.values).range([0,w]);//.nice()
-
-		
+		this.xscale=d3.scale.linear().domain(this.extents.values).range([0,w]);
 
 		this.yscale=d3.scale.ordinal().domain(["mean","actual"]).rangePoints([0,h])
 		this.colorscale=d3.scale.linear().domain(this.extents.difference).range(["#b82266","#298422","#b82266"])
@@ -249,7 +247,7 @@ export default function Row(data,options) {
 		  			x=x>self.xscale.range()[1]?self.xscale.range()[1]:x;
 		  			
 
-
+		  			//console.log(x,self.xscale.invert(x))
 		  			d.question.mean=self.xscale.invert(x);
 
 		  			
@@ -272,10 +270,12 @@ export default function Row(data,options) {
 						//d.question.mean=mod>1?Math.round(d.question.mean/mod)*mod:d.question.mean;	
 					//}
 
-					let thousands=d.question.mean/100>1?100:1;
+					let thousands=d.question.mean>999?100:1;
 					d.question.mean=thousands>1?Math.round(d.question.mean/thousands)*thousands:d.question.mean;
 
 					d.question.mean=d.question.mean+mod/10;
+					d.question.mean=(d.question.mean===100.1?100:d.question.mean);
+					d.question.mean=(d.question.mean===0.1?0:d.question.mean);
 
 		  			d.question["difference (mean-actual)"]=d.question.mean-d.question.actual;
 		  			
@@ -290,6 +290,7 @@ export default function Row(data,options) {
 		  			.text((d)=>{
 		  				//let mod=d.question.mean/1000>1?1000:1;
 		  				//return d3.round(d.question.mean,2);
+		  				//console.log(d.question.mean)
 		  				return self._getFormattedValue(d3.round(d.question.mean,1),false,d.question.decimal>0)
 		  				//return d3.format(",.0f")((d.question.mean))+(self.options.question.units||"");
 		  			})

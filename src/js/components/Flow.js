@@ -196,7 +196,7 @@ export default function Flow(data,options) {
 			"It seems I know some things about the NHS",
 			"I know a lot about the NHS!"
 		]
-		let tweet=tweets[avg.you_other]+". How well do you really know the NHS? Take the quiz";
+		let tweet=tweets[avg.you_actual]+". How well do you really know the NHS? Take the quiz";
 		d3.select("#ranking p")
 			.html(you_actual[avg.you_actual]+"<br/>"+you_others[avg.you_other])
 
