@@ -99,7 +99,7 @@ export default function Flow(data,options) {
 				
 				//console.log(obj.answers.q)
 				let q={answers:obj.answers.q};
-				//console.log(JSON.stringify(q))
+				console.log(JSON.stringify(q))
 				//console.log("REMIND TO ACTIVATE XHR")
 				//return;
 				
