@@ -9,7 +9,7 @@ import { requestAnimationFrame, cancelAnimationFrame } from './lib/request-anima
 
 function app(el, config, doc, charts) {
 
-	console.log(el)
+	//console.log(el)
 
     el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
 

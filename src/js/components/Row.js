@@ -169,9 +169,12 @@ export default function Row(data,options) {
 
 		
 		let decimals=_decimals?1:0;
+
+		console.log(decimals)
+
 		if(this.options.question.units && this.options.question.units==="£") {
 			if(d>999999) {
-				return (no_units?"":"£")+d3.format("s")(d).replace(/G/gi,"bn");	
+				return (no_units?"":"£")+d3.format(",.2s")(d).replace(/G/gi,"bn").replace(/M/gi,"m");	
 			}
 			return (no_units?"":"£")+d3.format(",."+decimals+"f")(d)	
 		}
@@ -253,7 +256,7 @@ export default function Row(data,options) {
 		  			
 					
 		  			let decimal=Math.round(d.question.actual%1*10);
-		  			//console.log("decimal",decimal)
+		  			console.log("decimal",decimal,d.question.actual)
 		  			let mod=decimal%2;
 		  			
 		  			if(decimal===0) {
