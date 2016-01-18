@@ -485,6 +485,7 @@ export default function Row(data,options) {
 				.attr("class","link-to-quiz")
 				.attr("href","http://gu.com/p/4ftjf")
 				.attr("alt","How well do you know the NHS? Take the quiz")
+				.attr("target","_top")
 				.text("How well do you know the NHS? Take the quiz")
 		}
 		
