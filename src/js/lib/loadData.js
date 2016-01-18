@@ -22,7 +22,7 @@ export function loadData(q,avg) {
         dataKey = "17diSfLk__ZaslGCKaXf4h6N7QW4WZ2wfRWsIWHP7G7A"; //load embeddable questions
     }
 
-    let dataSrc = "https://interactive.guim.co.uk/docsdata-test/" + dataKey + ".json";
+    let dataSrc = "https://interactive.guim.co.uk/docsdata/" + dataKey + ".json";
 
     d3.json(dataSrc, (json) => {
         let questions = json.sheets.Sheet1;
